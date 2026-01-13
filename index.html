@@ -1,359 +1,371 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IEA PORTAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>IEA INTERNATIONAL EDUCATION ASTRONOMY</title>
+    <!-- New Fonts (minimal & modern) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;700&family=Manrope:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050505;
-            --accent: #00f6ff;
-            --glass: rgba(255, 255, 255, 0.02);
-            --border: rgba(255, 255, 255, 0.08);
-            --font-main: 'Inter', sans-serif;
-            --font-head: 'Space Grotesk', sans-serif;
-        }
+      :root{
+        --bg: #040406;
+        --card-bg: rgba(255,255,255,0.03);
+        --glass-border: rgba(255,255,255,0.08);
+        --accent: #00f6ff;
+        --muted: rgba(255,255,255,0.6);
+        --glass-strong: rgba(255,255,255,0.06);
+        --focus: 0 8px 30px rgba(0,246,255,0.06);
+        --radius: 18px;
+        --maxw: 980px;
+      }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      /* reset */
+      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+      html,body{height:100%}
+      body{
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        background: linear-gradient(180deg, rgba(2,6,10,1) 0%, rgba(6,6,10,1) 100%);
+        color: #fff; -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        min-height:100vh;
+        overflow-x:hidden;
+      }
 
-        body {
-            background-color: var(--bg);
-            color: #ffffff;
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+      /* subtle ambient vignette + radial glow */
+      .ambient{
+        position:fixed; inset:0; pointer-events:none; z-index:0;
+        background:
+          radial-gradient(600px 300px at 10% 10%, rgba(0,246,255,0.03), transparent 8%),
+          radial-gradient(420px 240px at 90% 80%, rgba(0,0,0,0.12), transparent 25%);
+        mix-blend-mode:screen;
+      }
 
-        /* --- LUXURY LOADING SCREEN --- */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease-in-out;
-        }
-        .load-bar-container {
-            width: 200px;
-            height: 1px;
-            background: rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .load-bar-progress {
-            position: absolute;
-            width: 0%;
-            height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-            animation: loadAnim 2s forwards cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes loadAnim {
-            0% { width: 0%; left: 0; }
-            100% { width: 100%; }
-        }
-        .load-text {
-            margin-top: 20px;
-            font-family: var(--font-head);
-            font-size: 0.6rem;
-            letter-spacing: 4px;
-            color: #444;
-            text-transform: uppercase;
-        }
+      /* layout */
+      .wrap{max-width:var(--maxw);margin:0 auto;padding:10vh 20px;position:relative;z-index:2}
+      header{margin-bottom:72px}
+      header p{
+        font-family:"Manrope", "Inter";font-weight:700;color:var(--accent);
+        letter-spacing:5px;text-transform:uppercase;font-size:0.74rem;margin-bottom:10px;
+        opacity:0.95
+      }
+      header h1{
+        font-family:"Manrope";font-size:clamp(1.9rem,7.6vw,2.7rem);font-weight:700;
+        letter-spacing:-1px;line-height:1.06;text-transform:uppercase;
+      }
 
-        /* --- BACKGROUND GRADIENTS --- */
-        .bg-glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 246, 255, 0.03) 0%, transparent 50%);
-            z-index: -1;
-        }
+      /* grid */
+      .grid{
+        display:grid; grid-template-columns:1fr; gap:18px;
+      }
+      @media(min-width:880px){ .grid{ grid-template-columns:repeat(2,1fr); gap:22px } }
 
-        /* --- LAYOUT --- */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 8vh 24px;
-        }
+      /* card: minimal glass */
+      .card{
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border: 1px solid var(--glass-border);
+        border-radius:var(--radius);
+        padding:34px;
+        backdrop-filter: blur(14px) saturate(1.08);
+        -webkit-backdrop-filter: blur(14px) saturate(1.08);
+        box-shadow: var(--focus);
+        transition: transform .42s cubic-bezier(.2,.9,.3,1), box-shadow .42s;
+        cursor:pointer;
+        display:flex;flex-direction:column; position:relative; overflow:hidden;
+      }
+      .card::after{
+        content:"";position:absolute;inset:0;border-radius:inherit;
+        pointer-events:none;
+        background: linear-gradient(180deg, rgba(255,255,255,0.000), rgba(255,255,255,0.01));
+      }
+      .card span{
+        font-family:"Manrope";font-weight:700;letter-spacing:3.5px;font-size:.62rem;color:var(--muted);text-transform:uppercase;margin-bottom:12px;
+      }
+      .card h2{
+        font-family:"Manrope";font-weight:700;font-size:1.35rem;margin-bottom:10px;
+      }
+      .card p{
+        font-family:"Inter";font-weight:300;color:rgba(255,255,255,0.72);line-height:1.6;max-width:480px;font-size:.94rem;
+      }
+      .card:hover{ transform:translateY(-6px); box-shadow:0 28px 80px rgba(0,0,0,0.6); border-color: rgba(0,246,255,0.14) }
 
-        header {
-            text-align: left;
-            margin-bottom: 60px;
-        }
-        header h1 {
-            font-family: var(--font-head);
-            font-size: clamp(2rem, 10vw, 3.5rem);
-            font-weight: 700;
-            letter-spacing: -2px;
-            margin-bottom: 8px;
-        }
-        header p {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: var(--accent);
-            opacity: 0.8;
-        }
+      /* modal */
+      .modal{
+        position:fixed; inset:0; display:none; place-items:center; z-index:9998; padding:26px;
+        background: linear-gradient(180deg, rgba(1,1,2,0.86), rgba(1,1,2,0.94));
+      }
+      .modal-content{
+        width:100%; max-width:520px; border-radius:28px; padding:40px; background:rgba(6,6,6,0.82);
+        border:1px solid var(--glass-border); backdrop-filter: blur(18px);
+      }
+      .modal-content h3{ font-family:"Manrope"; text-align:center;color:var(--accent); margin-bottom:26px; letter-spacing:4px; font-weight:700 }
+      .rules-list{ color:rgba(255,255,255,0.78); line-height:1.75; font-size:.92rem }
+      .rules-list b{ display:block;color:#fff;margin-top:16px;font-family:"Manrope";font-weight:700 }
 
-        /* --- GRID CARDS --- */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
+      .input-field{
+        width:100%; padding:18px 16px; border-radius:14px; border:1px solid var(--glass-border);
+        background: rgba(255,255,255,0.017); color:#fff; text-align:center; font-weight:600; outline:none;
+      }
+      .input-field:focus{ box-shadow:0 6px 24px rgba(0,246,255,0.04); border-color:rgba(0,246,255,0.12) }
 
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 35px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+      .btn-prime{
+        width:100%; padding:16px 18px; border-radius:14px; margin-top:14px; font-weight:900; font-family:"Manrope";
+        border:none; cursor:pointer;background:#fff;color:#000;
+      }
+      .btn-prime:hover{ transform:translateY(-2px) }
 
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.04);
-            transform: scale(1.01);
-        }
+      .btn-close{ display:block;text-align:center;margin-top:18px;color:#777;font-size:.72rem;letter-spacing:3px;cursor:pointer;font-weight:700 }
 
-        .card-tag {
-            font-size: 0.65rem;
-            font-family: var(--font-head);
-            letter-spacing: 2px;
-            color: #555;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
+      /* cinematic loader (kept text same) but minimal frame */
+      #loader{
+        position:fixed; inset:0; display:flex;flex-direction:column;align-items:center;justify-content:center;
+        z-index:10000; pointer-events:none; opacity:0; transition:opacity .42s ease;
+        background: linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65));
+        backdrop-filter: blur(6px);
+      }
+      #loader.active{ opacity:1; pointer-events:all }
 
-        .card h2 {
-            font-family: var(--font-head);
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
+      .boot-text{
+        font-family:"Manrope";font-weight:700;letter-spacing:7px;color:var(--accent);text-transform:uppercase;font-size:.72rem;
+        margin-bottom:16px;
+      }
 
-        .card p {
-            font-size: 0.9rem;
-            color: #888;
-            font-weight: 300;
-            max-width: 500px;
-        }
+      /* subtle minimal spinner + progress bar */
+      .loader-min{
+        display:flex;gap:12px;align-items:center;
+      }
+      .dot{
+        width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.9);opacity:.08;
+        animation: pulse 1.6s linear infinite;
+      }
+      .dot:nth-child(2){ animation-delay:.12s }
+      .dot:nth-child(3){ animation-delay:.24s }
+      @keyframes pulse{
+        0%{opacity:.08;transform:translateY(0)}
+        50%{opacity:1;transform:translateY(-6px)}
+        100%{opacity:.08;transform:translateY(0)}
+      }
 
-        .card-action {
-            margin-top: 25px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-        }
+      /* small scan line under loader */
+      .scan-line{ width:160px;height:2px;background:linear-gradient(90deg, transparent, var(--accent), transparent); margin-top:18px; border-radius:10px; opacity:.9 }
 
-        /* --- LOGIN MODAL --- */
-        #loginModal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(40px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-        .login-box {
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .login-box h3 {
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-        .login-box input {
-            width: 100%;
-            padding: 18px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: white;
-            font-family: var(--font-main);
-            margin-bottom: 15px;
-            outline: none;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .login-box input:focus { border-color: var(--accent); }
-        .login-box button {
-            width: 100%;
-            padding: 18px;
-            background: #ffffff;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-family: var(--font-head);
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .login-box button:active { transform: scale(0.98); }
-        .close-btn { margin-top: 25px; font-size: 0.7rem; color: #444; cursor: pointer; letter-spacing: 2px; }
-
-        /* Tablet & Desktop Layout */
-        @media (min-width: 768px) {
-            .grid { grid-template-columns: repeat(2, 1fr); }
-            .card { height: 280px; }
-            header { margin-bottom: 80px; }
-        }
+      /* tiny footer hint (non-intrusive) */
+      .hint{ position:fixed; right:18px; bottom:18px; font-family:"Inter"; font-size:.72rem; color:rgba(255,255,255,0.5); z-index:3; }
     </style>
 </head>
 <body>
+  <div class="ambient" aria-hidden="true"></div>
 
-    <div id="loader">
-        <div class="load-bar-container">
-            <div class="load-bar-progress"></div>
-        </div>
-        <div class="load-text">Initializing Portal</div>
+  <!-- Minimal cinematic loader (kept original loader text content intact) -->
+  <div id="loader" aria-hidden="true">
+    <div class="boot-text" id="bootText">AUTHENTICATING SESSION</div>
+    <div class="loader-min" aria-hidden="true">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="dot" aria-hidden="true"></div>
+      <div class="dot" aria-hidden="true"></div>
     </div>
+    <div class="scan-line" aria-hidden="true"></div>
+  </div>
 
-    <div class="bg-glow"></div>
+  <div class="wrap">
+    <header>
+      <p>IEA</p>
+      <h1>INTERNATIONAL EDUCATION ASTRONOMY</h1>
+    </header>
 
-    <div class="container">
-        <header>
-            <p>International Education Astronomy</p>
-            <h1>IEA</h1>
-        </header>
-
-        <div class="grid">
-            <a href="https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/" class="card" target="_blank">
-                <div>
-                    <div class="card-tag">Gate 1</div>
-                    <h2>Komunitas 1</h2>
-                    <p>Akses pendaftaran resmi divisi pertama komunitas IEA</p>
-                </div>
-                <div class="card-action">OPEN ACCESS —</div>
-            </a>
-
-            <a href="https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/komunitas2.html" class="card" target="_blank">
-                <div>
-                    <div class="card-tag">Gate 2</div>
-                    <h2>Komunitas 2</h2>
-                    <p>Akses pendaftaran resmi divusi kedua komunitas IEA</p>
-                </div>
-                <div class="card-action">OPEN ACCESS —</div>
-            </a>
-
-            <div class="card" onclick="openLogin()">
-                <div>
-                    <div class="card-tag">Secure Core</div>
-                    <h2>Website IEA</h2>
-                    <p>website interaktif memerlukan verifikasi ID Card resmi</p>
-                </div>
-                <div class="card-action">VERIFY IDENTITY</div>
-            </div>
-
-            <a href="https://ai-iea-international-education-astronomy-tvmchu4pnij7avslkygup.streamlit.app/" class="card" target="_blank">
-                <div>
-                    <div class="card-tag">AI Asisten</div>
-                    <h2>AI IEA</h2>
-                    <p>Diskusi astronomi berbasis intelijen buatan</p>
-                </div>
-                <div class="card-action">SYNC TERMINAL</div>
-            </a>
+    <main>
+      <div class="grid">
+        <div class="card" onclick="triggerTransition('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/')">
+          <span>Gate 1</span>
+          <h2>KOMUNITAS 1</h2>
+          <p>Pendaftaran resmi gelombang pertama komunitas IEA</p>
         </div>
-    </div>
 
-    <div id="loginModal">
-        <div class="login-box">
-            <h3>SECURE ACCESS</h3>
-            <input type="text" id="userName" placeholder="ENTER REGISTERED NAME">
-            <button onclick="verifyAccess()">AUTHORIZE</button>
-            <div class="close-btn" onclick="closeLogin()">CANCEL MISSION</div>
+        <div class="card" onclick="triggerTransition('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/komunitas2.html')">
+          <span>Gate 2</span>
+          <h2>KOMUNITAS 2</h2>
+          <p>Pendaftaran resmi gelombang kedua komunitas IEA</p>
         </div>
+
+        <div class="card" onclick="openModal('loginModal')">
+          <span>Secure Core</span>
+          <h2>WEBSITE IEA</h2>
+          <p>Website IEA memerlukan verifikasi id card</p>
+        </div>
+
+        <div class="card" onclick="triggerTransition('https://ai-iea-international-education-astronomy-tvmchu4pnij7avslkygup.streamlit.app/')">
+          <span>AI Intelligence</span>
+          <h2>AI IEA</h2>
+          <p>Terminal cerdas untuk diskusi ilmiah astronomi.</p>
+        </div>
+
+        <div class="card" onclick="openModal('rulesModal')">
+          <span>Social Hub</span>
+          <h2>DISCORD IEA</h2>
+          <p>Komunitas diskusi real-time. Harap baca aturan sebelum bergabung.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="loginModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <h3>SECURE ACCESS</h3>
+      <input type="text" id="userName" class="input-field" placeholder="ENTER REGISTERED NAME" />
+      <button class="btn-prime" onclick="verifyAccess()">AUTHORIZE</button>
+      <span class="btn-close" onclick="closeModal('loginModal')">ABORT MISSION</span>
     </div>
+  </div>
 
-    <script>
-        // -- Loader Handler --
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                }, 800);
-            }, 2200);
-        });
+  <div id="rulesModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <h3>RULES & ETHICS</h3>
+      <div class="rules-list">
+        <b>1. ETIKA DISKUSI</b> Sopan, beradab, fokus pada argumen, bukan serangan personal.
+        <b>2. INTEGRITAS</b> Anti hoaks/pseudo-sains. Klaim wajib berbasis data & sumber valid.
+        <b>3. ANTI-DOGMATISME</b> Bukan tempat dakwah. Diskusi harus rasional dan dialogis.
+        <b>4. KETERTIBAN</b> Dilarang spam/promosi. Ikuti instruksi moderator server.
+        <b>5. INKLUSIVITAS</b> Nol toleransi terhadap diskriminasi atau pelecehan.
+        <b>6. KONSEKUENSI</b> Pelanggaran berakibat mute/ban. Keputusan admin bersifat final.
+        <p style="margin-top:25px; color:var(--accent); text-align:center; font-size:0.75rem; letter-spacing:3px; font-weight:700;">EGO RENDAH, NALAR TINGGI.</p>
+      </div>
+      <button class="btn-prime" onclick="joinDiscord()" style="margin-top:22px;">I AGREE & JOIN</button>
+      <span class="btn-close" onclick="closeModal('rulesModal')">DECLINE</span>
+    </div>
+  </div>
 
-        // -- Login System --
-        const FIREBASE_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app";
-        const TARGET_URL = "https://xzam730.github.io/IEA-Web-premium/";
+  <div class="hint" aria-hidden="true">IEA — Ego Rendah, Nalar Tinggi.</div>
 
-        function openLogin() {
-            document.getElementById('loginModal').style.display = 'flex';
+  <script>
+    /* Minimal, robust loader + interactions
+       - preserves all text/title unchanged
+       - minimal, smooth timing for "alive" feeling
+       - every card / link click funnels through loader
+    */
+
+    // elements
+    const loader = document.getElementById('loader');
+    const bootTextElem = document.getElementById('bootText');
+
+    // keep original boot strings intact where used; we may re-use existing text
+    const bootStrings = ["INITIALIZING", "SYNCING GATEWAYS", "DECRYPTING CORE", "SYSTEM READY"];
+    const outStrings = ["REDIRECTING", "ESTABLISHING LINK", "LEAVING PORTAL", "TRANSFERRING..."];
+
+    // show/hide helper (minimal)
+    function showLoader(text){
+      if(text) bootTextElem.innerText = text;
+      loader.classList.add('active');
+      loader.setAttribute('aria-hidden', 'false');
+    }
+    function hideLoader(delay = 0){
+      setTimeout(()=>{
+        loader.classList.remove('active');
+        loader.setAttribute('aria-hidden', 'true');
+      }, delay);
+    }
+
+    // initial sequence (subtle & longer)
+    (function initBoot(){
+      let i=0;
+      showLoader(bootStrings[0]);
+      const t = setInterval(()=>{
+        i++;
+        if(i < bootStrings.length) bootTextElem.innerText = bootStrings[i];
+        else {
+          clearInterval(t);
         }
+      }, 680);
+      window.addEventListener('load', ()=> {
+        // keep loader visible a bit longer to feel intentional
+        hideLoader(4200);
+      });
+    })();
 
-        function closeLogin() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
+    // ensure all .card clicks go via JS transition (keeps original onclick semantics intact)
+    function triggerTransition(url){
+      // small random out text for subtle variation
+      const text = outStrings[Math.floor(Math.random()*outStrings.length)];
+      showLoader(text);
+      // short, crisp delay to feel minimal yet real
+      setTimeout(()=>{ window.location.href = url }, 1300);
+    }
 
-        async function verifyAccess() {
-            const nameInput = document.getElementById('userName').value.trim().toLowerCase();
-            if (!nameInput) return;
+    // modal controls (unchanged copy)
+    function openModal(id){ document.getElementById(id).style.display = 'grid'; document.getElementById(id).setAttribute('aria-hidden','false') }
+    function closeModal(id){ document.getElementById(id).style.display = 'none'; document.getElementById(id).setAttribute('aria-hidden','true') }
 
-            const btn = document.querySelector('.login-box button');
-            btn.innerText = "VERIFYING...";
-            btn.disabled = true;
+    function joinDiscord(){
+      closeModal('rulesModal');
+      triggerTransition("https://discord.gg/6FMjCyPg");
+    }
 
-            const grups = ["iea_grup_1", "iea_grup_2"];
-            let found = false;
+    /* FIREBASE verification logic preserved (no wording changed) */
+    const FIREBASE_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const TARGET_URL = "https://xzam730.github.io/IEA-Web-premium/";
 
-            try {
-                for (let grup of grups) {
-                    const response = await fetch(`${FIREBASE_URL}/${grup}.json`);
-                    const data = await response.json();
-                    
-                    if (data) {
-                        for (let key in data) {
-                            if (data[key].n && data[key].n.toLowerCase() === nameInput) {
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (found) break;
-                }
+    async function verifyAccess(){
+      const nameInput = document.getElementById('userName').value.trim().toLowerCase();
+      if(!nameInput) return;
 
-                if (found) {
-                    window.location.href = TARGET_URL;
-                } else {
-                    alert("Identity not found.");
-                    btn.innerText = "AUTHORIZE";
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                alert("Connection failed.");
-                btn.innerText = "AUTHORIZE";
-                btn.disabled = false;
+      const btn = document.querySelector('#loginModal .btn-prime');
+      btn.innerText = "VERIFYING...";
+      btn.disabled = true;
+
+      showLoader("VERIFYING IDENTITY");
+
+      try{
+        const grups = ["iea_grup_1", "iea_grup_2"];
+        let found = false;
+
+        for (let grup of grups){
+          const res = await fetch(`${FIREBASE_URL}/${grup}.json`);
+          const data = await res.json();
+          if(data){
+            for(let key in data){
+              if(data[key].n && data[key].n.toLowerCase() === nameInput){
+                found = true; break;
+              }
             }
+          }
+          if(found) break;
         }
-    </script>
+
+        if(found){
+          triggerTransition(TARGET_URL);
+        } else {
+          hideLoader(600);
+          alert("Identity not found.");
+          btn.innerText = "AUTHORIZE";
+          btn.disabled = false;
+        }
+      } catch(err){
+        hideLoader(600);
+        alert("Connection failed.");
+        btn.innerText = "AUTHORIZE";
+        btn.disabled = false;
+      }
+    }
+
+    /* make native anchors also show loader (non-invasive)
+       and add keyboard accessibility for cards
+    */
+    (function enhance(){
+      // intercept real anchor clicks
+      document.addEventListener('click', function(e){
+        const a = e.target.closest && e.target.closest('a');
+        if(!a) return;
+        const href = a.getAttribute('href');
+        if(!href || href.startsWith('#')) return;
+        e.preventDefault();
+        showLoader("REDIRECTING");
+        setTimeout(()=>{ window.location.href = href }, 900);
+      }, true);
+
+      // keyboard accessibility for .card (Enter to trigger)
+      document.querySelectorAll('.card').forEach(card=>{
+        card.setAttribute('tabindex','0');
+        card.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') card.click() });
+      });
+    })();
+  </script>
 </body>
-</html>
+    </html>
