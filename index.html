@@ -9,191 +9,230 @@
     
     <style>
       :root{
-        --bg: #020205; /* Background lebih gelap */
+        --bg: #050508; 
         --accent: #00f6ff;
+        --accent-glow: rgba(0, 246, 255, 0.6);
         --accent-danger: #ff2a2a;
         --accent-success: #0aff0a;
-        --glass: rgba(20, 20, 30, 0.7); /* Sedikit lebih gelap */
-        --glass-border: rgba(0, 246, 255, 0.3);
-        --dock-bg: rgba(10, 10, 15, 0.95);
+        --glass: rgba(20, 20, 30, 0.4); 
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --dock-bg: rgba(10, 10, 15, 0.8);
       }
 
-      /* BASE */
-      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+      /* BASE SETUP */
+      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent; user-select: none;}
+      
       body{
         background-color: var(--bg);
         font-family: 'Inter', sans-serif;
         color: #fff; overflow-x: hidden;
         min-height: 100vh;
-        
-        /* BACKGROUND KACA PECAH BERSINAR (STATIS) */
-        background-image:
-            /* Glow Pusat */
-            radial-gradient(circle at 50% 30%, rgba(0, 246, 255, 0.15), transparent 50%),
-            /* Garis Retakan 1 */
-            repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px),
-            /* Garis Retakan 2 */
-            repeating-linear-gradient(-60deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 90px),
-            /* Dasar Gelap */
-            linear-gradient(to bottom, #020205, #000);
-        background-attachment: fixed; /* Agar background tetap saat scroll */
-        background-size: cover;
+        position: relative;
+      }
+
+      /* BACKGROUND "BLUR MENYALA" (AURORA EFFECT) */
+      body::before, body::after {
+        content: ''; position: fixed; width: 500px; height: 500px; border-radius: 50%;
+        filter: blur(100px); opacity: 0.4; z-index: -1; animation: floatGlow 10s infinite alternate;
+      }
+      body::before {
+        background: radial-gradient(#00f6ff, transparent);
+        top: -10%; left: -10%;
+      }
+      body::after {
+        background: radial-gradient(#0055ff, transparent);
+        bottom: -10%; right: -10%; animation-delay: -5s;
+      }
+      @keyframes floatGlow {
+        0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+        100% { transform: translate(50px, 50px) scale(1.2); opacity: 0.5; }
       }
 
       /* WRAPPER */
       .wrap{
-        max-width: 1000px; margin: 0 auto; 
-        padding: 100px 20px 140px 20px;
+        max-width: 900px; margin: 0 auto; 
+        padding: 80px 20px 140px 20px;
         position: relative; z-index: 2;
-        animation: fadeIn 1s ease-out;
+        animation: fadeIn 1.5s ease-out;
       }
-      @keyframes fadeIn { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+      @keyframes fadeIn { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
 
-      /* HEADER */
-      header{ text-align: center; margin-bottom: 50px; }
+      /* HEADER BESAR */
+      header{ text-align: center; margin-bottom: 60px; }
       header h1{
-        font-family: 'Orbitron'; font-size: clamp(2rem, 6vw, 3.5rem);
-        background: linear-gradient(180deg, #fff, #aaa);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 246, 255, 0.3);
+        font-family: 'Orbitron'; 
+        font-size: clamp(3rem, 10vw, 5rem); /* UKURAN BESAR */
+        color: #fff;
+        letter-spacing: 4px; 
+        text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent);
+        margin-top: 10px;
+        line-height: 1.1;
       }
       .security-badge {
-        display: inline-block; padding: 5px 15px; border: 1px solid var(--accent);
-        color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.7rem;
-        border-radius: 4px; margin-bottom: 15px; background: rgba(0,246,255,0.1);
-        box-shadow: 0 0 15px rgba(0,246,255,0.2);
+        display: inline-block; padding: 6px 20px; border: 1px solid rgba(255,255,255,0.2);
+        color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.8rem; letter-spacing: 2px;
+        border-radius: 50px; background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
       }
 
       /* GRID CARDS */
-      .grid{ display: grid; grid-template-columns: 1fr; gap: 20px; perspective: 1000px; }
+      .grid{ display: grid; grid-template-columns: 1fr; gap: 25px; perspective: 1000px; }
       @media(min-width: 768px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
 
       .card{
         background: var(--glass);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px; padding: 25px;
+        border: 1px solid var(--glass-border);
+        border-radius: 20px; padding: 30px;
         position: relative; overflow: hidden;
-        backdrop-filter: blur(20px); transition: 0.3s;
-        cursor: pointer; transform-style: preserve-3d;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3); /* Tambah shadow biar kontras sama background baru */
+        backdrop-filter: blur(15px); 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
       }
+      .card:active { transform: scale(0.96); }
       .card:hover{
         transform: translateY(-5px);
         border-color: var(--accent);
-        box-shadow: 0 10px 40px rgba(0, 246, 255, 0.2);
+        box-shadow: 0 0 30px rgba(0, 246, 255, 0.2);
+        background: rgba(20, 30, 50, 0.6);
       }
+      
       .card span{
-        font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--accent);
-        display: block; margin-bottom: 10px; letter-spacing: 2px;
+        font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--accent);
+        display: block; margin-bottom: 12px; letter-spacing: 2px; text-transform: uppercase;
+        opacity: 0.8;
       }
       .card h2{
-        font-family: 'Orbitron'; font-size: 1.3rem; margin-bottom: 8px; color: #fff;
+        font-family: 'Orbitron'; font-size: 1.5rem; margin-bottom: 10px; color: #fff;
       }
-      .card p{ font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.5; }
+      .card p{ 
+        font-size: 0.95rem; color: rgba(255,255,255,0.7); line-height: 1.6; 
+        font-weight: 300;
+      }
       
       .lock-icon {
-        position: absolute; top: 20px; right: 20px; width: 20px; height: 20px;
-        fill: rgba(255,255,255,0.3); transition: 0.3s;
+        position: absolute; top: 25px; right: 25px; width: 22px; height: 22px;
+        fill: rgba(255,255,255,0.2); transition: 0.3s;
       }
-      .card:hover .lock-icon { fill: var(--accent); }
+      .card:hover .lock-icon { fill: var(--accent); filter: drop-shadow(0 0 5px var(--accent)); }
 
-      /* NAVIGATION DOCK (FIXED Z-INDEX) */
+      /* NAVIGATION DOCK (MINIMALIS) */
       .dock-container{
-        position: fixed; bottom: 20px; left: 0; width: 100%;
+        position: fixed; bottom: 30px; left: 0; width: 100%;
         display: flex; justify-content: center; z-index: 9000; 
         pointer-events: none;
       }
       .dock{
-        background: var(--dock-bg); border: 1px solid var(--glass-border);
-        backdrop-filter: blur(20px); padding: 10px 20px; border-radius: 20px;
-        display: flex; gap: 20px; pointer-events: auto;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        background: var(--dock-bg); border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(20px); padding: 12px 25px; border-radius: 50px;
+        display: flex; gap: 30px; pointer-events: auto;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
       }
       .dock-btn{
         background: transparent; border: none; cursor: pointer;
-        color: rgba(255,255,255,0.6); display: flex; flex-direction: column; 
-        align-items: center; gap: 4px; transition: 0.3s; padding: 5px;
+        color: rgba(255,255,255,0.5); display: flex; flex-direction: column; 
+        align-items: center; gap: 5px; transition: 0.3s; padding: 5px;
       }
-      .dock-btn svg{ width: 22px; height: 22px; fill: currentColor; }
-      .dock-btn span{ font-size: 0.6rem; font-family: 'Orbitron'; }
-      .dock-btn:hover{ color: #fff; transform: translateY(-2px); }
-      .dock-btn.admin { color: var(--accent); }
+      .dock-btn svg{ width: 24px; height: 24px; fill: currentColor; }
+      .dock-btn span{ font-size: 0.65rem; font-family: 'Orbitron'; letter-spacing: 1px;}
+      .dock-btn:hover{ color: #fff; transform: translateY(-3px); text-shadow: 0 0 10px #fff; }
+      .dock-btn.admin:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
       /* === MODAL SYSTEM === */
       .modal {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+        position: fixed; inset: 0; background: rgba(0,0,0,0.8); /* Background Gelap Transparan */
         z-index: 10000; 
         display: none; justify-content: center; align-items: center; 
         padding: 20px;
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(20px); /* Blur kuat untuk modal */
       }
       .modal-content {
-        width: 100%; max-width: 450px; background: #0a0a10;
-        border: 1px solid var(--accent); border-radius: 20px;
-        padding: 30px; text-align: center; position: relative;
-        box-shadow: 0 0 50px rgba(0, 246, 255, 0.15);
-        animation: zoomIn 0.3s ease;
+        width: 100%; max-width: 450px; 
+        background: rgba(10, 10, 15, 0.9);
+        border: 1px solid var(--accent); border-radius: 25px;
+        padding: 40px; text-align: center; position: relative;
+        box-shadow: 0 0 60px rgba(0, 246, 255, 0.2);
+        animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
-      @keyframes zoomIn { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
+      @keyframes zoomIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
       /* SCANNER STYLE */
       .scanner-frame {
-        width: 100%; height: 200px; border: 2px dashed rgba(255,255,255,0.2);
-        border-radius: 10px; margin: 20px 0; position: relative;
+        width: 100%; height: 220px; border: 2px dashed rgba(255,255,255,0.2);
+        border-radius: 15px; margin: 25px 0; position: relative;
         background: rgba(0,0,0,0.5); overflow: hidden;
         display: flex; align-items: center; justify-content: center;
       }
-      .scanner-frame.active { border-color: var(--accent); border-style: solid; }
+      .scanner-frame.active { border-color: var(--accent); border-style: solid; box-shadow: 0 0 20px rgba(0,246,255,0.1); }
       
       .scan-laser {
-        position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-        background: var(--accent); box-shadow: 0 0 15px var(--accent);
-        animation: scanMove 2s infinite linear; display: none; z-index: 5;
+        position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+        background: var(--accent); box-shadow: 0 0 20px var(--accent);
+        animation: scanMove 2s infinite ease-in-out; display: none; z-index: 5;
       }
       @keyframes scanMove { 0%{top:0} 50%{top:100%} 100%{top:0} }
 
       .preview-img { max-width: 100%; max-height: 100%; display: none; object-fit: contain; }
       
-      .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
       .btn-upload {
-        border: 1px solid var(--accent); color: var(--accent); background: transparent;
-        padding: 12px; border-radius: 8px; width: 100%; font-family: 'Orbitron';
-        cursor: pointer; font-size: 0.8rem; letter-spacing: 1px; transition: 0.3s;
+        border: 1px solid var(--accent); color: var(--accent); background: rgba(0, 246, 255, 0.1);
+        padding: 14px; border-radius: 12px; width: 100%; font-family: 'Orbitron';
+        cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s;
       }
+      .btn-upload:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent); }
+      
+      .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
       .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
 
       .input-field {
-        width: 100%; padding: 15px; background: #151520; border: 1px solid #333;
-        color: #fff; margin-top: 15px; border-radius: 8px; text-align: center;
-        font-family: 'JetBrains Mono';
+        width: 100%; padding: 16px; background: #050508; border: 1px solid #333;
+        color: #fff; margin-top: 20px; border-radius: 12px; text-align: center;
+        font-family: 'JetBrains Mono'; font-size: 1rem; letter-spacing: 1px;
       }
+      .input-field:focus { border-color: var(--accent); outline: none; }
       
       .btn-verify {
-        width: 100%; padding: 15px; background: #333; color: #777;
-        font-weight: bold; border: none; border-radius: 8px; margin-top: 15px;
-        cursor: not-allowed; font-family: 'Orbitron'; transition: 0.3s;
+        width: 100%; padding: 16px; background: #222; color: #666;
+        font-weight: 700; border: none; border-radius: 12px; margin-top: 15px;
+        cursor: not-allowed; font-family: 'Orbitron'; transition: 0.3s; letter-spacing: 1px;
       }
       .btn-verify.ready {
         background: var(--accent); color: #000; cursor: pointer;
-        box-shadow: 0 0 20px rgba(0, 246, 255, 0.4);
+        box-shadow: 0 0 30px rgba(0, 246, 255, 0.5);
       }
 
-      /* LOADER GLOBAL */
+      /* LOADER GLOBAL (BLUR MENYALA) */
       #global-loader {
-        position: fixed; inset: 0; background: #000; z-index: 20000; 
+        position: fixed; inset: 0; 
+        background: rgba(0,0,0,0.6); /* Semi transparan */
+        backdrop-filter: blur(30px); /* Efek Blur Kuat */
+        z-index: 20000; 
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 0.5s; pointer-events: none;
+        transition: opacity 0.8s ease; pointer-events: none;
       }
-      .loader-text { font-family: 'JetBrains Mono'; color: var(--accent); margin-top: 15px; letter-spacing: 3px; }
+      .loader-text { 
+        font-family: 'Orbitron'; color: var(--accent); margin-top: 25px; letter-spacing: 4px; font-weight: bold;
+        text-shadow: 0 0 10px var(--accent); animation: pulse 1s infinite alternate;
+      }
       .spinner {
-        width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1);
-        border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+        width: 70px; height: 70px; 
+        border: 4px solid rgba(0, 246, 255, 0.2);
+        border-top-color: var(--accent); 
+        border-radius: 50%; 
+        animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        box-shadow: 0 0 20px rgba(0, 246, 255, 0.3);
       }
       @keyframes spin { 100%{transform:rotate(360deg)} }
+      @keyframes pulse { from{opacity:0.6} to{opacity:1} }
+
+      /* TUTORIAL STYLE */
+      .tutorial-list { text-align: left; margin: 25px 0; font-size: 0.9rem; color: #ccc; }
+      .tutorial-item { margin-bottom: 20px; display: flex; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+      .step-num { color: var(--accent); font-weight: 900; font-family: 'Orbitron'; font-size: 1.2rem; }
+      .step-text b { color: #fff; display: block; margin-bottom: 5px; letter-spacing: 1px; }
 
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
   <div id="global-loader">
     <div class="spinner"></div>
@@ -211,39 +250,46 @@
       <div class="card" onclick="goto('https://whatsapp.com/channel/0029Vb7X7CIHFxPAYUFhN01q')">
         <span>OFFICIAL FEED</span>
         <h2>SALURAN IEA</h2>
-        <p>Bergabung dengan saluran WhatsApp resmi untuk informasi real-time.</p>
+        <p>Bergabung dengan saluran WhatsApp resmi untuk update informasi real-time dan pengumuman.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/')">
         <span>PUBLIC GATE</span>
         <h2>KOMUNITAS 1</h2>
-        <p>Pendaftaran gelombang pertama member IEA.</p>
+        <p>Pendaftaran gelombang pertama member IEA. Terbuka untuk umum.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/komunitas2.html')">
         <span>EXPANSION</span>
         <h2>KOMUNITAS 2</h2>
-        <p>Pendaftaran gelombang kedua member baru IEA.</p>
+        <p>Pendaftaran gelombang kedua member baru IEA. Form ekspansi anggota.</p>
+      </div>
+
+      <div class="card" onclick="openScanner('https://xzam730.github.io/PORTAL-IEA/mind.html')">
+        <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
+        <span>SCIENTIFIC JOURNAL</span>
+        <h2>COSMIC LOG</h2>
+        <p>Database Teori & Hipotesis Ilmiah. Akses terbatas, wajib verifikasi ID Card.</p>
       </div>
 
       <div class="card" onclick="openScanner('https://xzam730.github.io/IEA-Web-premium/')">
         <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
         <span>RESTRICTED AREA</span>
         <h2>WEBSITE IEA</h2>
-        <p>Database Pusat. Wajib Scan ID Card.</p>
+        <p>Database Pusat Premium. Akses penuh ke seluruh fitur IEA. Wajib Scan ID.</p>
       </div>
 
       <div class="card" onclick="openScanner('https://ai-iea-international-education-astronomy-tvmchu4pnij7avslkygup.streamlit.app/')">
         <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
         <span>INTELLIGENCE</span>
         <h2>AI IEA</h2>
-        <p>Terminal Cerdas. Wajib Scan ID Card.</p>
+        <p>Terminal Asisten Cerdas. Analisis data astronomi. Wajib verifikasi ID Card.</p>
       </div>
 
       <div class="card" onclick="openModal('rulesModal')">
         <span>COMMUNITY</span>
         <h2>DISCORD HUB</h2>
-        <p>Diskusi Real-time. Baca aturan sebelum bergabung.</p>
+        <p>Ruang diskusi real-time member. Baca protokol sebelum bergabung.</p>
       </div>
 
     </div>
@@ -251,7 +297,7 @@
 
   <div class="dock-container">
     <div class="dock">
-      <button class="dock-btn" onclick="location.reload()">
+      <button class="dock-btn" onclick="reloadPage()">
         <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
         <span>RELOAD</span>
       </button>
@@ -270,8 +316,8 @@
 
   <div id="scanModal" class="modal">
     <div class="modal-content">
-      <h3 style="color:var(--accent)">SECURITY CLEARANCE</h3>
-      <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">UPLOAD ID CARD UNTUK VERIFIKASI</p>
+      <h3 style="color:var(--accent); font-family:'Orbitron';">SECURITY CLEARANCE</h3>
+      <p style="font-size:0.8rem; color:#888; margin-bottom:15px; letter-spacing:1px;">UPLOAD ID CARD UNTUK VERIFIKASI</p>
       
       <div class="scanner-frame" id="scannerFrame">
         <div class="scan-laser" id="scanLaser"></div>
@@ -288,77 +334,112 @@
       
       <button id="verifyBtn" class="btn-verify" onclick="processVerification()">VERIFY ACCESS</button>
       
-      <div onclick="closeModal('scanModal')" style="margin-top:20px; color:#666; font-size:0.75rem; cursor:pointer;">ABORT</div>
+      <div onclick="closeModal('scanModal')" style="margin-top:25px; color:#666; font-size:0.75rem; cursor:pointer; letter-spacing:1px;">ABORT MISSION</div>
+    </div>
+  </div>
+
+  <div id="tutorialModal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:#facc15; font-family:'Orbitron';">MANUAL: COSMIC LOG</h3>
+      <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">PROTOKOL STANDAR OPERASIONAL JURNAL</p>
+      
+      <div class="tutorial-list">
+        <div class="tutorial-item">
+            <div class="step-num">01.</div>
+            <div class="step-text">
+                <b>REGISTRASI DATA</b>
+                Setiap anggota diwajibkan membuat akun peneliti baru di dalam database jurnal untuk validasi kontribusi ilmiah.
+            </div>
+        </div>
+        <div class="tutorial-item">
+            <div class="step-num">02.</div>
+            <div class="step-text">
+                <b>METODE OBSERVASI</b>
+                Sebelum menuliskan teori inti, Anda wajib mengisi kolom "Latar Belakang" untuk menjelaskan dasar pemikiran logis.
+            </div>
+        </div>
+        <div class="tutorial-item">
+            <div class="step-num">03.</div>
+            <div class="step-text">
+                <b>HIPOTESIS & REFERENSI</b>
+                Tuliskan teori secara rinci. Sangat disarankan menyertakan link referensi (Wikipedia/Jurnal) sebagai pendukung.
+            </div>
+        </div>
+        <div class="tutorial-item">
+            <div class="step-num">04.</div>
+            <div class="step-text">
+                <b>KEAMANAN SISTEM</b>
+                Algoritma AI akan memblokir konten yang mengandung unsur SARA atau bahasa kasar secara otomatis.
+            </div>
+        </div>
+      </div>
+
+      <button class="btn-verify ready" style="background:#facc15; color:#000;" onclick="goto('https://xzam730.github.io/PORTAL-IEA/mind.html')">BUKA AKSES JURNAL</button>
+      <div onclick="closeModal('tutorialModal')" style="margin-top:20px; color:#666; font-size:0.8rem; cursor:pointer;">CLOSE MANUAL</div>
     </div>
   </div>
 
   <div id="rulesModal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#fff;">PROTOCOLS</h3>
-      <div style="text-align:left; font-size:0.9rem; line-height:1.6; color:#ccc; margin-bottom:20px;">
-        1. Etika adalah prioritas.<br>
-        2. Data wajib berbasis sains.<br>
-        3. No Spam / Politik.<br>
-        4. Hormati privasi member.
+      <h3 style="color:#fff; font-family:'Orbitron';">PROTOCOLS</h3>
+      <div style="text-align:left; font-size:0.95rem; line-height:1.8; color:#ccc; margin-bottom:25px;">
+        1. Etika adalah prioritas utama.<br>
+        2. Data wajib berbasis sains & fakta.<br>
+        3. Dilarang Spam, SARA, atau Politik.<br>
+        4. Hormati privasi sesama member.
       </div>
       <button class="btn-verify ready" onclick="joinDiscord()">ACCEPT & JOIN</button>
-      <div onclick="closeModal('rulesModal')" style="margin-top:15px; color:#666; font-size:0.8rem; cursor:pointer;">CLOSE</div>
+      <div onclick="closeModal('rulesModal')" style="margin-top:20px; color:#666; font-size:0.8rem; cursor:pointer;">CLOSE PROTOCOLS</div>
     </div>
   </div>
 
   <script>
-    // --- 1. ADMIN WHATSAPP ---
-    function contactAdmin(){
-        window.open('https://wa.me/qr/LSPPA4T7ZGMPH1', '_blank');
-    }
+    const FIREBASE_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app";
+    let targetLink = "";
 
-    // --- 2. DISCORD JOIN ---
-    function joinDiscord(){
-        closeModal('rulesModal');
-        goto("https://discord.gg/6FMjCyPg");
-    }
-
-    // --- 3. MODAL LOGIC ---
+    function contactAdmin(){ window.open('https://wa.me/qr/LSPPA4T7ZGMPH1', '_blank'); }
+    function joinDiscord(){ closeModal('rulesModal'); goto("https://discord.gg/6FMjCyPg"); }
     function openModal(id){ 
-        const modal = document.getElementById(id);
-        if(modal) {
-            modal.style.display = 'flex'; 
-            const content = modal.querySelector('.modal-content');
-            content.style.animation = 'none';
-            content.offsetHeight; 
-            content.style.animation = 'zoomIn 0.3s ease';
-        }
+        const m = document.getElementById(id); m.style.display = 'flex';
+        const c = m.querySelector('.modal-content'); c.style.animation='none'; c.offsetHeight; c.style.animation='zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     }
-    
-    function closeModal(id){ 
-        const modal = document.getElementById(id);
-        if(modal) modal.style.display = 'none'; 
+    function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+    function vibrate() { if(navigator.vibrate) navigator.vibrate(40); }
+
+    // --- RELOAD ANIMATION ---
+    function reloadPage() {
+        const loader = document.getElementById('global-loader');
+        loader.style.display = 'flex';
+        setTimeout(() => loader.style.opacity = '1', 10);
+        document.getElementById('loaderMsg').innerText = "SYSTEM RELOADING...";
+        setTimeout(() => location.reload(), 2000);
     }
 
-    // --- 4. GLOBAL LOADER ---
+    // --- GLOBAL LOADER ---
     window.onload = () => {
         setTimeout(() => {
             const loader = document.getElementById('global-loader');
             loader.style.opacity = '0';
-            setTimeout(() => { loader.style.display = 'none'; }, 500);
-        }, 1500); 
+            setTimeout(() => { loader.style.display = 'none'; }, 800);
+        }, 1500);
+        document.querySelectorAll('.card, button').forEach(b => b.addEventListener('click', vibrate));
     };
 
-    // --- 5. TRANSISI LINK ---
+    // --- TRANSISI HALUS & LAMA (3.5 Detik) ---
     function goto(url){
         const loader = document.getElementById('global-loader');
-        const msg = document.getElementById('loaderMsg');
-        
         loader.style.display = 'flex';
-        setTimeout(() => loader.style.opacity = '1', 10);
-        msg.innerText = "REDIRECTING...";
         
-        setTimeout(() => { window.location.href = url; }, 2000);
+        // Animasi Masuk Loader
+        setTimeout(() => loader.style.opacity = '1', 10);
+        
+        document.getElementById('loaderMsg').innerText = "CONNECTING...";
+        
+        // Delay 3500ms (3.5 Detik) sebelum pindah
+        setTimeout(() => { window.location.href = url; }, 3500);
     }
 
-    // --- 6. ID CARD SCANNER SYSTEM ---
-    let targetLink = ""; 
-
+    // --- SCANNER LOGIC ---
     function openScanner(url){
         targetLink = url;
         document.getElementById('previewImg').style.display = 'none';
@@ -367,11 +448,9 @@
         document.getElementById('scannerFrame').classList.remove('active');
         document.getElementById('scanName').disabled = true;
         document.getElementById('scanName').value = "";
-        
         const btn = document.getElementById('verifyBtn');
         btn.classList.remove('ready');
         btn.innerText = "UPLOAD ID FIRST";
-        
         openModal('scanModal');
     }
 
@@ -380,17 +459,12 @@
         if(file){
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = document.getElementById('previewImg');
-                img.src = e.target.result;
-                img.style.display = 'block';
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('previewImg').style.display = 'block';
                 document.getElementById('scanPlaceholder').style.display = 'none';
-                
                 document.getElementById('scanLaser').style.display = 'block';
                 document.getElementById('scannerFrame').classList.add('active');
-                
                 document.getElementById('scanName').disabled = false;
-                document.getElementById('scanName').focus();
-                
                 const btn = document.getElementById('verifyBtn');
                 btn.innerText = "VERIFY ACCESS";
                 btn.classList.add('ready');
@@ -399,50 +473,33 @@
         }
     }
 
-    // --- 7. FIREBASE VERIFICATION LOGIC ---
-    const FIREBASE_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app";
-
     async function processVerification(){
         const btn = document.getElementById('verifyBtn');
         if(!btn.classList.contains('ready')) return; 
-
         const name = document.getElementById('scanName').value.trim().toLowerCase();
-        if(!name) { alert("MASUKKAN NAMA SESUAI ID!"); return; }
-
+        if(!name) return alert("MASUKKAN NAMA SESUAI ID!");
+        
         btn.innerText = "SCANNING DATABASE...";
-        await new Promise(r => setTimeout(r, 1500));
-
         try {
             const grups = ["iea_grup_1", "iea_grup_2"];
             let found = false;
-            
             for(let g of grups){
                 let res = await fetch(`${FIREBASE_URL}/${g}.json`);
                 let data = await res.json();
-                if(data) {
-                    for(let k in data) if(data[k].n && data[k].n.toLowerCase() === name) found = true;
-                }
+                if(data) for(let k in data) if(data[k].n && data[k].n.toLowerCase() === name) found = true;
             }
-
+            
             if(found){
-                btn.innerText = "ACCESS GRANTED";
-                btn.style.background = "#0aff0a";
+                btn.innerText = "ACCESS GRANTED"; btn.style.background = "#0aff0a";
                 setTimeout(() => {
                     closeModal('scanModal');
-                    goto(targetLink);
+                    // Jika link menuju Cosmic Log, buka Tutorial dulu
+                    if(targetLink.includes('mind.html')) openModal('tutorialModal');
+                    else goto(targetLink);
                 }, 800);
-            } else {
-                alert("ACCESS DENIED: Data tidak ditemukan.");
-                btn.innerText = "RETRY";
-                btn.style.background = "#ff2a2a";
-                btn.style.color = "#fff";
-            }
-        } catch(e){
-            alert("NETWORK ERROR");
-            btn.innerText = "RETRY";
-        }
+            } else { alert("ACCESS DENIED"); btn.innerText = "RETRY"; btn.style.background="#ff2a2a"; }
+        } catch(e){ alert("CONNECTION ERROR"); btn.innerText = "RETRY"; }
     }
   </script>
 </body>
-    </html>
-          
+</html>
