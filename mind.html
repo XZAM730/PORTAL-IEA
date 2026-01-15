@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>IEA - SCIENTIFIC</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -13,403 +13,353 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.2.4/dist/mermaid.min.js"></script>
 
     <style>
-        /* --- 1. THEME: DEEP SPACE (REFINED) --- */
+        /* --- 1. CORE THEME --- */
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #141414;
-            --bg-nav: rgba(15, 15, 15, 0.95);
-            --border: #2a2a2a;
+            --bg-body: #050505;
+            --bg-card: #0f0f0f;
+            --bg-glass: rgba(10, 10, 10, 0.85);
+            --border: #222;
             --accent: #3498db;
-            --accent-hover: #2980b9;
-            --text-main: #ededed;
-            --text-sub: #a0a0a0;
-            --font-main: 'Inter', sans-serif;
+            --accent-glow: rgba(52, 152, 219, 0.3);
+            --text-main: #f0f0f0;
+            --text-muted: #888;
+            --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-code: 'JetBrains Mono', monospace;
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-            font-family: var(--font-main);
+            font-family: var(--font-ui);
+            margin: 0; padding: 0;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             overflow: hidden;
         }
 
-        /* SCROLLBAR CUSTOMIZATION */
-        ::-webkit-scrollbar { width: 6px; }
+        /* Scrollbar Halus */
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
-        /* --- 2. HEADER --- */
+        /* --- 2. HEADER (Glass Effect) --- */
         header {
             height: 60px;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(12px);
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            z-index: 100;
-            position: absolute; top: 0; width: 100%;
+            position: absolute; top: 0; width: 100%; z-index: 100;
         }
         .brand { 
-            font-weight: 900; color: #fff; font-size: 1.3rem; letter-spacing: -1px; 
-            background: linear-gradient(90deg, #fff, var(--accent)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: #fff; 
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
         }
+        .brand span { color: var(--accent); }
 
         /* --- 3. FEED AREA --- */
         #mainView {
             flex: 1;
-            overflow-y: auto;
-            padding: 75px 15px 160px 15px; /* Adjusted padding */
+            overflow-y: scroll;
+            padding: 80px 15px 160px 15px; /* Spasi bawah besar agar tidak tertutup input */
             scroll-behavior: smooth;
         }
 
-        /* ANIMATION */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* CARD STYLE */
+        /* CARD DESIGN */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 18px;
             margin-bottom: 20px;
-            animation: fadeUp 0.5s ease forwards;
-            transition: border-color 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease-out;
+            transition: border-color 0.2s;
         }
-        .card:hover { border-color: #444; }
-        
+        .card:hover { border-color: #333; }
+        @keyframes slideUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
         .user-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .avatar { 
-            width: 40px; height: 40px; border-radius: 12px; background: #1a1a1a; 
+            width: 42px; height: 42px; border-radius: 12px; background: #1a1a1a; 
             display: flex; align-items: center; justify-content: center; 
-            font-size: 1rem; color: var(--accent); border: 1px solid var(--border); 
-            cursor: pointer; transition: 0.2s;
+            color: var(--accent); border: 1px solid #333; font-size: 1.1rem;
         }
-        .avatar:active { transform: scale(0.95); }
-
-        .u-info { flex: 1; }
-        .u-info h4 { font-size: 0.95rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; }
-        .u-info span { font-size: 0.75rem; color: var(--text-sub); display: block; margin-top: 2px;}
-        .verified-badge { color: var(--accent); font-size: 0.85rem; }
-
-        /* CONTENT STYLES */
+        .u-info h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: #fff; }
+        .u-info span { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 2px; }
+        
         .post-reason {
-            font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: #ccc;
-            border-left: 3px solid var(--accent); padding-left: 10px; font-style: italic;
-        }
-        .post-body {
-            font-size: 1rem; color: #e0e0e0; line-height: 1.6; margin-bottom: 12px; word-wrap: break-word;
+            font-family: var(--font-code); font-size: 0.8rem; color: var(--accent);
+            background: rgba(52, 152, 219, 0.08); padding: 8px 12px; border-radius: 8px;
+            margin-bottom: 12px; border-left: 3px solid var(--accent);
         }
         
-        .latex-view { font-size: 1.1em; padding: 5px 0; }
-        .mermaid { background: #0f0f0f; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto; border: 1px solid var(--border); }
-        .post-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border); max-height: 400px; object-fit: cover; }
+        .post-body { 
+            font-size: 1rem; line-height: 1.6; color: #e0e0e0; margin-bottom: 12px; 
+            white-space: pre-wrap; /* Agar spasi/enter terjaga */
+        }
         
-        .ref-link { 
-            display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; 
-            font-size: 0.75rem; color: var(--accent); text-decoration: none; 
-            background: rgba(52, 152, 219, 0.1); padding: 6px 10px; border-radius: 20px; 
-            border: 1px solid rgba(52, 152, 219, 0.2); transition: 0.2s;
+        /* Elements inside post */
+        .post-img { width: 100%; border-radius: 10px; margin-top: 10px; border: 1px solid var(--border); }
+        .mermaid { background: #080808; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #333; overflow-x: auto; }
+        .latex-block { overflow-x: auto; padding: 10px 0; font-size: 1.1em; }
+        
+        .ref-link {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+            font-size: 0.8rem; color: var(--accent); text-decoration: none;
+            background: rgba(52, 152, 219, 0.1); padding: 6px 12px; border-radius: 20px;
+            transition: 0.2s;
         }
         .ref-link:hover { background: rgba(52, 152, 219, 0.2); }
 
         .card-actions {
-            display: flex; gap: 20px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);
+            display: flex; gap: 20px; padding-top: 15px; margin-top: 15px; 
+            border-top: 1px solid var(--border);
         }
-        .act-btn { 
-            background: none; border: none; color: #777; font-size: 0.85rem; font-weight: 500;
-            display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; 
+        .act-btn {
+            background: transparent; border: none; color: #777; 
+            font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: 0.2s; font-weight: 600;
         }
-        .act-btn:hover, .act-btn.active { color: var(--accent); }
+        .act-btn:hover { color: #fff; }
+        .act-btn.liked { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
-        /* --- 4. BOTTOM DOCK --- */
+        /* --- 4. BOTTOM DOCK (Sticky Input) --- */
         .bottom-dock {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: var(--bg-nav);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--border);
             z-index: 500;
             padding-bottom: var(--safe-bottom);
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
         }
 
-        /* INPUT BAR */
         .input-bar {
             padding: 12px 15px;
             display: flex; flex-direction: column; gap: 10px;
-            background: rgba(20, 20, 20, 0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
         }
-        
+
         .tools-drawer {
             display: none; gap: 8px; overflow-x: auto; padding-bottom: 5px;
             animation: slideDown 0.2s ease;
         }
         .tools-drawer.open { display: flex; }
         @keyframes slideDown { from {height: 0; opacity: 0;} to {height: 40px; opacity: 1;} }
-        
+
         .mini-input {
-            background: #111; border: 1px solid #333; color: #fff;
-            padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; flex: 1; min-width: 140px;
+            background: #000; border: 1px solid #333; color: #fff;
+            padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; flex: 1; min-width: 130px;
+            outline: none; transition: 0.2s;
         }
         .mini-input:focus { border-color: var(--accent); }
 
         .write-area { display: flex; gap: 10px; align-items: flex-end; }
-        .toggle-tools {
-            width: 40px; height: 40px; border-radius: 50%; background: #222; color: #aaa;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            border: 1px solid #333; transition: 0.2s; flex-shrink: 0;
+        
+        .toggle-btn {
+            width: 44px; height: 44px; border-radius: 12px; background: #1a1a1a; color: #aaa;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            border: 1px solid #333; flex-shrink: 0; transition: 0.2s;
         }
-        .toggle-tools:hover, .toggle-tools.active { color: var(--accent); border-color: var(--accent); }
+        .toggle-btn:hover, .toggle-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(52, 152, 219, 0.1); }
 
         .main-text {
-            flex: 1; background: #0a0a0a; border: 1px solid #333; color: #fff;
-            padding: 12px; border-radius: 20px; font-family: var(--font-main);
-            resize: none; height: 44px; max-height: 120px; transition: 0.2s; font-size: 0.95rem;
+            flex: 1; background: #000; border: 1px solid #333; color: #fff;
+            padding: 12px; border-radius: 12px; font-family: inherit; font-size: 0.95rem;
+            resize: none; min-height: 44px; max-height: 150px; outline: none; transition: border-color 0.2s;
         }
-        .main-text:focus { border-color: var(--accent); height: 80px; }
-        
+        .main-text:focus { border-color: var(--accent); }
+
         .send-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff;
+            width: 44px; height: 44px; border-radius: 12px; background: var(--accent); color: #fff;
             display: flex; align-items: center; justify-content: center; cursor: pointer; border: none;
-            flex-shrink: 0; transition: 0.2s; box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+            flex-shrink: 0; box-shadow: 0 0 15px var(--accent-glow); transition: 0.2s;
         }
-        .send-btn:active { transform: scale(0.9); }
-        .send-btn:disabled { background: #444; cursor: not-allowed; box-shadow: none; }
+        .send-btn:active { transform: scale(0.95); }
+        .send-btn:disabled { background: #333; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
 
         /* NAV TABS */
         .nav-tabs {
-            display: flex; justify-content: space-around;
-            padding: 10px 0;
-            background: var(--bg-nav);
+            display: flex; justify-content: space-around; padding: 8px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         .nav-item {
-            color: #555; cursor: pointer; position: relative;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
-            width: 60px; transition: 0.2s;
+            color: #666; cursor: pointer; width: 60px; transition: 0.2s;
         }
         .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
         .nav-item span { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item.active span { color: var(--accent); }
-        
-        .notif-dot {
-            position: absolute; top: 0; right: 15px; width: 8px; height: 8px;
-            background: #e74c3c; border-radius: 50%; display: none;
-            box-shadow: 0 0 5px #e74c3c;
-        }
+        .nav-item.active { color: var(--accent); transform: translateY(-2px); }
+        .nav-item.active i { text-shadow: 0 0 10px var(--accent-glow); }
 
-        /* --- 5. MODALS & TOAST --- */
+        /* --- 5. MODALS & UI --- */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000;
-            display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
         }
         .modal-content {
-            background: #111; border: 1px solid #333; width: 90%; max-width: 380px;
-            padding: 30px; border-radius: 16px; text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease;
+            background: #111; width: 85%; max-width: 360px; padding: 30px;
+            border-radius: 20px; border: 1px solid #333; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
         }
-        .full-btn { 
-            width: 100%; padding: 14px; background: var(--accent); border: none; 
-            font-weight: 700; border-radius: 8px; color: #fff; margin-top: 15px; 
-            cursor: pointer; letter-spacing: 1px; transition: 0.2s;
-        }
-        .full-btn:hover { background: var(--accent-hover); }
-        .field { 
-            width: 100%; padding: 14px; background: #050505; border: 1px solid #333; 
-            color: #fff; margin-bottom: 12px; border-radius: 8px; outline: none;
-            transition: 0.2s;
+        @keyframes zoomIn { from {transform:scale(0.8); opacity:0;} to {transform:scale(1); opacity:1;} }
+
+        .field {
+            width: 100%; padding: 14px; background: #000; border: 1px solid #333;
+            color: #fff; margin-bottom: 12px; border-radius: 10px; outline: none; transition: 0.2s;
         }
         .field:focus { border-color: var(--accent); }
 
-        /* TOAST NOTIFICATION */
-        #toastBox {
+        .full-btn {
+            width: 100%; padding: 14px; background: var(--accent); border: none;
+            border-radius: 10px; color: #fff; font-weight: 800; letter-spacing: 1px;
+            margin-top: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .full-btn:hover { background: var(--accent-hover); }
+
+        /* LOADING */
+        #loader {
+            position: fixed; inset: 0; background: #050505; z-index: 3000;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid #222; border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.8s infinite linear; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        @keyframes spin { to {transform: rotate(360deg);} }
+
+        /* TOAST */
+        #toast {
             position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-            background: rgba(30, 30, 30, 0.9); border: 1px solid var(--accent);
-            color: #fff; padding: 10px 20px; border-radius: 30px; z-index: 3000;
-            font-size: 0.9rem; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px); white-space: nowrap;
+            background: rgba(20,20,20,0.95); border: 1px solid var(--accent);
+            color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem;
+            z-index: 4000; display: none; backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-weight: 600;
         }
-
-        /* LOADING SPINNER */
-        #loader { 
-            position: fixed; inset: 0; background: #050505; z-index: 3000; 
-            display: flex; align-items: center; justify-content: center; flex-direction: column; 
-        }
-        .spinner { 
-            width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); 
-            border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s infinite linear; 
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top:20px; font-size:0.8rem; color:#666; letter-spacing:3px; font-weight:700;">CONNECTING TO IEA...</p>
+        <p style="margin-top:20px; font-size:0.8rem; color:var(--accent); letter-spacing:3px; font-weight:700;">INITIALIZING SYSTEM...</p>
     </div>
-
-    <div id="toastBox">Notifikasi System</div>
+    <div id="toast">Notifikasi</div>
 
     <div id="authModal" class="modal" style="display: flex;">
         <div class="modal-content">
-            <h2 style="color:#fff; margin-bottom:5px; font-weight:900; letter-spacing:-1px;">IEA <span style="color:var(--accent)">ACCESS</span></h2>
-            <p style="color:#666; font-size:0.8rem; margin-bottom:25px;">SCIENTIFIC RESEARCH TERMINAL</p>
+            <h2 style="color:#fff; margin-bottom: 5px;">IEA <span style="color:var(--accent)">ACCESS</span></h2>
+            <p style="color:#666; font-size: 0.85rem; margin-bottom: 25px;">Scientific Research Terminal</p>
             
-            <div id="boxLogin">
-                <input id="lUser" class="field" placeholder="Username / ID">
-                <input id="lPass" type="password" class="field" placeholder="Password">
+            <div id="viewLogin">
+                <input id="lUser" class="field" placeholder="Identitas (Username)">
+                <input id="lPass" type="password" class="field" placeholder="Kode Akses (Password)">
                 <button class="full-btn" onclick="auth('login')">LOGIN SYSTEM</button>
-                <p style="font-size:0.8rem; margin-top:20px; color:#888; cursor:pointer;" onclick="switchAuth(true)">Belum punya akun? <span style="color:var(--accent)">Daftar Peneliti</span></p>
+                <p style="font-size:0.8rem; margin-top:20px; color:#888; cursor:pointer;" onclick="toggleAuth(true)">Belum terdaftar? <span style="color:var(--accent)">Buat Akun</span></p>
             </div>
 
-            <div id="boxReg" style="display:none;">
+            <div id="viewReg" style="display:none;">
                 <input id="rUser" class="field" placeholder="Buat Username">
                 <input id="rPass" type="password" class="field" placeholder="Buat Password">
-                <input id="rSoc" class="field" placeholder="Link Sosmed (Untuk Verifikasi)">
-                <button class="full-btn" onclick="auth('register')">DAFTAR IDENTITAS</button>
-                <p style="font-size:0.8rem; margin-top:20px; color:#888; cursor:pointer;" onclick="switchAuth(false)">Kembali ke Login</p>
+                <input id="rSoc" class="field" placeholder="Link Sosmed (Verifikasi Manual)">
+                <button class="full-btn" onclick="auth('register')">REGISTRASI</button>
+                <p style="font-size:0.8rem; margin-top:20px; color:#888; cursor:pointer;" onclick="toggleAuth(false)">Kembali ke Login</p>
             </div>
         </div>
     </div>
 
     <div id="profileModal" class="modal">
         <div class="modal-content">
-            <div style="width:70px; height:70px; background:#0f0f0f; border-radius:20px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); color:var(--accent); font-size:1.8rem;">
+            <div style="width:70px; height:70px; background:#000; border-radius:20px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; border:1px solid #333; font-size:2rem; color:var(--accent);">
                 <i class="fas fa-user-astronaut"></i>
             </div>
             <h2 id="pName" style="color:#fff; margin-bottom:5px;">User</h2>
-            <p id="pMeta" style="color:var(--accent); font-size:0.75rem; font-family:var(--font-code); margin-bottom:15px; letter-spacing:1px; text-transform:uppercase;"></p>
-            <p id="pBio" style="color:#888; font-size:0.9rem; margin-bottom:25px; font-style:italic; line-height:1.4;">...</p>
+            <p id="pMeta" style="color:var(--accent); font-size:0.8rem; letter-spacing:1px; text-transform:uppercase;"></p>
             
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; background:#0a0a0a; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #222;">
-                <div><strong id="pXP" style="color:#fff; font-size:1.1rem;">0</strong><br><span style="font-size:0.65rem; color:#555; font-weight:700;">XP</span></div>
-                <div><strong id="pLvl" style="color:#fff; font-size:1.1rem;">1</strong><br><span style="font-size:0.65rem; color:#555; font-weight:700;">LEVEL</span></div>
-                <div><strong id="pCit" style="color:#fff; font-size:1.1rem;">0</strong><br><span style="font-size:0.65rem; color:#555; font-weight:700;">CITATIONS</span></div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; background:#050505; padding:15px; border-radius:12px; margin:20px 0; border:1px solid #222;">
+                <div><b id="pXP" style="color:#fff; font-size:1.2rem;">0</b><br><small style="color:#666; font-weight:700;">XP POINTS</small></div>
+                <div><b id="pLvl" style="color:#fff; font-size:1.2rem;">1</b><br><small style="color:#666; font-weight:700;">LEVEL</small></div>
             </div>
-
-            <button class="full-btn" style="background:#222; margin-top:0;" onclick="document.getElementById('profileModal').style.display='none'">CLOSE</button>
-            <button class="full-btn" style="background:transparent; border:1px solid #b30000; color:#b30000; margin-top:10px;" onclick="logout()">LOGOUT SESSION</button>
+            
+            <button class="full-btn" style="background:#222;" onclick="closeModal('profileModal')">TUTUP</button>
+            <button class="full-btn" style="background:transparent; color:#e74c3c; border:1px solid #e74c3c; margin-top:10px;" onclick="logout()">LOGOUT</button>
         </div>
     </div>
 
     <header>
-        <div class="brand">IEA <span style="font-weight:300; color:#888;">JOURNAL</span></div>
+        <div class="brand">IEA <span>JOURNAL</span></div>
     </header>
 
     <div id="mainView"></div>
 
     <div class="bottom-dock">
         <div class="input-bar">
-            <div id="toolDrawer" class="tools-drawer">
-                <input id="inpReason" class="mini-input" placeholder="Latar Belakang (Wajib)..." style="flex:2;">
-                <select id="inpCat" class="mini-input">
-                    <option>Astrofisika</option>
-                    <option>Astronomi</option>
-                    <option>Fisika</option>
-                    <option>Biologi</option>
-                    <option>Kosmologi</option>
-                    <option>Filsafat</option>
-                    <option>Psycology</option>
-                    <option>Maht</option>
-                    <option>Sejarah</option>
-                    <option>Fisika Kuantum</option>
-                    <option>Umum</option>
+            <div id="tools" class="tools-drawer">
+                <input id="iReason" class="mini-input" placeholder="Latar Belakang (Wajib diisi)..." style="flex:2;">
+                <select id="iCat" class="mini-input">
+                    <option>Astrofisika</option><option>Teori NFT</option><option>Kosmologi</option><option>Fisika Kuantum</option><option>Umum</option>
                 </select>
-                <input id="inpImg" class="mini-input" placeholder="URL Gambar...">
-                <input id="inpRef" class="mini-input" placeholder="URL Referensi...">
+                <input id="iImg" class="mini-input" placeholder="URL Gambar...">
+                <input id="iRef" class="mini-input" placeholder="URL Referensi...">
             </div>
-
+            
             <div class="write-area">
-                <div id="btnTools" class="toggle-tools" onclick="toggleTools()">
+                <div class="toggle-btn" onclick="toggleDrawer()">
                     <i class="fas fa-plus"></i>
                 </div>
-                <textarea id="inpText" class="main-text" placeholder="Tulis Hipotesis... (Support LaTeX $$...$$)"></textarea>
-                <button id="btnSend" class="send-btn" onclick="submitPost()">
+                <textarea id="iText" class="main-text" placeholder="Tulis Hipotesis... (Gunakan $$...$$ untuk LaTeX)" oninput="autoResize(this)"></textarea>
+                <button id="btnSend" class="send-btn" onclick="sendPost()">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
         </div>
 
         <div class="nav-tabs">
-            <div class="nav-item active" onclick="switchTab('feed', this)">
-                <i class="fas fa-satellite-dish"></i>
-                <span>FEED</span>
+            <div class="nav-item active" onclick="nav('feed', this)">
+                <i class="fas fa-satellite-dish"></i><span>FEED</span>
             </div>
-            <div class="nav-item" onclick="switchTab('trending', this)">
-                <i class="fas fa-chart-line"></i>
-                <span>TREND</span>
+            <div class="nav-item" onclick="nav('trend', this)">
+                <i class="fas fa-chart-line"></i><span>TREND</span>
             </div>
-            <div class="nav-item" onclick="switchTab('notif', this)">
-                <div style="position:relative;">
-                    <i class="fas fa-bell"></i>
-                    <div id="notifDot" class="notif-dot"></div>
-                </div>
-                <span>NOTIF</span>
+            <div class="nav-item" onclick="nav('notif', this)">
+                <i class="fas fa-bell"></i><span>NOTIF</span>
             </div>
-            <div class="nav-item" onclick="myProfile()">
-                <i class="far fa-id-card"></i>
-                <span>ME</span>
+            <div class="nav-item" onclick="openProfile()">
+                <i class="far fa-id-card"></i><span>SAYA</span>
             </div>
         </div>
     </div>
 
     <script>
-        // --- KONFIGURASI API ---
-        // Masukkan URL Apps Script Anda di sini (Pastikan ini URL 'exec' terakhir)
-        const API_URL = "https://script.google.com/macros/s/AKfycbyXcgJslTplkov_FmFQvjE_CVAEuyYMsUaMYd-FgjQVnn4gBVbGic_bKaP_KkmOgHba1Q/exec"; 
-        
-        // --- STATE MANAGEMENT ---
+        // --- API URL (Sudah Benar) ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbyXcgJslTplkov_FmFQvjE_CVAEuyYMsUaMYd-FgjQVnn4gBVbGic_bKaP_KkmOgHba1Q/exec";
+
+        // --- GLOBAL VARIABLES ---
         let currentUser = localStorage.getItem('ieaUser');
         let db = { posts: [], profiles: [], notifs: [] };
-        let currentTab = 'feed';
+        let activeTab = 'feed';
 
         // --- INIT ---
-        window.onload = () => {
+        window.onload = function() {
             mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+            
             if(currentUser) {
                 document.getElementById('authModal').style.display = 'none';
                 loadData();
             } else {
                 document.getElementById('loader').style.display = 'none';
             }
+
+            // Fallback Loader (5 detik max)
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 5000);
         };
 
-        // --- UTILITIES ---
-        function showToast(msg) {
-            const t = document.getElementById('toastBox');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 3000);
-        }
-
-        function timeAgo(date) {
-            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + " tahun lalu";
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + " bulan lalu";
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + " hari lalu";
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + " jam lalu";
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " menit lalu";
-            return "Baru saja";
-        }
-
-        // --- DATA HANDLER ---
+        // --- CORE FUNCTIONS ---
+        
         async function loadData() {
             try {
                 const res = await fetch(API_URL);
@@ -422,202 +372,235 @@
                 })).reverse();
 
                 db.profiles = json.profiles.map(r => ({
-                    user: r[0], name: r[1], bio: r[2], xp: r[5], lvl: r[6], rank: r[7], cit: r[9]
+                    user: r[0], name: r[1], bio: r[2], xp: r[5], lvl: r[6], rank: r[7]
                 }));
 
                 db.notifs = json.notifications.filter(n => n[1] === currentUser).reverse();
 
-                renderUI();
-                checkNotif();
-                document.getElementById('loader').style.display = 'none';
-
-            } catch(e) { 
+                render();
+            } catch(e) {
+                showToast("⚠️ Gagal memuat data. Periksa koneksi.");
                 console.error(e);
-                showToast("Gagal memuat data. Periksa koneksi.");
+            } finally {
                 document.getElementById('loader').style.display = 'none';
             }
         }
 
-        function renderUI() {
+        function render() {
             const container = document.getElementById('mainView');
             container.innerHTML = "";
 
-            if(currentTab === 'feed') {
+            if (activeTab === 'feed') {
                 const feed = db.posts.filter(p => !p.parent);
-                if(feed.length === 0) container.innerHTML = "<div style='text-align:center; margin-top:50px; color:#555;'>Belum ada data jurnal.</div>";
+                if (feed.length === 0) container.innerHTML = "<div style='text-align:center; padding:50px; color:#555;'>Belum ada data jurnal.<br>Jadilah yang pertama menulis!</div>";
                 feed.forEach(p => container.appendChild(createCard(p)));
                 mermaid.run();
             } 
-            else if (currentTab === 'notif') {
-                if(db.notifs.length === 0) container.innerHTML = "<div style='text-align:center; margin-top:50px; color:#555;'>Tidak ada notifikasi baru.</div>";
+            else if (activeTab === 'notif') {
+                if (db.notifs.length === 0) container.innerHTML = "<div style='text-align:center; padding:50px; color:#555;'>Tidak ada notifikasi baru.</div>";
                 db.notifs.forEach(n => {
-                    const div = document.createElement('div');
-                    div.className = 'card';
-                    div.style.padding = '15px';
-                    div.innerHTML = `
-                        <div style="font-size:0.9rem; color:#ddd;">
-                            <strong style="color:var(--accent);">${n[2]}</strong> ${n[3]}
+                    const el = document.createElement('div');
+                    el.className = 'card';
+                    el.style.padding = '15px';
+                    el.innerHTML = `
+                        <div style="font-size:0.9rem; color:#fff;">
+                            <strong style="color:var(--accent)">${n[2]}</strong> ${n[3]}
                         </div>
-                        <div style="font-size:0.75rem; color:#555; margin-top:5px;">${timeAgo(n[0])}</div>
+                        <div style="font-size:0.75rem; color:#666; margin-top:5px;">${timeAgo(n[0])}</div>
                     `;
-                    container.appendChild(div);
+                    container.appendChild(el);
                 });
             }
-            else if (currentTab === 'trending') {
-                container.innerHTML = "<div style='text-align:center; margin-top:50px; color:#555;'>Analisis AI sedang memproses Topik Trending...</div>";
+            else {
+                container.innerHTML = "<div style='text-align:center; padding:50px; color:#555;'>Fitur Trending sedang dikalkulasi AI...</div>";
             }
         }
 
         function createCard(p) {
             const prof = db.profiles.find(x => x.user === p.user) || { name: p.user, rank: 'Guest' };
-            const isVerified = String(p.verify).toUpperCase() === "TRUE";
             
-            // Render Content
-            let contentHtml = p.text.replace(/\n/g, "<br>");
-            if(p.format === 'latex') {
-                try { contentHtml = katex.renderToString(p.text, { throwOnError: false, displayMode: false }); } catch(e){}
+            // Format Content (LaTeX & Mermaid Handling)
+            let html = p.text.replace(/\n/g, "<br>");
+            
+            if (p.format === 'latex') {
+                try { html = `<div class="latex-block">${katex.renderToString(p.text, {throwOnError:false, displayMode:true})}</div>`; } catch(e){}
             } else if (p.format === 'diagram') {
-                contentHtml = `<div class="mermaid">${p.text}</div>`;
+                html = `<div class="mermaid">${p.text}</div>`;
             } else {
-                // Auto-detect LaTeX inline ($...$)
-                contentHtml = contentHtml.replace(/\$\$(.*?)\$\$/g, (match, tex) => {
-                    try { return katex.renderToString(tex, { throwOnError: false }); } catch(e) { return match; }
+                // Inline LaTeX ($...$)
+                html = html.replace(/\$\$(.*?)\$\$/g, (m, t) => {
+                    try { return katex.renderToString(t, {throwOnError:false}); } catch(e){return m;}
                 });
             }
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.innerHTML = `
                 <div class="user-head">
-                    <div class="avatar" onclick="showProf('${p.user}')"><i class="fas fa-user-astronaut"></i></div>
+                    <div class="avatar"><i class="fas fa-user-astronaut"></i></div>
                     <div class="u-info">
-                        <h4>${prof.name} ${isVerified ? '<i class="fas fa-check-circle verified-badge" title="Verified Theory"></i>' : ''}</h4>
+                        <h4>${prof.name}</h4>
                         <span>${prof.rank} • ${timeAgo(p.date)}</span>
                     </div>
                 </div>
-                ${p.reason ? `<div class="post-reason">"${p.reason}"</div>` : ''}
-                <div class="post-body ${p.format==='latex'?'latex-view':''}">${contentHtml}</div>
+                ${p.reason ? `<div class="post-reason">" ${p.reason} "</div>` : ''}
+                
+                <div class="post-body">${html}</div>
+                
                 ${p.img ? `<img src="${p.img}" class="post-img" loading="lazy">` : ''}
-                ${p.ref ? `<a href="${p.ref}" target="_blank" class="ref-link"><i class="fas fa-external-link-alt"></i> Sumber Referensi</a>` : ''}
+                ${p.ref ? `<a href="${p.ref}" target="_blank" class="ref-link"><i class="fas fa-external-link-alt"></i> Referensi</a>` : ''}
                 
                 <div class="card-actions">
-                    <button class="act-btn" onclick="interact('LIKE','${p.uid}')"><i class="far fa-thumbs-up"></i> Vote</button>
+                    <button class="act-btn" onclick="vote('${p.uid}', this)"><i class="far fa-thumbs-up"></i> Vote</button>
                     <button class="act-btn"><i class="far fa-comment-dots"></i> Diskusi</button>
                     <button class="act-btn" style="margin-left:auto;"><i class="fas fa-share-alt"></i></button>
                 </div>
             `;
-            return card;
+            return el;
         }
 
-        // --- INTERACTION ---
-        function toggleTools() {
-            const d = document.getElementById('toolDrawer');
-            const b = document.getElementById('btnTools');
-            d.classList.toggle('open');
-            b.classList.toggle('active');
-        }
+        // --- ACTIONS ---
 
-        function switchTab(tab, el) {
-            currentTab = tab;
-            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-            if(el) el.classList.add('active');
-            renderUI();
-        }
+        async function sendPost() {
+            const txt = document.getElementById('iText').value;
+            const reason = document.getElementById('iReason').value;
 
-        function checkNotif() {
-            const unread = db.notifs.some(n => n[5] === 'UNREAD');
-            document.getElementById('notifDot').style.display = unread ? 'block' : 'none';
-        }
-
-        async function submitPost() {
-            const txt = document.getElementById('inpText').value;
-            const reason = document.getElementById('inpReason').value;
-            
-            if(!txt) return showToast("Isi hipotesis tidak boleh kosong!");
-            if(!reason) return showToast("Wajib mengisi Alasan Observasi!");
+            if(!currentUser) return showToast(" Silakan Login terlebih dahulu!");
+            if(!txt) return showToast(" Isi hipotesis tidak boleh kosong!");
+            if(!reason) return showToast(" Latar Belakang wajib diisi!");
 
             const btn = document.getElementById('btnSend');
             const originalIcon = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i>";
             btn.disabled = true;
 
             try {
-                await fetch(API_URL, { method:"POST", body:JSON.stringify({
-                    action: "post",
-                    user: currentUser,
-                    text: txt,
-                    reason: reason,
-                    cat: document.getElementById('inpCat').value,
-                    img: document.getElementById('inpImg').value,
-                    ref: document.getElementById('inpRef').value,
-                    parent: ""
-                })});
+                await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        action: "post", user: currentUser, text: txt, reason: reason,
+                        cat: document.getElementById('iCat').value,
+                        img: document.getElementById('iImg').value,
+                        ref: document.getElementById('iRef').value,
+                        parent: ""
+                    })
+                });
+                showToast("✅ Jurnal Terpublikasi! (+XP)");
                 
-                showToast("Jurnal berhasil dipublikasikan! (+XP)");
-                document.getElementById('inpText').value = "";
-                document.getElementById('inpReason').value = "";
-                document.getElementById('toolDrawer').classList.remove('open');
-                loadData();
+                // Reset Form
+                document.getElementById('iText').value = "";
+                document.getElementById('iReason').value = "";
+                document.getElementById('iText').style.height = '44px'; // Reset tinggi
+                toggleDrawer(); // Tutup tools
+                loadData(); // Refresh feed
             } catch(e) {
-                showToast("Gagal mengirim data.");
+                showToast("❌ Gagal mengirim data.");
             } finally {
                 btn.innerHTML = originalIcon;
                 btn.disabled = false;
             }
         }
 
-        async function interact(type, uid) {
-            showToast("Memproses Vote...");
+        async function vote(uid, btn) {
+            btn.classList.add('liked');
+            btn.innerHTML = `<i class="fas fa-thumbs-up"></i> Voted`;
+            // Efek Haptic (getar) jika di HP
+            if (navigator.vibrate) navigator.vibrate(50);
+            
             await fetch(API_URL, { method:"POST", body:JSON.stringify({
-                action: "interact", user: currentUser, uid: uid, type: type
+                action: "interact", user: currentUser, uid: uid, type: "LIKE"
             })});
-            showToast("Vote Tersimpan!");
         }
 
-        // --- AUTH & PROFILE ---
-        function showProf(uid) {
-            const p = db.profiles.find(x => x.user === uid);
-            if(!p) return;
-            document.getElementById('pName').innerText = p.name;
-            document.getElementById('pMeta').innerText = p.rank;
-            document.getElementById('pBio').innerText = p.bio || "Peneliti ini belum mengisi biodata.";
-            document.getElementById('pXP').innerText = p.xp || 0;
-            document.getElementById('pLvl').innerText = p.lvl || 1;
-            document.getElementById('pCit').innerText = p.cit || 0;
-            document.getElementById('profileModal').style.display = 'flex';
+        // --- UX HELPERS ---
+
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
         }
 
-        function myProfile() { showProf(currentUser); }
-
-        function switchAuth(reg) {
-            document.getElementById('boxLogin').style.display = reg ? 'none' : 'block';
-            document.getElementById('boxReg').style.display = reg ? 'block' : 'none';
+        function nav(tab, el) {
+            activeTab = tab;
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            render();
         }
+
+        function toggleDrawer() {
+            document.getElementById('tools').classList.toggle('open');
+            document.querySelector('.toggle-btn').classList.toggle('active');
+        }
+
+        function toggleAuth(reg) {
+            document.getElementById('viewLogin').style.display = reg ? 'none' : 'block';
+            document.getElementById('viewReg').style.display = reg ? 'block' : 'none';
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        function timeAgo(date) {
+            const s = Math.floor((new Date() - new Date(date)) / 1000);
+            if (s < 60) return "Baru saja";
+            const m = Math.floor(s/60); if (m<60) return m + "m lalu";
+            const h = Math.floor(m/60); if (h<24) return h + "j lalu";
+            return Math.floor(h/24) + "h lalu";
+        }
+
+        // --- AUTH ---
 
         async function auth(type) {
             const u = document.getElementById(type=='login'?'lUser':'rUser').value;
             const p = document.getElementById(type=='login'?'lPass':'rPass').value;
             const s = type=='register' ? document.getElementById('rSoc').value : "";
 
-            if(!u || !p) return showToast("Mohon lengkapi data.");
+            if(!u || !p) return showToast("Lengkapi data!");
 
-            const res = await fetch(API_URL, { method:"POST", body:JSON.stringify({
-                action: type, user: u, pass: p, soc: s
-            })});
-            const json = await res.json();
+            const btn = document.querySelector('.full-btn');
+            const oriTxt = btn.innerText;
+            btn.innerText = "MEMPROSES...";
+            btn.disabled = true;
 
-            if(json.status === 'success') {
-                localStorage.setItem('ieaUser', u);
-                location.reload();
-            } else {
-                showToast(json.message);
+            try {
+                const res = await fetch(API_URL, { method:"POST", body:JSON.stringify({
+                    action: type, user: u, pass: p, soc: s
+                })});
+                const json = await res.json();
+
+                if(json.status === 'success') {
+                    localStorage.setItem('ieaUser', u);
+                    location.reload();
+                } else {
+                    showToast("❌ " + json.message);
+                }
+            } catch(e) {
+                showToast(" Error Koneksi");
+            } finally {
+                btn.innerText = oriTxt;
+                btn.disabled = false;
             }
         }
 
         function logout() {
-            if(confirm("Keluar dari sesi ini?")) {
-                localStorage.removeItem('ieaUser');
-                location.reload();
+            localStorage.removeItem('ieaUser');
+            location.reload();
+        }
+
+        function openProfile() {
+            const p = db.profiles.find(x => x.user === currentUser);
+            if(p) {
+                document.getElementById('pName').innerText = p.name;
+                document.getElementById('pMeta').innerText = p.rank;
+                document.getElementById('pXP').innerText = p.xp || 0;
+                document.getElementById('pLvl').innerText = p.lvl || 1;
+                document.getElementById('profileModal').style.display = 'flex';
+            } else {
+                showToast(" Silakan Login dulu.");
             }
         }
     </script>
