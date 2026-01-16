@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>IEA PORTAL RESMI</title>
+    <meta name="theme-color" content="#050508">
+    <title>IEA CENTRAL PORTAL</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
@@ -11,495 +12,367 @@
       :root{
         --bg: #050508; 
         --accent: #00f6ff;
-        --accent-glow: rgba(0, 246, 255, 0.6);
-        --accent-danger: #ff2a2a;
-        --accent-success: #0aff0a;
-        --glass: rgba(20, 20, 30, 0.4); 
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --dock-bg: rgba(10, 10, 15, 0.8);
+        --accent-glow: rgba(0, 246, 255, 0.4);
+        --glass: rgba(15, 15, 25, 0.7); 
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --dock-bg: rgba(5, 5, 10, 0.9);
+        --text-pri: #ffffff;
+        --text-sec: #b0b0b0;
       }
 
-      /* BASE SETUP */
-      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent; user-select: none;}
+      /* --- BASE RESET --- */
+      *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent; user-select: none; outline: none;}
       
       body{
         background-color: var(--bg);
         font-family: 'Inter', sans-serif;
-        color: #fff; overflow-x: hidden;
+        color: var(--text-pri); 
+        overflow-x: hidden;
         min-height: 100vh;
         position: relative;
+        /* Tambahan: Efek Bintang Halus */
+        background-image: 
+            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+        background-size: 550px 550px, 350px 350px, 250px 250px;
+        background-position: 0 0, 40px 60px, 130px 270px;
       }
 
-      /* BACKGROUND "BLUR MENYALA" (AURORA EFFECT) */
+      /* --- AMBIENT GLOW (AURORA) --- */
       body::before, body::after {
-        content: ''; position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        filter: blur(100px); opacity: 0.4; z-index: -1; animation: floatGlow 10s infinite alternate;
+        content: ''; position: fixed; width: 60vw; height: 60vw; border-radius: 50%;
+        filter: blur(120px); opacity: 0.3; z-index: -1; animation: orbit 15s infinite alternate ease-in-out;
       }
       body::before {
-        background: radial-gradient(#00f6ff, transparent);
-        top: -10%; left: -10%;
+        background: radial-gradient(circle, var(--accent), transparent 70%);
+        top: -20%; left: -20%;
       }
       body::after {
-        background: radial-gradient(#0055ff, transparent);
-        bottom: -10%; right: -10%; animation-delay: -5s;
+        background: radial-gradient(circle, #7000ff, transparent 70%);
+        bottom: -20%; right: -20%; animation-delay: -7s;
       }
-      @keyframes floatGlow {
-        0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-        100% { transform: translate(50px, 50px) scale(1.2); opacity: 0.5; }
+      @keyframes orbit {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(30px, 50px) scale(1.1); }
       }
 
-      /* WRAPPER */
+      /* --- LAYOUT WRAPPER --- */
       .wrap{
-        max-width: 900px; margin: 0 auto; 
-        padding: 80px 20px 140px 20px;
+        max-width: 1000px; margin: 0 auto; 
+        padding: 60px 20px 160px 20px; /* Padding bawah besar untuk dock & footer */
         position: relative; z-index: 2;
-        animation: fadeIn 1.5s ease-out;
+        animation: portalOpen 1.2s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      @keyframes fadeIn { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+      @keyframes portalOpen { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 
-      /* HEADER BESAR */
-      header{ text-align: center; margin-bottom: 60px; }
+      /* --- HEADER SYSTEM --- */
+      header{ text-align: center; margin-bottom: 50px; }
+      
+      .status-pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 18px; border: 1px solid rgba(255,255,255,0.1);
+        color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.7rem; letter-spacing: 2px;
+        border-radius: 50px; background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      }
+      .status-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); animation: blink 2s infinite; }
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
       header h1{
         font-family: 'Orbitron'; 
-        font-size: clamp(3rem, 10vw, 5rem); /* UKURAN BESAR */
-        color: #fff;
-        letter-spacing: 4px; 
-        text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent);
-        margin-top: 10px;
-        line-height: 1.1;
-      }
-      .security-badge {
-        display: inline-block; padding: 6px 20px; border: 1px solid rgba(255,255,255,0.2);
-        color: var(--accent); font-family: 'JetBrains Mono'; font-size: 0.8rem; letter-spacing: 2px;
-        border-radius: 50px; background: rgba(0,0,0,0.3);
-        backdrop-filter: blur(10px);
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        letter-spacing: 3px; 
+        filter: drop-shadow(0 0 25px var(--accent-glow));
+        margin-top: 20px;
+        line-height: 1.1; font-weight: 900;
       }
 
-      /* GRID CARDS */
-      .grid{ display: grid; grid-template-columns: 1fr; gap: 25px; perspective: 1000px; }
-      @media(min-width: 768px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+      /* --- GRID SYSTEM --- */
+      .grid{ 
+        display: grid; grid-template-columns: 1fr; gap: 20px; 
+      }
+      @media(min-width: 768px){ .grid{ grid-template-columns: repeat(2, 1fr); gap: 25px; } }
 
+      /* --- CARD DESIGN (PREMIUM GLASS) --- */
       .card{
         background: var(--glass);
         border: 1px solid var(--glass-border);
-        border-radius: 20px; padding: 30px;
+        border-radius: 18px; padding: 25px;
         position: relative; overflow: hidden;
-        backdrop-filter: blur(15px); 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        backdrop-filter: blur(20px); 
+        box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
       }
-      .card:active { transform: scale(0.96); }
+      
+      /* Card Hover State */
       .card:hover{
         transform: translateY(-5px);
-        border-color: var(--accent);
-        box-shadow: 0 0 30px rgba(0, 246, 255, 0.2);
-        background: rgba(20, 30, 50, 0.6);
+        border-color: rgba(0, 246, 255, 0.5);
+        box-shadow: 0 10px 40px rgba(0, 246, 255, 0.15);
+        background: linear-gradient(145deg, rgba(30,40,50,0.6), rgba(15,15,20,0.8));
       }
-      
-      .card span{
-        font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--accent);
-        display: block; margin-bottom: 12px; letter-spacing: 2px; text-transform: uppercase;
-        opacity: 0.8;
+      .card:active { transform: scale(0.98); }
+
+      /* Card Typography */
+      .card-tag{
+        font-family: 'JetBrains Mono'; font-size: 0.6rem; color: var(--accent);
+        display: inline-block; margin-bottom: 12px; letter-spacing: 2px; font-weight: 700;
+        padding: 4px 8px; border-radius: 4px; background: rgba(0, 246, 255, 0.05); border: 1px solid rgba(0, 246, 255, 0.1);
       }
       .card h2{
-        font-family: 'Orbitron'; font-size: 1.5rem; margin-bottom: 10px; color: #fff;
+        font-family: 'Orbitron'; font-size: 1.3rem; margin-bottom: 8px; color: #fff;
+        display: flex; align-items: center; justify-content: space-between;
       }
       .card p{ 
-        font-size: 0.95rem; color: rgba(255,255,255,0.7); line-height: 1.6; 
-        font-weight: 300;
+        font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; 
+        font-weight: 400; letter-spacing: 0.3px;
       }
       
-      .lock-icon {
-        position: absolute; top: 25px; right: 25px; width: 22px; height: 22px;
-        fill: rgba(255,255,255,0.2); transition: 0.3s;
+      /* Card Icon Decoration */
+      .card-icon {
+        width: 24px; height: 24px; fill: rgba(255,255,255,0.1); 
+        transition: 0.4s; position: absolute; top: 25px; right: 25px;
       }
-      .card:hover .lock-icon { fill: var(--accent); filter: drop-shadow(0 0 5px var(--accent)); }
+      .card:hover .card-icon { fill: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); transform: rotate(15deg); }
 
-      /* NAVIGATION DOCK (MINIMALIS) */
-      .dock-container{
+      /* --- DOCK NAVIGATION --- */
+      .dock-wrap{
         position: fixed; bottom: 30px; left: 0; width: 100%;
         display: flex; justify-content: center; z-index: 9000; 
         pointer-events: none;
       }
       .dock{
-        background: var(--dock-bg); border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(20px); padding: 12px 25px; border-radius: 50px;
-        display: flex; gap: 30px; pointer-events: auto;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        background: var(--dock-bg); 
+        border: 1px solid rgba(255,255,255,0.15);
+        backdrop-filter: blur(25px); 
+        padding: 12px 30px; border-radius: 24px;
+        display: flex; gap: 40px; pointer-events: auto;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        transition: 0.3s;
       }
+      .dock:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(0, 246, 255, 0.1); }
+
       .dock-btn{
         background: transparent; border: none; cursor: pointer;
-        color: rgba(255,255,255,0.5); display: flex; flex-direction: column; 
-        align-items: center; gap: 5px; transition: 0.3s; padding: 5px;
+        color: rgba(255,255,255,0.4); display: flex; flex-direction: column; 
+        align-items: center; gap: 6px; transition: 0.3s; padding: 0;
       }
-      .dock-btn svg{ width: 24px; height: 24px; fill: currentColor; }
-      .dock-btn span{ font-size: 0.65rem; font-family: 'Orbitron'; letter-spacing: 1px;}
-      .dock-btn:hover{ color: #fff; transform: translateY(-3px); text-shadow: 0 0 10px #fff; }
-      .dock-btn.admin:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+      .dock-btn svg{ width: 22px; height: 22px; fill: currentColor; transition: 0.3s; }
+      .dock-btn span{ font-size: 0.55rem; font-family: 'Orbitron'; letter-spacing: 1px; font-weight: 700; opacity: 0; transform: translateY(5px); transition: 0.3s; }
+      
+      /* Dock Interaction */
+      .dock-btn:hover { color: #fff; }
+      .dock-btn:hover svg { transform: translateY(-5px); fill: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
+      .dock-btn:hover span { opacity: 1; transform: translateY(0); color: var(--accent); }
 
-      /* === MODAL SYSTEM === */
+      /* --- FOOTER INFO (TAMBAHAN) --- */
+      .sys-footer {
+        text-align: center; margin-top: 40px; font-family: 'JetBrains Mono';
+        font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 2px;
+      }
+
+      /* --- MODAL SYSTEM --- */
       .modal {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.8); /* Background Gelap Transparan */
-        z-index: 10000; 
-        display: none; justify-content: center; align-items: center; 
-        padding: 20px;
-        backdrop-filter: blur(20px); /* Blur kuat untuk modal */
+        position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+        z-index: 10000; display: none; justify-content: center; align-items: center; 
+        padding: 20px; backdrop-filter: blur(15px);
       }
-      .modal-content {
-        width: 100%; max-width: 450px; 
-        background: rgba(10, 10, 15, 0.9);
-        border: 1px solid var(--accent); border-radius: 25px;
+      .modal-box {
+        width: 100%; max-width: 480px; 
+        background: #0a0a10;
+        border: 1px solid var(--accent); border-radius: 20px;
         padding: 40px; text-align: center; position: relative;
-        box-shadow: 0 0 60px rgba(0, 246, 255, 0.2);
-        animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 0 80px rgba(0, 246, 255, 0.15);
+        animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
-      @keyframes zoomIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+      @keyframes modalIn { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
 
-      /* SCANNER STYLE */
-      .scanner-frame {
-        width: 100%; height: 220px; border: 2px dashed rgba(255,255,255,0.2);
-        border-radius: 15px; margin: 25px 0; position: relative;
-        background: rgba(0,0,0,0.5); overflow: hidden;
-        display: flex; align-items: center; justify-content: center;
+      .btn-action {
+        width: 100%; padding: 15px; background: var(--accent); color: #000;
+        font-weight: 800; border: none; border-radius: 10px; margin-top: 20px;
+        cursor: pointer; font-family: 'Orbitron'; transition: 0.3s; letter-spacing: 1px;
+        box-shadow: 0 0 20px rgba(0, 246, 255, 0.2);
       }
-      .scanner-frame.active { border-color: var(--accent); border-style: solid; box-shadow: 0 0 20px rgba(0,246,255,0.1); }
-      
-      .scan-laser {
-        position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-        background: var(--accent); box-shadow: 0 0 20px var(--accent);
-        animation: scanMove 2s infinite ease-in-out; display: none; z-index: 5;
-      }
-      @keyframes scanMove { 0%{top:0} 50%{top:100%} 100%{top:0} }
+      .btn-action:hover { transform: scale(1.02); box-shadow: 0 0 40px var(--accent); background: #fff; }
+      .btn-close { margin-top: 20px; color: #666; font-size: 0.75rem; cursor: pointer; letter-spacing: 1px; transition: 0.3s; font-family: 'JetBrains Mono'; }
+      .btn-close:hover { color: #fff; }
 
-      .preview-img { max-width: 100%; max-height: 100%; display: none; object-fit: contain; }
-      
-      .btn-upload {
-        border: 1px solid var(--accent); color: var(--accent); background: rgba(0, 246, 255, 0.1);
-        padding: 14px; border-radius: 12px; width: 100%; font-family: 'Orbitron';
-        cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s;
-      }
-      .btn-upload:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent); }
-      
-      .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-      .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-
-      .input-field {
-        width: 100%; padding: 16px; background: #050508; border: 1px solid #333;
-        color: #fff; margin-top: 20px; border-radius: 12px; text-align: center;
-        font-family: 'JetBrains Mono'; font-size: 1rem; letter-spacing: 1px;
-      }
-      .input-field:focus { border-color: var(--accent); outline: none; }
-      
-      .btn-verify {
-        width: 100%; padding: 16px; background: #222; color: #666;
-        font-weight: 700; border: none; border-radius: 12px; margin-top: 15px;
-        cursor: not-allowed; font-family: 'Orbitron'; transition: 0.3s; letter-spacing: 1px;
-      }
-      .btn-verify.ready {
-        background: var(--accent); color: #000; cursor: pointer;
-        box-shadow: 0 0 30px rgba(0, 246, 255, 0.5);
-      }
-
-      /* LOADER GLOBAL (BLUR MENYALA) */
-      #global-loader {
+      /* --- GLOBAL LOADER --- */
+      #loader-overlay {
         position: fixed; inset: 0; 
-        background: rgba(0,0,0,0.6); /* Semi transparan */
-        backdrop-filter: blur(30px); /* Efek Blur Kuat */
+        background: #050508;
         z-index: 20000; 
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         transition: opacity 0.8s ease; pointer-events: none;
       }
       .loader-text { 
-        font-family: 'Orbitron'; color: var(--accent); margin-top: 25px; letter-spacing: 4px; font-weight: bold;
-        text-shadow: 0 0 10px var(--accent); animation: pulse 1s infinite alternate;
+        font-family: 'Orbitron'; color: var(--accent); margin-top: 25px; letter-spacing: 4px; font-weight: bold; font-size: 0.8rem;
+        text-shadow: 0 0 15px var(--accent); animation: textPulse 1s infinite alternate;
       }
-      .spinner {
-        width: 70px; height: 70px; 
-        border: 4px solid rgba(0, 246, 255, 0.2);
+      .loader-ring {
+        width: 65px; height: 65px; 
+        border: 3px solid rgba(0, 246, 255, 0.1);
         border-top-color: var(--accent); 
         border-radius: 50%; 
-        animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        box-shadow: 0 0 20px rgba(0, 246, 255, 0.3);
+        animation: spin 0.8s linear infinite;
+        box-shadow: 0 0 40px rgba(0, 246, 255, 0.2);
       }
       @keyframes spin { 100%{transform:rotate(360deg)} }
-      @keyframes pulse { from{opacity:0.6} to{opacity:1} }
-
-      /* TUTORIAL STYLE */
-      .tutorial-list { text-align: left; margin: 25px 0; font-size: 0.9rem; color: #ccc; }
-      .tutorial-item { margin-bottom: 20px; display: flex; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-      .step-num { color: var(--accent); font-weight: 900; font-family: 'Orbitron'; font-size: 1.2rem; }
-      .step-text b { color: #fff; display: block; margin-bottom: 5px; letter-spacing: 1px; }
+      @keyframes textPulse { from{opacity:0.5} to{opacity:1} }
 
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-  <div id="global-loader">
-    <div class="spinner"></div>
-    <div class="loader-text" id="loaderMsg">SYSTEM LOADING...</div>
+  <div id="loader-overlay">
+    <div class="loader-ring"></div>
+    <div class="loader-text" id="loaderMsg">SYSTEM INITIALIZING...</div>
   </div>
 
-  <div class="wrap" id="mainWrap">
+  <div class="wrap">
     <header>
-      <div class="security-badge">INTERNATIONAL EDUCATION ASTRONOMY</div>
+      <div class="status-pill"><div class="status-dot"></div>SYSTEM OPERATIONAL</div>
       <h1>IEA PORTAL</h1>
+      <p style="color:var(--text-sec); margin-top:10px; letter-spacing:2px; font-size:0.8rem; font-family:'JetBrains Mono'; opacity:0.8;">INTERNATIONAL EDUCATION ASTRONOMY</p>
     </header>
 
     <div class="grid">
       
       <div class="card" onclick="goto('https://whatsapp.com/channel/0029Vb7X7CIHFxPAYUFhN01q')">
-        <span>OFFICIAL FEED</span>
-        <h2>SALURAN IEA</h2>
-        <p>Bergabung dengan saluran WhatsApp resmi untuk update informasi real-time dan pengumuman.</p>
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+        <span class="card-tag">SECURE FEED</span>
+        <h2>SALURAN RESMI</h2>
+        <p>Jalur komunikasi terenkripsi. Pusat informasi real-time, transmisi pengumuman komando, dan pembaruan ekosistem.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/')">
-        <span>PUBLIC GATE</span>
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span class="card-tag">SECTOR ALPHA</span>
         <h2>KOMUNITAS 1</h2>
-        <p>Pendaftaran gelombang pertama member IEA. Terbuka untuk umum.</p>
+        <p>Gerbang rekrutmen utama. Protokol inisiasi untuk personel baru yang ingin bergabung dengan jaringan riset IEA.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/komunitas2.html')">
-        <span>EXPANSION</span>
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span class="card-tag">SECTOR BETA</span>
         <h2>KOMUNITAS 2</h2>
-        <p>Pendaftaran gelombang kedua member baru IEA. Form ekspansi anggota.</p>
+        <p>Unit ekspansi strategis. Formulir pendaftaran sekunder untuk perluasan divisi dan kolaborasi peneliti tambahan.</p>
       </div>
 
-      <div class="card" onclick="openScanner('https://xzam730.github.io/PORTAL-IEA/mind.html')">
-        <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
-        <span>SCIENTIFIC JOURNAL</span>
-        <h2>COSMIC LOG</h2>
-        <p>Database Teori & Hipotesis Ilmiah. Akses terbatas, wajib verifikasi ID Card.</p>
+      <div class="card" onclick="goto('https://xzam730.github.io/PORTAL-IEA/mind.html')">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
+        <span class="card-tag">COSMIC ARCHIVE</span>
+        <h2>SCIENTIFIC JOURNAL</h2>
+        <p>Database terdesentralisasi. Repositori hipotesis Node-Field Theory, data Voxel, dan log penelitian astronomi.</p>
       </div>
 
-      <div class="card" onclick="openScanner('https://xzam730.github.io/IEA-Web-premium/')">
-        <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
-        <span>RESTRICTED AREA</span>
+      <div class="card" onclick="goto('https://xzam730.github.io/IEA-Web-premium/')">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        <span class="card-tag">CORE SYSTEM</span>
         <h2>WEBSITE IEA</h2>
-        <p>Database Pusat Premium. Akses penuh ke seluruh fitur IEA. Wajib Scan ID.</p>
+        <p>Akses level tinggi. Antarmuka manajemen pusat dengan fitur eksklusif dan database visual premium.</p>
       </div>
 
-      <div class="card" onclick="openScanner('https://ai-iea-international-education-astronomy-tvmchu4pnij7avslkygup.streamlit.app/')">
-        <svg class="lock-icon" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM8.9 6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H8.9V6zM18 20H6V10h12v10z"/></svg>
-        <span>INTELLIGENCE</span>
-        <h2>AI IEA</h2>
-        <p>Terminal Asisten Cerdas. Analisis data astronomi. Wajib verifikasi ID Card.</p>
+      <div class="card" onclick="goto('https://ai-iea-international-education-astronomy-tvmchu4pnij7avslkygup.streamlit.app/')">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10zM12 5.5L9.5 9h5L12 12.5 14.5 9h-5z"/></svg>
+        <span class="card-tag">NEURAL NETWORK</span>
+        <h2>AI ASSISTANT</h2>
+        <p>Terminal Kecerdasan Buatan. Unit pemrosesan data otomatis untuk analisis fenomena kosmik dan bantuan riset.</p>
       </div>
 
       <div class="card" onclick="openModal('rulesModal')">
-        <span>COMMUNITY</span>
-        <h2>DISCORD HUB</h2>
-        <p>Ruang diskusi real-time member. Baca protokol sebelum bergabung.</p>
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        <span class="card-tag">CENTRAL HUB</span>
+        <h2>DISCORD SERVER</h2>
+        <p>Markas komando digital. Ruang kolaborasi lintas divisi, debat teori, dan interaksi langsung antar anggota.</p>
       </div>
 
     </div>
+
+    <div class="sys-footer">
+        IEA SYSTEM // SECURE CONNECTION ESTABLISHED
+    </div>
   </div>
 
-  <div class="dock-container">
+  <div class="dock-wrap">
     <div class="dock">
       <button class="dock-btn" onclick="reloadPage()">
         <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        <span>RELOAD</span>
+        <span>RESET</span>
       </button>
 
-      <button class="dock-btn admin" onclick="contactAdmin()">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
-        <span>ADMIN</span>
+      <button class="dock-btn" onclick="contactAdmin()">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <span>COMMAND</span>
       </button>
 
       <button class="dock-btn" onclick="openModal('rulesModal')">
         <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-        <span>RULES</span>
+        <span>PROTOCOL</span>
       </button>
     </div>
   </div>
 
-  <div id="scanModal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--accent); font-family:'Orbitron';">SECURITY CLEARANCE</h3>
-      <p style="font-size:0.8rem; color:#888; margin-bottom:15px; letter-spacing:1px;">UPLOAD ID CARD UNTUK VERIFIKASI</p>
-      
-      <div class="scanner-frame" id="scannerFrame">
-        <div class="scan-laser" id="scanLaser"></div>
-        <img id="previewImg" class="preview-img" alt="ID Preview">
-        <div id="scanPlaceholder" style="color:#555; font-size:0.8rem;">NO IMAGE DETECTED</div>
-      </div>
-
-      <div class="upload-btn-wrapper">
-        <button class="btn-upload">UPLOAD / SCAN ID CARD</button>
-        <input type="file" id="idCardInput" accept="image/*" onchange="handleImageUpload(event)">
-      </div>
-
-      <input type="text" id="scanName" class="input-field" placeholder="NAMA LENGKAP (SESUAI ID)" disabled>
-      
-      <button id="verifyBtn" class="btn-verify" onclick="processVerification()">VERIFY ACCESS</button>
-      
-      <div onclick="closeModal('scanModal')" style="margin-top:25px; color:#666; font-size:0.75rem; cursor:pointer; letter-spacing:1px;">ABORT MISSION</div>
-    </div>
-  </div>
-
-  <div id="tutorialModal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:#facc15; font-family:'Orbitron';">MANUAL: COSMIC LOG</h3>
-      <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">PROTOKOL STANDAR OPERASIONAL JURNAL</p>
-      
-      <div class="tutorial-list">
-        <div class="tutorial-item">
-            <div class="step-num">01.</div>
-            <div class="step-text">
-                <b>REGISTRASI DATA</b>
-                Setiap anggota diwajibkan membuat akun peneliti baru di dalam database jurnal untuk validasi kontribusi ilmiah.
-            </div>
-        </div>
-        <div class="tutorial-item">
-            <div class="step-num">02.</div>
-            <div class="step-text">
-                <b>METODE OBSERVASI</b>
-                Sebelum menuliskan teori inti, Anda wajib mengisi kolom "Latar Belakang" untuk menjelaskan dasar pemikiran logis.
-            </div>
-        </div>
-        <div class="tutorial-item">
-            <div class="step-num">03.</div>
-            <div class="step-text">
-                <b>HIPOTESIS & REFERENSI</b>
-                Tuliskan teori secara rinci. Sangat disarankan menyertakan link referensi (Wikipedia/Jurnal) sebagai pendukung.
-            </div>
-        </div>
-        <div class="tutorial-item">
-            <div class="step-num">04.</div>
-            <div class="step-text">
-                <b>KEAMANAN SISTEM</b>
-                Algoritma AI akan memblokir konten yang mengandung unsur SARA atau bahasa kasar secara otomatis.
-            </div>
-        </div>
-      </div>
-
-      <button class="btn-verify ready" style="background:#facc15; color:#000;" onclick="goto('https://xzam730.github.io/PORTAL-IEA/mind.html')">BUKA AKSES JURNAL</button>
-      <div onclick="closeModal('tutorialModal')" style="margin-top:20px; color:#666; font-size:0.8rem; cursor:pointer;">CLOSE MANUAL</div>
-    </div>
-  </div>
-
   <div id="rulesModal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:#fff; font-family:'Orbitron';">PROTOCOLS</h3>
-      <div style="text-align:left; font-size:0.95rem; line-height:1.8; color:#ccc; margin-bottom:25px;">
-        1. Etika adalah prioritas utama.<br>
-        2. Data wajib berbasis sains & fakta.<br>
-        3. Dilarang Spam, SARA, atau Politik.<br>
-        4. Hormati privasi sesama member.
+    <div class="modal-box">
+      <h3 style="color:#fff; font-family:'Orbitron'; font-size:1.5rem; letter-spacing:2px;">CORE PROTOCOLS</h3>
+      <div style="text-align:left; font-size:0.85rem; line-height:1.8; color:#ccc; margin-top:20px;">
+        <p><b style="color:var(--accent)">01. INTEGRITAS</b><br>Menjaga etika dan kesopanan adalah mandat mutlak setiap personel.</p>
+        <p style="margin-top:10px;"><b style="color:var(--accent)">02. BASIS DATA</b><br>Setiap argumen wajib berlandaskan sains, fakta, dan data empiris.</p>
+        <p style="margin-top:10px;"><b style="color:var(--accent)">03. ZONA NETRAL</b><br>Dilarang keras menyebarkan SARA, Politik, atau Spam dalam frekuensi ini.</p>
       </div>
-      <button class="btn-verify ready" onclick="joinDiscord()">ACCEPT & JOIN</button>
-      <div onclick="closeModal('rulesModal')" style="margin-top:20px; color:#666; font-size:0.8rem; cursor:pointer;">CLOSE PROTOCOLS</div>
+      <button class="btn-action" onclick="joinDiscord()">ACKNOWLEDGE & JOIN</button>
+      <div class="btn-close" onclick="closeModal('rulesModal')">ABORT MISSION</div>
     </div>
   </div>
 
   <script>
-    const FIREBASE_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app";
-    let targetLink = "";
-
+    // --- SYSTEM LOGIC ---
     function contactAdmin(){ window.open('https://wa.me/qr/LSPPA4T7ZGMPH1', '_blank'); }
     function joinDiscord(){ closeModal('rulesModal'); goto("https://discord.gg/6FMjCyPg"); }
+    
     function openModal(id){ 
         const m = document.getElementById(id); m.style.display = 'flex';
-        const c = m.querySelector('.modal-content'); c.style.animation='none'; c.offsetHeight; c.style.animation='zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     }
     function closeModal(id){ document.getElementById(id).style.display = 'none'; }
-    function vibrate() { if(navigator.vibrate) navigator.vibrate(40); }
+    function vibrate() { if(navigator.vibrate) navigator.vibrate([30]); }
 
-    // --- RELOAD ANIMATION ---
+    // --- RELOAD SEQUENCE ---
     function reloadPage() {
-        const loader = document.getElementById('global-loader');
+        const loader = document.getElementById('loader-overlay');
         loader.style.display = 'flex';
         setTimeout(() => loader.style.opacity = '1', 10);
-        document.getElementById('loaderMsg').innerText = "SYSTEM RELOADING...";
+        document.getElementById('loaderMsg').innerText = "SYSTEM REBOOT...";
         setTimeout(() => location.reload(), 2000);
     }
 
-    // --- GLOBAL LOADER ---
+    // --- INITIALIZATION ---
     window.onload = () => {
         setTimeout(() => {
-            const loader = document.getElementById('global-loader');
+            const loader = document.getElementById('loader-overlay');
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; }, 800);
         }, 1500);
+        
+        // Add haptic feedback to cards
         document.querySelectorAll('.card, button').forEach(b => b.addEventListener('click', vibrate));
     };
 
-    // --- TRANSISI HALUS & LAMA (3.5 Detik) ---
+    // --- TRANSITION SEQUENCE (3.5 SEC) ---
     function goto(url){
-        const loader = document.getElementById('global-loader');
+        const loader = document.getElementById('loader-overlay');
         loader.style.display = 'flex';
-        
-        // Animasi Masuk Loader
         setTimeout(() => loader.style.opacity = '1', 10);
+        document.getElementById('loaderMsg').innerText = "ESTABLISHING CONNECTION...";
         
-        document.getElementById('loaderMsg').innerText = "CONNECTING...";
-        
-        // Delay 3500ms (3.5 Detik) sebelum pindah
+        // 3.5 Seconds Delay as Requested
         setTimeout(() => { window.location.href = url; }, 3500);
     }
-
-    // --- SCANNER LOGIC ---
-    function openScanner(url){
-        targetLink = url;
-        document.getElementById('previewImg').style.display = 'none';
-        document.getElementById('scanPlaceholder').style.display = 'block';
-        document.getElementById('scanLaser').style.display = 'none';
-        document.getElementById('scannerFrame').classList.remove('active');
-        document.getElementById('scanName').disabled = true;
-        document.getElementById('scanName').value = "";
-        const btn = document.getElementById('verifyBtn');
-        btn.classList.remove('ready');
-        btn.innerText = "UPLOAD ID FIRST";
-        openModal('scanModal');
-    }
-
-    function handleImageUpload(event){
-        const file = event.target.files[0];
-        if(file){
-            const reader = new FileReader();
-            reader.onload = function(e){
-                document.getElementById('previewImg').src = e.target.result;
-                document.getElementById('previewImg').style.display = 'block';
-                document.getElementById('scanPlaceholder').style.display = 'none';
-                document.getElementById('scanLaser').style.display = 'block';
-                document.getElementById('scannerFrame').classList.add('active');
-                document.getElementById('scanName').disabled = false;
-                const btn = document.getElementById('verifyBtn');
-                btn.innerText = "VERIFY ACCESS";
-                btn.classList.add('ready');
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    async function processVerification(){
-        const btn = document.getElementById('verifyBtn');
-        if(!btn.classList.contains('ready')) return; 
-        const name = document.getElementById('scanName').value.trim().toLowerCase();
-        if(!name) return alert("MASUKKAN NAMA SESUAI ID!");
-        
-        btn.innerText = "SCANNING DATABASE...";
-        try {
-            const grups = ["iea_grup_1", "iea_grup_2"];
-            let found = false;
-            for(let g of grups){
-                let res = await fetch(`${FIREBASE_URL}/${g}.json`);
-                let data = await res.json();
-                if(data) for(let k in data) if(data[k].n && data[k].n.toLowerCase() === name) found = true;
-            }
-            
-            if(found){
-                btn.innerText = "ACCESS GRANTED"; btn.style.background = "#0aff0a";
-                setTimeout(() => {
-                    closeModal('scanModal');
-                    // Jika link menuju Cosmic Log, buka Tutorial dulu
-                    if(targetLink.includes('mind.html')) openModal('tutorialModal');
-                    else goto(targetLink);
-                }, 800);
-            } else { alert("ACCESS DENIED"); btn.innerText = "RETRY"; btn.style.background="#ff2a2a"; }
-        } catch(e){ alert("CONNECTION ERROR"); btn.innerText = "RETRY"; }
-    }
   </script>
+
 </body>
 </html>
