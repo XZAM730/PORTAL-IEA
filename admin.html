@@ -3,71 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IEA ADMIN COMMAND</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <title>IEA COMMAND CENTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        body { background: #0a0a0f; color: #00f6ff; font-family: 'JetBrains Mono'; padding: 20px; text-align: center; }
-        h2 { font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        :root {
+            --bg: #030305;
+            --panel: rgba(20, 20, 25, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --neon: #00f6ff;
+            --success: #0aff0a;
+            --error: #ff2a2a;
+            --text: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            background-image: 
+                linear-gradient(rgba(0, 246, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 246, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* --- AUTH SCREEN (PASSWORD) --- */
+        #auth-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .auth-box {
+            text-align: center; width: 300px;
+        }
+        .auth-input {
+            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
+            color: var(--neon); font-family: 'Orbitron'; letter-spacing: 5px; text-align: center;
+            margin-bottom: 20px; border-radius: 5px; font-size: 1.2rem;
+        }
+        .auth-btn {
+            width: 100%; padding: 12px; background: var(--neon); color: #000;
+            border: none; font-weight: bold; cursor: pointer; font-family: 'JetBrains Mono';
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 20px 40px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+        }
+        .brand {
+            font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; letter-spacing: 2px;
+        }
+        .brand span { color: var(--neon); }
+        .sys-status {
+            font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--success);
+            border: 1px solid var(--success); padding: 5px 10px; border-radius: 4px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            flex: 1; display: grid; grid-template-columns: 1fr 400px; gap: 40px;
+            padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%;
+        }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        /* --- FORM PANEL --- */
+        .panel {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 12px; padding: 30px; position: relative;
+        }
+        .panel h2 {
+            font-family: 'Orbitron'; color: var(--neon); margin-bottom: 25px;
+            font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 15px;
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+
+        .group { margin-bottom: 20px; }
+        label {
+            display: block; font-family: 'JetBrains Mono'; font-size: 0.7rem; color: #888;
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+        }
         input, select, textarea {
-            width: 100%; max-width: 500px; padding: 12px; margin-bottom: 15px;
-            background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; outline: none;
+            width: 100%; padding: 12px; background: #0a0a0f; border: 1px solid #333;
+            color: #fff; border-radius: 6px; font-family: 'Inter'; font-size: 0.9rem;
+            transition: 0.3s;
         }
-        input:focus { border-color: #00f6ff; }
-        button {
-            width: 100%; max-width: 500px; padding: 15px; background: #00f6ff; color: #000;
-            font-weight: bold; border: none; cursor: pointer; font-family: 'Orbitron';
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 246, 255, 0.1);
         }
-        #status { margin-top: 20px; font-size: 0.8rem; }
+
+        .btn-submit {
+            width: 100%; padding: 15px; background: var(--neon); color: #000;
+            font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 6px;
+            cursor: pointer; transition: 0.3s; letter-spacing: 1px; margin-top: 10px;
+        }
+        .btn-submit:hover {
+            box-shadow: 0 0 20px var(--neon); transform: translateY(-2px); background: #fff;
+        }
+
+        /* --- PREVIEW CARD (Royal Style) --- */
+        .preview-area {
+            position: sticky; top: 40px;
+        }
+        .preview-label {
+            text-align: center; font-family: 'JetBrains Mono'; color: #666; font-size: 0.7rem; margin-bottom: 10px;
+        }
+
+        /* Kartu Preview (Mirip Library.html) */
+        .tome {
+            background: #0f0f0f; border: 1px solid #333; border-radius: 8px;
+            overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .tome::before {
+            content: ''; position: absolute; top: 0; left: 0; 
+            border-top: 20px solid var(--neon); border-right: 20px solid transparent; 
+            width: 0; z-index: 2;
+        }
+        .cover { height: 180px; overflow: hidden; position: relative; border-bottom: 1px solid #333; }
+        .cover img { width: 100%; height: 100%; object-fit: cover; }
+        .cat-badge {
+            position: absolute; bottom: 10px; right: 10px;
+            background: #000; color: var(--neon); font-size: 0.6rem;
+            padding: 3px 8px; border: 1px solid var(--neon); font-family: 'Orbitron';
+        }
+        .details { padding: 20px; }
+        .tome-title {
+            font-family: 'Orbitron'; font-size: 1.1rem; color: var(--neon);
+            margin-bottom: 8px; font-weight: 700;
+        }
+        .tome-desc { font-size: 0.85rem; color: #aaa; line-height: 1.5; margin-bottom: 20px; }
+        .fake-btn {
+            width: 100%; padding: 10px; border: 1px solid #444; color: #444;
+            text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; border-radius: 4px;
+        }
+
+        /* --- CONSOLE LOG --- */
+        .console {
+            background: #000; border-top: 1px solid #333;
+            padding: 10px 20px; height: 150px; overflow-y: auto;
+            font-family: 'JetBrains Mono'; font-size: 0.75rem; color: #666;
+        }
+        .log-line { margin-bottom: 4px; }
+        .log-succ { color: var(--success); }
+        .log-err { color: var(--error); }
+        .log-info { color: var(--neon); }
+
     </style>
 </head>
 <body>
 
-    <h2>IEA LIBRARY INPUT</h2>
+    <div id="auth-overlay">
+        <div style="font-family:'Orbitron'; color:#fff; margin-bottom:20px; font-size:2rem;">IEA <span style="color:var(--neon)">SYSTEM</span></div>
+        <div class="auth-box">
+            <input type="password" id="passcode" class="auth-input" placeholder="ACCESS CODE">
+            <button class="auth-btn" onclick="checkAuth()">UNLOCK TERMINAL</button>
+            <div id="auth-msg" style="color:red; margin-top:10px; font-family:'JetBrains Mono'; font-size:0.8rem;"></div>
+        </div>
+    </div>
 
-    <input id="title" placeholder="JUDUL DOKUMEN / LAGU">
-    
-    <select id="cat">
-        <option value="NFT Theory">NFT Theory (Teori)</option>
-        <option value="Research">Research Log (Riset)</option>
-        <option value="Music">Music / Audio (Musik)</option>
-        <option value="Archive">Archive (Lainnya)</option>
-    </select>
+    <div id="app-interface" style="display:none; flex-direction:column; height:100vh;">
+        
+        <header>
+            <div class="brand">IEA <span>COMMAND</span></div>
+            <div class="sys-status">CONNECTED: FIREBASE RTDB</div>
+        </header>
 
-    <input id="link" placeholder="LINK FILE (PDF / MP3)">
-    <input id="thumb" placeholder="LINK GAMBAR COVER (Opsional)">
-    <textarea id="desc" rows="3" placeholder="Deskripsi Singkat..."></textarea>
-
-    <button onclick="send()">UPLOAD DATA</button>
-    <div id="status">READY TO TRANSMIT</div>
-
-    <script>
-        // SECURITY SIMPLE
-        const PASS = "IEA2026";
-        if(prompt("ADMIN PASSCODE:") !== PASS) { document.body.innerHTML="ACCESS DENIED"; throw "Stop"; }
-
-        const DB = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library";
-
-        async function send() {
-            const d = {
-                title: document.getElementById('title').value,
-                category: document.getElementById('cat').value,
-                link: document.getElementById('link').value,
-                thumbnail: document.getElementById('thumb').value,
-                description: document.getElementById('desc').value,
-                ts: Date.now()
-            };
-
-            if(!d.title || !d.link) return alert("JUDUL & LINK WAJIB!");
-
-            document.getElementById('status').innerText = "TRANSMITTING...";
+        <div class="container">
             
-            await fetch(`${DB}/item_${Date.now()}.json`, {
-                method: 'PUT', body: JSON.stringify(d)
+            <div class="panel">
+                <h2><i class="fas fa-database"></i> INPUT DATA LIBRARY</h2>
+                
+                <div class="group">
+                    <label>JUDUL DOKUMEN / LAGU</label>
+                    <input id="inpTitle" placeholder="Contoh: Node-Field Theory Vol.1" onkeyup="updatePreview()">
+                </div>
+
+                <div class="form-grid">
+                    <div class="group">
+                        <label>KATEGORI</label>
+                        <select id="inpCat" onchange="updatePreview()">
+                            <option value="Research">Research Log (Jurnal)</option>
+                            <option value="NFT Theory">NFT Theory (Teori)</option>
+                            <option value="Music">Music / Audio (Lagu)</option>
+                            <option value="Archive">General Archive</option>
+                        </select>
+                    </div>
+                    <div class="group">
+                        <label>TANGGAL</label>
+                        <input type="text" id="inpDate" value="" disabled style="color:#555;">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <label>DESKRIPSI SINGKAT</label>
+                    <textarea id="inpDesc" rows="3" placeholder="Jelaskan isi konten..." onkeyup="updatePreview()"></textarea>
+                </div>
+
+                <div class="group">
+                    <label>LINK FILE (PDF / MP3)</label>
+                    <input id="inpLink" placeholder="https://..." onkeyup="log('Link updated...')">
+                </div>
+
+                <div class="group">
+                    <label>LINK GAMBAR (COVER)</label>
+                    <input id="inpThumb" placeholder="https://..." onkeyup="updatePreview()">
+                    <small style="color:#555; font-size:0.7rem;">*Biarkan kosong untuk gambar default Nebula.</small>
+                </div>
+
+                <button class="btn-submit" onclick="uploadData()">TRANSMIT DATA <i class="fas fa-bolt"></i></button>
+            </div>
+
+            <div class="preview-area">
+                <div class="preview-label">LIVE VISUAL PREVIEW</div>
+                <div class="tome">
+                    <div class="cover">
+                        <span class="cat-badge" id="prevCat">CATEGORY</span>
+                        <img id="prevImg" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                    </div>
+                    <div class="details">
+                        <div class="tome-title" id="prevTitle">Judul Dokumen...</div>
+                        <div class="tome-desc" id="prevDesc">Deskripsi akan muncul di sini secara real-time saat Anda mengetik...</div>
+                        <div class="fake-btn"><i class="fas fa-eye"></i> ACTION BUTTON</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="console" id="console">
+            <div class="log-line">> System initialized...</div>
+            <div class="log-line">> Waiting for admin input...</div>
+        </div>
+
+    </div>
+
+<script>
+    // --- 1. CONFIGURATION ---
+    const DB_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library";
+    const ACCESS_KEY = "IEA2026"; // PASSWORD ADMIN
+    const DEF_IMG = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+
+    // --- 2. AUTH SYSTEM ---
+    function checkAuth() {
+        const input = document.getElementById('passcode').value;
+        if(input === ACCESS_KEY) {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'flex';
+            document.getElementById('inpDate').value = new Date().toLocaleDateString();
+            log("User Authenticated. Welcome, Commander.");
+        } else {
+            document.getElementById('auth-msg').innerText = "INVALID PASSCODE";
+            log("Auth Failed: Invalid Attempt.");
+        }
+    }
+
+    // --- 3. LIVE PREVIEW ---
+    function updatePreview() {
+        const title = document.getElementById('inpTitle').value;
+        const desc = document.getElementById('inpDesc').value;
+        const cat = document.getElementById('inpCat').value;
+        const thumb = document.getElementById('inpThumb').value;
+
+        document.getElementById('prevTitle').innerText = title || "Judul Dokumen...";
+        document.getElementById('prevDesc').innerText = desc || "Deskripsi akan muncul di sini...";
+        document.getElementById('prevCat').innerText = cat;
+        
+        // Cek gambar valid atau tidak
+        const imgEl = document.getElementById('prevImg');
+        imgEl.src = (thumb.length > 5) ? thumb : DEF_IMG;
+        imgEl.onerror = () => { imgEl.src = DEF_IMG; };
+    }
+
+    // --- 4. UPLOAD LOGIC ---
+    async function uploadData() {
+        const title = document.getElementById('inpTitle').value;
+        const cat = document.getElementById('inpCat').value;
+        const link = document.getElementById('inpLink').value;
+        const thumb = document.getElementById('inpThumb').value;
+        const desc = document.getElementById('inpDesc').value;
+
+        if(!title || !link) {
+            log("ERROR: Judul dan Link File Wajib Diisi!", "err");
+            alert("Harap isi Judul dan Link File.");
+            return;
+        }
+
+        log("Initiating transmission to Firebase...", "info");
+
+        const payload = {
+            title: title,
+            category: cat,
+            link: link,
+            thumbnail: thumb,
+            description: desc,
+            timestamp: Date.now(),
+            date: new Date().toLocaleDateString()
+        };
+
+        try {
+            // Gunakan ID unik berdasarkan waktu
+            const uniqueID = "item_" + Date.now();
+            const response = await fetch(`${DB_URL}/${uniqueID}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(payload)
             });
 
-            document.getElementById('status').innerText = "SUCCESS! DATA SECURED.";
-            setTimeout(()=>location.reload(), 1500);
+            if(response.ok) {
+                log(`Upload Success! ID: ${uniqueID}`, "succ");
+                alert("DATA BERHASIL DISIMPAN!");
+                resetForm();
+            } else {
+                throw new Error("Server Rejected Request");
+            }
+        } catch(e) {
+            log(`FATAL ERROR: ${e}`, "err");
         }
-    </script>
+    }
+
+    // --- 5. UTILS ---
+    function resetForm() {
+        document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+        document.getElementById('inpDate').value = new Date().toLocaleDateString();
+        updatePreview();
+        log("Form reset. Ready for next input.");
+    }
+
+    function log(msg, type="") {
+        const cons = document.getElementById('console');
+        const line = document.createElement('div');
+        line.className = `log-line log-${type}`;
+        line.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
+        cons.prepend(line);
+    }
+
+    // Auto focus password
+    window.onload = () => document.getElementById('passcode').focus();
+
+</script>
+
 </body>
 </html>
