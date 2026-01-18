@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#050505">
+    <title>IEA ROYAL ARCHIVES</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #050505;
+            --gold: #d4af37;
+            --gold-dim: #8a7024;
+            --text: #f0f0f0;
+            --card-bg: rgba(15, 15, 20, 0.9);
+            --border: rgba(212, 175, 55, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            /* Background Mewah */
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 60%),
+                url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-size: cover; background-attachment: fixed; background-blend-mode: multiply;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center; padding: 40px 20px 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            border-bottom: 1px solid var(--gold-dim);
+            position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+        }
+        .back-btn {
+            position: absolute; top: 20px; left: 20px;
+            color: var(--gold); font-size: 1.2rem; cursor: pointer;
+            border: 1px solid var(--gold-dim); padding: 8px 15px; border-radius: 50px;
+            transition: 0.3s; background: rgba(0,0,0,0.5);
+        }
+        .back-btn:hover { background: var(--gold); color: #000; }
+
+        h1 {
+            font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold);
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 10px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+        .subtitle { font-family: 'Orbitron'; font-size: 0.7rem; color: #888; letter-spacing: 2px; margin-top: 5px; }
+
+        /* --- CONTROLS --- */
+        .controls {
+            padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px;
+        }
+        .search-bar {
+            width: 100%; max-width: 500px; position: relative;
+        }
+        .search-bar input {
+            width: 100%; padding: 12px 20px; border-radius: 30px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--gold-dim);
+            color: var(--gold); font-family: 'Inter'; transition: 0.3s;
+        }
+        .search-bar input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        
+        .filters { display: flex; gap: 10px; overflow-x: auto; width: 100%; justify-content: center; padding-bottom: 10px; }
+        .tag {
+            padding: 6px 16px; border: 1px solid var(--gold-dim); border-radius: 20px;
+            color: #aaa; font-size: 0.75rem; white-space: nowrap; cursor: pointer; transition: 0.3s;
+            font-family: 'Orbitron'; letter-spacing: 1px;
+        }
+        .tag.active, .tag:hover { background: var(--gold); color: #000; font-weight: bold; }
+
+        /* --- GRID CONTENT --- */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px; padding: 10px 20px 100px; max-width: 1200px; margin: 0 auto;
+        }
+
+        /* --- ROYAL CARD --- */
+        .tome {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; position: relative;
+            display: flex; flex-direction: column; transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .tome:hover { transform: translateY(-5px); border-color: var(--gold); }
+        
+        /* Ornamen Sudut Emas */
+        .tome::before {
+            content: ''; position: absolute; top: 0; left: 0; 
+            border-top: 20px solid var(--gold); border-right: 20px solid transparent; 
+            width: 0; z-index: 2; opacity: 0.7;
+        }
+
+        .cover {
+            height: 160px; overflow: hidden; position: relative;
+            border-bottom: 1px solid var(--gold-dim);
+        }
+        .cover img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.8; }
+        .tome:hover .cover img { transform: scale(1.1); opacity: 1; }
+        
+        .cat-badge {
+            position: absolute; bottom: 10px; right: 10px;
+            background: #000; color: var(--gold); font-size: 0.6rem;
+            padding: 3px 8px; border: 1px solid var(--gold); font-family: 'Orbitron';
+        }
+
+        .details { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+        .tome-title {
+            font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold);
+            margin-bottom: 8px; line-height: 1.3; font-weight: 700;
+        }
+        .tome-desc {
+            font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 20px;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .btn-open {
+            margin-top: auto; width: 100%; padding: 10px;
+            background: transparent; border: 1px solid var(--gold-dim);
+            color: var(--gold); font-family: 'Orbitron'; font-size: 0.8rem;
+            cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-open:hover { background: var(--gold); color: #000; }
+
+        /* --- MUSIC PLAYER --- */
+        #player {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 450px; background: rgba(10,10,10,0.95);
+            border: 1px solid var(--gold); border-radius: 40px; padding: 12px 25px;
+            display: none; align-items: center; gap: 15px; z-index: 100;
+            backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideUp { from{transform:translate(-50%, 100%);} to{transform:translate(-50%, 0);} }
+
+        .disc-anim { font-size: 1.8rem; color: var(--gold); animation: spin 3s linear infinite; }
+        @keyframes spin { 100%{transform:rotate(360deg);} }
+        .track-info { flex: 1; overflow: hidden; white-space: nowrap; }
+        .t-name { font-family: 'Cinzel'; color: #fff; font-size: 0.9rem; font-weight: bold; }
+        .t-stat { font-size: 0.65rem; color: var(--gold); font-family: 'Orbitron'; }
+        
+        .p-btn { background: none; border: none; color: var(--gold); font-size: 1.2rem; cursor: pointer; }
+
+        /* LOADER */
+        #loader { text-align: center; margin-top: 50px; font-family: 'Orbitron'; color: #666; font-size: 0.8rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></div>
+        <h1>Royal Archives</h1>
+        <div class="subtitle">REPOSITORY IEA</div>
+    </header>
+
+    <div class="controls">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search Scrolls & Artefacts..." onkeyup="filter()">
+        </div>
+        <div class="filters">
+            <div class="tag active" onclick="filterCat('all', this)">ALL</div>
+            <div class="tag" onclick="filterCat('Music', this)">MUSIC</div>
+            <div class="tag" onclick="filterCat('Book', this)">BOOKS</div>
+            <div class="tag" onclick="filterCat('Research', this)">RESEARCH</div>
+        </div>
+    </div>
+
+    <div id="loader">DECRYPTING ARCHIVES...</div>
+    <div class="grid" id="grid"></div>
+
+    <div id="player">
+        <div class="disc-anim"><i class="fas fa-compact-disc"></i></div>
+        <div class="track-info">
+            <div class="t-name" id="mTitle">Unknown Track</div>
+            <div class="t-stat">NOW PLAYING</div>
+        </div>
+        <button class="p-btn" onclick="stopMusic()"><i class="fas fa-stop"></i></button>
+        <audio id="audioEl"></audio>
+    </div>
+
+    <script>
+        // --- DATABASE CONFIG ---
+        const DB = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library.json";
+        let dataStore = [];
+        const DEF_IMG = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+
+        // --- INIT ---
+        window.onload = async () => {
+            try {
+                const req = await fetch(DB);
+                const json = await req.json();
+                document.getElementById('loader').style.display = 'none';
+                
+                if(json) {
+                    dataStore = Object.values(json).reverse();
+                    render(dataStore);
+                } else {
+                    document.getElementById('grid').innerHTML = "<div style='text-align:center;width:100%;color:#444;'>Archives Empty.</div>";
+                }
+            } catch(e) { console.log(e); }
+        };
+
+        // --- RENDER LOGIC ---
+        function render(items) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = "";
+            
+            items.forEach(item => {
+                // Deteksi Tipe (Musik/Buku)
+                const isMusic = (item.category && (item.category.toLowerCase().includes('music') || item.category.toLowerCase().includes('audio')));
+                const thumb = (item.thumbnail && item.thumbnail.length > 5) ? item.thumbnail : DEF_IMG;
+                
+                const card = document.createElement('div');
+                card.className = 'tome';
+                card.innerHTML = `
+                    <div class="cover">
+                        <span class="cat-badge">${item.category || 'FILE'}</span>
+                        <img src="${thumb}" onerror="this.src='${DEF_IMG}'">
+                    </div>
+                    <div class="details">
+                        <div class="tome-title">${item.title}</div>
+                        <div class="tome-desc">${item.description || 'No data description.'}</div>
+                        ${isMusic 
+                            ? `<button class="btn-open" onclick="play('${item.link}', '${item.title}')"><i class="fas fa-play"></i> PLAY AUDIO</button>`
+                            : `<a href="${item.link}" target="_blank" class="btn-open"><i class="fas fa-book-open"></i> OPEN FILE</a>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- MUSIC ---
+        function play(url, title) {
+            const p = document.getElementById('player');
+            const a = document.getElementById('audioEl');
+            document.getElementById('mTitle').innerText = title;
+            p.style.display = 'flex';
+            a.src = url; a.play();
+        }
+        function stopMusic() {
+            document.getElementById('audioEl').pause();
+            document.getElementById('player').style.display = 'none';
+        }
+
+        // --- FILTERS ---
+        function filterCat(cat, el) {
+            document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+            if(el) el.classList.add('active');
+            
+            if(cat === 'all') render(dataStore);
+            else if(cat === 'Music') render(dataStore.filter(i => i.category.toLowerCase().includes('music') || i.category.toLowerCase().includes('audio')));
+            else if(cat === 'Book') render(dataStore.filter(i => !i.category.toLowerCase().includes('music') && !i.category.toLowerCase().includes('audio')));
+            else render(dataStore.filter(i => i.category === cat));
+        }
+
+        function filter() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            render(dataStore.filter(i => i.title.toLowerCase().includes(q)));
+        }
+    </script>
+</body>
+</html>
