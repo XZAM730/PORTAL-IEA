@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEA ADMIN COMMAND</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0a0f; color: #00f6ff; font-family: 'JetBrains Mono'; padding: 20px; text-align: center; }
+        h2 { font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        input, select, textarea {
+            width: 100%; max-width: 500px; padding: 12px; margin-bottom: 15px;
+            background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; outline: none;
+        }
+        input:focus { border-color: #00f6ff; }
+        button {
+            width: 100%; max-width: 500px; padding: 15px; background: #00f6ff; color: #000;
+            font-weight: bold; border: none; cursor: pointer; font-family: 'Orbitron';
+        }
+        #status { margin-top: 20px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <h2>IEA LIBRARY INPUT</h2>
+
+    <input id="title" placeholder="JUDUL DOKUMEN / LAGU">
+    
+    <select id="cat">
+        <option value="NFT Theory">NFT Theory (Teori)</option>
+        <option value="Research">Research Log (Riset)</option>
+        <option value="Music">Music / Audio (Musik)</option>
+        <option value="Archive">Archive (Lainnya)</option>
+    </select>
+
+    <input id="link" placeholder="LINK FILE (PDF / MP3)">
+    <input id="thumb" placeholder="LINK GAMBAR COVER (Opsional)">
+    <textarea id="desc" rows="3" placeholder="Deskripsi Singkat..."></textarea>
+
+    <button onclick="send()">UPLOAD DATA</button>
+    <div id="status">READY TO TRANSMIT</div>
+
+    <script>
+        // SECURITY SIMPLE
+        const PASS = "IEA2026";
+        if(prompt("ADMIN PASSCODE:") !== PASS) { document.body.innerHTML="ACCESS DENIED"; throw "Stop"; }
+
+        const DB = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library";
+
+        async function send() {
+            const d = {
+                title: document.getElementById('title').value,
+                category: document.getElementById('cat').value,
+                link: document.getElementById('link').value,
+                thumbnail: document.getElementById('thumb').value,
+                description: document.getElementById('desc').value,
+                ts: Date.now()
+            };
+
+            if(!d.title || !d.link) return alert("JUDUL & LINK WAJIB!");
+
+            document.getElementById('status').innerText = "TRANSMITTING...";
+            
+            await fetch(`${DB}/item_${Date.now()}.json`, {
+                method: 'PUT', body: JSON.stringify(d)
+            });
+
+            document.getElementById('status').innerText = "SUCCESS! DATA SECURED.";
+            setTimeout(()=>location.reload(), 1500);
+        }
+    </script>
+</body>
+</html>
