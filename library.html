@@ -5,444 +5,532 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#020204">
     <meta name="description" content="IEA Royal Archives - Repository Knowledge Base">
+    <meta name="author" content="IEA Architect">
     <title>IEA | ROYAL ARCHIVES</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@100;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =========================================
-           1. CORE VARIABLES & RESET
-           ========================================= */
+        /* ==========================================================================
+           1. CORE SYSTEM VARIABLES (THEME CONFIGURATION)
+           ========================================================================== */
         :root {
-            /* PALET WARNA IEA: CONSTELLATION */
+            /* --- BASE COLORS (VOID THEME) --- */
             --bg-void: #010103;
-            --bg-panel: rgba(10, 12, 20, 0.85);
+            --bg-panel: rgba(12, 14, 22, 0.9);
+            --bg-glass: rgba(255, 255, 255, 0.03);
             
-            /* Primary Accents */
+            /* --- PRIMARY ACCENTS (CYAN & RED NEON) --- */
             --cyan: #00f2ff;
-            --cyan-glow: rgba(0, 242, 255, 0.4);
-            --cyan-dim: rgba(0, 242, 255, 0.1);
+            --cyan-glow: rgba(0, 242, 255, 0.6);
+            --cyan-dim: rgba(0, 242, 255, 0.15);
             
             --red: #ff0055;
-            --red-glow: rgba(255, 0, 85, 0.4);
-            --red-dim: rgba(255, 0, 85, 0.1);
+            --red-glow: rgba(255, 0, 85, 0.6);
+            --red-dim: rgba(255, 0, 85, 0.15);
             
-            --gold: #ffd700; /* Untuk elemen Royal khusus */
+            --gold: #ffd700;
+            --holo: rgba(255, 255, 255, 0.8);
             
-            /* Text Colors */
+            /* --- TYPOGRAPHY --- */
+            --font-royal: 'Cinzel', serif;
+            --font-tech: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --font-term: 'Share Tech Mono', monospace;
+            
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             --text-dark: #000000;
             
-            /* Borders & Shadows */
+            /* --- UI ELEMENTS --- */
             --border-light: rgba(255, 255, 255, 0.08);
             --border-active: rgba(0, 242, 255, 0.5);
-            --shadow-card: 0 15px 40px rgba(0,0,0,0.6);
-            --neon-shadow: 0 0 15px var(--cyan);
             
-            /* Animation Curves */
+            --shadow-card: 0 20px 50px rgba(0,0,0,0.8);
+            --neon-shadow: 0 0 20px var(--cyan);
+            --red-shadow: 0 0 20px var(--red);
+            
+            /* --- ANIMATION TIMING --- */
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
+        /* ==========================================================================
+           2. GLOBAL RESET & UTILITIES
+           ========================================================================== */
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none; /* Firefox Hide */
         }
 
-        /* Hide Scrollbar Chrome/Safari */
+        /* Hide Scrollbar for Chrome/Safari/Opera */
         *::-webkit-scrollbar { display: none; }
+
+        ::selection {
+            background: var(--cyan);
+            color: #000;
+        }
 
         body {
             background-color: var(--bg-void);
             color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
+            font-family: var(--font-body);
+            font-weight: 500;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
             cursor: default;
+            line-height: 1.6;
         }
 
-        a { text-decoration: none; color: inherit; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
         button { cursor: pointer; border: none; background: none; }
+        img { display: block; max-width: 100%; }
 
-        /* =========================================
-           2. BACKGROUND FX & PARTICLES
-           ========================================= */
+        /* ==========================================================================
+           3. BACKGROUND FX SYSTEM
+           ========================================================================== */
         #star-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            opacity: 0.7;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2; opacity: 0.8;
             pointer-events: none;
         }
 
         #dust-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
             overflow: hidden;
+            mix-blend-mode: screen;
         }
 
         .dust-particle {
             position: absolute;
-            background: radial-gradient(circle, #fff, transparent);
+            background: radial-gradient(circle, #fff 0%, transparent 70%);
             border-radius: 50%;
             opacity: 0;
-            animation: floatUp linear infinite;
+            animation: floatDust linear infinite;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) translateX(20px) scale(1); opacity: 0; }
+        @keyframes floatDust {
+            0% { transform: translateY(110vh) translateX(0) scale(0.2); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) translateX(50px) scale(1.2); opacity: 0; }
         }
 
-        /* =========================================
-           3. INTRO SEQUENCE & LOADING
-           ========================================= */
-        /* Phase 1: Welcome Text */
-        #intro-welcome {
-            position: fixed; inset: 0; background: var(--bg-void); z-index: 10000;
+        /* ==========================================================================
+           4. INTRO SEQUENCE (CINEMATIC BOOT)
+           ========================================================================== */
+        /* Container Full Screen */
+        #intro-terminal {
+            position: fixed; inset: 0; background: #000; z-index: 20000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: var(--font-term); color: var(--cyan);
+        }
+
+        .boot-log {
+            font-size: 14px; text-align: left; width: 300px;
+            margin-bottom: 20px; color: #0f0; text-shadow: 0 0 5px #0f0;
+        }
+
+        .typing-effect::after {
+            content: '█'; animation: blinkCursor 0.8s infinite; margin-left: 5px;
+        }
+
+        @keyframes blinkCursor { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+        /* Welcome Text Reveal */
+        #intro-welcome {
+            position: absolute; text-align: center; opacity: 0;
             transition: opacity 1s ease;
         }
         
         .welcome-msg {
-            font-family: 'Cinzel', serif; font-size: 2.5rem; letter-spacing: 5px; color: transparent;
+            font-family: var(--font-royal); font-size: 3rem; letter-spacing: 8px; color: transparent;
             background: linear-gradient(90deg, var(--cyan), #fff, var(--red));
             -webkit-background-clip: text; background-clip: text;
-            opacity: 0; animation: textFadeIn 4s forwards; text-align: center;
+            transform: scale(0.9); animation: zoomInText 3s forwards;
         }
         
-        /* Phase 2: Logo Loader */
-        #loader-overlay {
-            position: fixed; inset: 0; background: var(--bg-void); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1s ease; opacity: 0; pointer-events: none; /* Hidden initially */
+        .welcome-sub {
+            font-family: var(--font-tech); font-size: 1rem; letter-spacing: 5px; 
+            color: var(--text-muted); margin-top: 15px; text-transform: uppercase;
         }
 
-        .loader-svg { width: 150px; height: 150px; overflow: visible; filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+        @keyframes zoomInText { to { transform: scale(1); } }
+
+        /* Loader Ring System */
+        #loader-overlay {
+            position: fixed; inset: 0; background: var(--bg-void); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s var(--ease-out-expo); opacity: 0; pointer-events: none;
+        }
+
+        .loader-wrapper { position: relative; width: 200px; height: 200px; }
+        .loader-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 25px var(--cyan-glow)); }
         
-        /* Cincin Logo Berputar */
-        .ring-path { fill: none; stroke-width: 4; vector-effect: non-scaling-stroke; }
+        .ring-path { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
         .ring-cyan { stroke: var(--cyan); transform-origin: center; animation: ringSpin 3s linear infinite; }
         .ring-red { stroke: var(--red); transform-origin: center; animation: ringSpinRev 2s linear infinite; }
+        .ring-inner { stroke: #fff; stroke-width: 1; opacity: 0.5; transform-origin: center; animation: pulseRing 2s infinite; }
         
         @keyframes ringSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes ringSpinRev { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
-        
+        @keyframes pulseRing { 0%,100%{transform:scale(0.9); opacity:0.3;} 50%{transform:scale(1); opacity:0.6;} }
+
         .loading-bar-container {
-            width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 30px;
-            position: relative; overflow: hidden;
+            width: 250px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 40px;
+            position: relative; overflow: hidden; border-radius: 2px;
         }
         .loading-bar {
             position: absolute; left: 0; top: 0; height: 100%; width: 100%;
-            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-            animation: loadScan 1.5s infinite ease-in-out;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--red), transparent);
+            animation: loadScan 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes loadScan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        
-        .access-text {
-            font-family: 'Orbitron'; font-size: 10px; letter-spacing: 4px; margin-top: 10px;
-            color: var(--text-muted); animation: pulseText 1s infinite alternate;
-        }
-        
-        @keyframes textFadeIn { 
-            0% { opacity: 0; transform: scale(0.9); } 
-            20% { opacity: 1; transform: scale(1); } 
-            80% { opacity: 1; transform: scale(1); } 
-            100% { opacity: 0; transform: scale(1.1); } 
-        }
 
-        /* =========================================
-           4. MAIN HEADER LAYOUT
-           ========================================= */
+        /* ==========================================================================
+           5. MAIN HEADER (3D SPACE)
+           ========================================================================== */
         #main-wrapper {
             opacity: 0; transition: opacity 1.5s ease; display: none;
         }
 
         header {
             position: relative;
-            height: 450px;
+            height: 500px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border-bottom: 1px solid var(--border-light);
-            background: radial-gradient(circle at 50% 100%, rgba(0, 242, 255, 0.05), transparent 70%);
+            background: radial-gradient(circle at 50% 120%, rgba(0, 242, 255, 0.08), transparent 60%);
             overflow: hidden;
+            perspective: 1000px;
         }
 
-        /* 3D Grid Floor Animation */
+        /* 3D Grid Floor */
         .grid-horizon {
-            position: absolute; bottom: -50%; left: -50%; width: 200%; height: 100%;
+            position: absolute; bottom: -40%; left: -50%; width: 200%; height: 100%;
             background-image: 
                 linear-gradient(var(--border-light) 1px, transparent 1px),
                 linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: perspective(600px) rotateX(60deg);
-            animation: gridMove 20s linear infinite;
-            opacity: 0.3; mask-image: linear-gradient(to top, black, transparent);
-            -webkit-mask-image: linear-gradient(to top, black, transparent);
+            background-size: 60px 60px;
+            transform: rotateX(60deg);
+            animation: gridMove 30s linear infinite;
+            opacity: 0.2; 
+            mask-image: linear-gradient(to top, black 20%, transparent 90%);
+            -webkit-mask-image: linear-gradient(to top, black 20%, transparent 90%);
             pointer-events: none;
         }
-        @keyframes gridMove { 0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 100% { transform: perspective(600px) rotateX(60deg) translateY(50px); } }
+        @keyframes gridMove { 0% { transform: rotateX(60deg) translateY(0); } 100% { transform: rotateX(60deg) translateY(60px); } }
 
-        /* Top Navigation */
+        /* Top Nav Bar */
         .top-nav {
             position: absolute; top: 0; left: 0; width: 100%;
-            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            padding: 30px 50px; display: flex; justify-content: space-between; align-items: center;
             z-index: 10;
         }
         
         .nav-btn {
-            display: flex; align-items: center; gap: 10px;
-            color: var(--cyan); font-family: 'Orbitron'; font-size: 12px; font-weight: bold;
-            border: 1px solid var(--border-light); padding: 8px 20px; border-radius: 30px;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-            transition: 0.3s;
+            display: flex; align-items: center; gap: 12px;
+            color: var(--cyan); font-family: var(--font-tech); font-size: 11px; font-weight: 700;
+            border: 1px solid var(--border-light); padding: 10px 25px; border-radius: 4px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+            letter-spacing: 2px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
-        .nav-btn:hover { background: var(--cyan); color: #000; box-shadow: var(--neon-shadow); }
+        .nav-btn:hover { background: var(--cyan-dim); border-color: var(--cyan); color: #fff; text-shadow: 0 0 10px var(--cyan); }
+        .nav-btn i { font-size: 14px; }
 
-        /* Main Logo & Title Area */
+        .connection-status {
+            font-family: var(--font-code); font-size: 10px; color: #0f0;
+            display: flex; align-items: center; gap: 8px; text-shadow: 0 0 5px #0f0;
+        }
+        .status-blink { width: 6px; height: 6px; background: #0f0; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* Main Branding */
         .logo-container {
-            position: relative; z-index: 5; margin-bottom: 20px;
+            position: relative; z-index: 5; margin-bottom: 25px;
             animation: floatLogo 6s ease-in-out infinite;
         }
-        @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+        @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
 
-        .main-logo-svg { width: 140px; height: 140px; filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+        .main-logo-svg { width: 160px; height: 160px; filter: drop-shadow(0 0 30px var(--cyan-glow)); }
 
         .title-block { text-align: center; z-index: 5; }
         .iea-sub {
-            font-family: 'Orbitron'; font-size: 12px; letter-spacing: 8px; color: var(--cyan);
-            margin-bottom: 5px; text-transform: uppercase;
+            font-family: var(--font-tech); font-size: 14px; letter-spacing: 12px; color: var(--cyan);
+            margin-bottom: 10px; text-transform: uppercase; font-weight: 600;
+            text-shadow: 0 0 10px var(--cyan-glow);
         }
         .royal-title {
-            font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 900; letter-spacing: 2px;
-            background: linear-gradient(180deg, #fff, #999); -webkit-background-clip: text; color: transparent;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            font-family: var(--font-royal); font-size: 4rem; font-weight: 800; letter-spacing: 4px;
+            background: linear-gradient(180deg, #fff 20%, #888 100%); 
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 20px 40px rgba(0,0,0,0.9);
+            position: relative;
         }
         
-        /* Decorative Line */
         .deco-line {
-            width: 2px; height: 60px; background: linear-gradient(to bottom, var(--cyan), transparent);
-            margin: 20px auto 0;
+            width: 2px; height: 80px; background: linear-gradient(to bottom, var(--cyan), transparent);
+            margin: 25px auto 0;
+            box-shadow: 0 0 15px var(--cyan);
         }
 
-        /* =========================================
-           5. CONTROL BAR (SEARCH & FILTER)
-           ========================================= */
+        /* ==========================================================================
+           6. CONTROL DOCK (SEARCH & FILTER)
+           ========================================================================== */
         .control-dock {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(2, 2, 4, 0.8); backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 2, 4, 0.85); backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-light);
-            padding: 15px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;
+            padding: 20px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .search-wrapper { position: relative; flex: 1; max-width: 400px; }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-wrapper { position: relative; flex: 1; max-width: 500px; }
+        .search-icon { 
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%); 
+            color: var(--cyan); font-size: 14px;
+        }
         .search-input {
-            width: 100%; padding: 12px 20px 12px 45px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
-            border-radius: 4px; color: #fff; font-family: 'Rajdhani'; font-size: 16px;
+            width: 100%; padding: 15px 20px 15px 50px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-light);
+            border-radius: 4px; color: #fff; font-family: var(--font-body); font-size: 16px; letter-spacing: 1px;
             transition: 0.3s;
         }
-        .search-input:focus { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-dim); }
+        .search-input:focus { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-dim); background: rgba(0, 242, 255, 0.02); }
 
-        .filter-wrapper { display: flex; gap: 10px; }
+        .filter-wrapper { display: flex; gap: 12px; }
         .filter-chip {
-            padding: 8px 16px; border: 1px solid var(--border-light); border-radius: 4px;
-            color: var(--text-muted); font-family: 'Orbitron'; font-size: 10px; font-weight: bold;
-            transition: 0.3s; position: relative; overflow: hidden;
+            padding: 10px 20px; border: 1px solid var(--border-light); border-radius: 4px;
+            color: var(--text-muted); font-family: var(--font-tech); font-size: 11px; font-weight: 700;
+            transition: 0.3s; position: relative; overflow: hidden; background: transparent;
+            display: flex; align-items: center; gap: 8px;
         }
         .filter-chip::before {
             content:''; position: absolute; top:0; left:0; width:0%; height:100%;
-            background: var(--cyan-dim); transition: 0.3s; z-index: -1;
+            background: var(--cyan-dim); transition: 0.3s var(--ease-out-expo); z-index: -1;
         }
-        .filter-chip:hover, .filter-chip.active { color: var(--cyan); border-color: var(--cyan); }
+        .filter-chip:hover, .filter-chip.active { color: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-dim); }
         .filter-chip.active::before { width: 100%; }
 
-        /* =========================================
-           6. CONTENT GRID & CARDS
-           ========================================= */
+        /* ==========================================================================
+           7. LIBRARY GRID & ARTIFACT CARDS
+           ========================================================================== */
         .library-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 50px 5%;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            padding: 60px 5% 150px; /* Bottom padding for music player */
             max-width: 1600px; margin: 0 auto;
-            perspective: 1200px; /* Enable 3D Space */
+            perspective: 2000px;
         }
 
-        /* --- THE ARTIFACT CARD --- */
+        /* --- ARTIFACT CARD DESIGN --- */
         .artifact {
             position: relative;
             background: var(--bg-panel);
             border: 1px solid var(--border-light);
-            border-radius: 8px;
-            height: 420px;
+            border-radius: 12px;
+            height: 480px; /* Taller for new buttons */
             display: flex; flex-direction: column;
             overflow: hidden;
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
             transform-style: preserve-3d;
         }
 
-        /* 3D Hover State handled by JS, Visual styles here */
+        /* Interactive States */
         .artifact:hover {
             border-color: var(--cyan);
-            box-shadow: 0 0 30px var(--cyan-dim);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
             z-index: 5;
         }
         .artifact::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
-            opacity: 0; transition: 0.3s; pointer-events: none;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+            opacity: 0; transition: 0.4s; pointer-events: none;
         }
         .artifact:hover::after { opacity: 1; }
 
-        /* Card Visual */
+        /* Card Visual Header */
         .art-visual {
-            height: 200px; position: relative; overflow: hidden;
+            height: 220px; position: relative; overflow: hidden;
             border-bottom: 1px solid var(--border-light);
+            background: #000;
         }
         .art-img {
             width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.5s var(--ease-out-expo);
+            transition: transform 0.6s var(--ease-out-expo); opacity: 0.9;
         }
-        .artifact:hover .art-img { transform: scale(1.1); filter: contrast(1.1); }
+        .artifact:hover .art-img { transform: scale(1.1); opacity: 1; filter: contrast(1.1) brightness(1.1); }
 
+        /* Type Badge */
         .art-badge {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
             border: 1px solid var(--cyan); color: var(--cyan);
-            padding: 4px 8px; font-family: 'Orbitron'; font-size: 8px;
-            border-radius: 2px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            padding: 6px 12px; font-family: var(--font-tech); font-size: 9px; font-weight: 800;
+            border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            letter-spacing: 1px; z-index: 2;
         }
 
-        /* Card Body */
+        /* Card Content Body */
         .art-body {
-            padding: 20px; flex: 1; display: flex; flex-direction: column;
-            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,242,255,0.02));
+            padding: 25px; flex: 1; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, rgba(12, 14, 22, 0.9), rgba(0, 242, 255, 0.03));
         }
 
         .art-title {
-            font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff;
-            margin-bottom: 8px; line-height: 1.3;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-family: var(--font-royal); font-size: 1.2rem; color: #fff;
+            margin-bottom: 10px; line-height: 1.4; font-weight: 700;
+            text-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
         .art-meta {
-            display: flex; gap: 10px; font-size: 10px; color: var(--text-muted);
-            margin-bottom: 12px; font-family: 'JetBrains Mono';
+            display: flex; gap: 15px; font-size: 11px; color: var(--text-muted);
+            margin-bottom: 15px; font-family: var(--font-code); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;
         }
-        .art-meta span i { color: var(--red); margin-right: 4px; }
+        .art-meta span { display: flex; align-items: center; gap: 5px; }
+        .art-meta i { color: var(--red); }
 
         .art-desc {
-            font-size: 13px; color: #888; line-height: 1.5;
+            font-size: 13px; color: #888; line-height: 1.6;
             display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-            margin-bottom: auto; /* Push button to bottom */
+            margin-bottom: auto;
         }
 
-        /* Action Button */
+        /* --- ACTION BUTTONS (NEW: DOWNLOAD) --- */
+        .art-actions {
+            margin-top: 20px; display: grid; grid-template-columns: 1fr 50px; gap: 10px;
+        }
+
+        /* Primary Button (Play/View) */
         .art-btn {
-            margin-top: 15px; width: 100%; padding: 12px;
-            background: transparent; border: 1px solid var(--border-light);
-            color: var(--text-main); font-family: 'Orbitron'; font-size: 10px; font-weight: bold;
+            padding: 12px; background: transparent; border: 1px solid var(--border-light);
+            color: var(--text-main); font-family: var(--font-tech); font-size: 10px; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: 0.3s; position: relative; overflow: hidden;
+            transition: 0.3s; position: relative; overflow: hidden; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
         .art-btn::before {
-            content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 0%;
-            background: var(--cyan); transition: 0.3s;
+            content: ''; position: absolute; left: 0; bottom: 0; height: 100%; width: 0%;
+            background: var(--cyan); transition: 0.3s var(--ease-out-expo); z-index: -1;
         }
-        .art-btn:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+        .art-btn:hover { border-color: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan-dim); }
         .art-btn:hover::before { width: 100%; }
+
+        /* Secondary Button (Download) */
+        .art-btn-dl {
+            padding: 12px; border: 1px solid var(--border-light); border-radius: 4px;
+            color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; background: rgba(255,255,255,0.02);
+        }
+        .art-btn-dl:hover {
+            border-color: var(--red); color: var(--red); background: rgba(255, 0, 85, 0.1);
+            box-shadow: 0 0 15px var(--red-dim);
+        }
+        .art-btn-dl i { font-size: 14px; }
 
         /* Empty State */
         .empty-state {
             grid-column: 1 / -1; text-align: center; padding: 100px 0; color: var(--text-muted);
+            animation: fadeIn 1s ease;
         }
-        .empty-icon { font-size: 4rem; color: var(--border-light); margin-bottom: 20px; display: block; }
+        .empty-icon { font-size: 5rem; color: var(--border-light); margin-bottom: 25px; display: block; opacity: 0.5; }
 
-        /* =========================================
-           7. MUSIC PLAYER DECK (ADVANCED)
-           ========================================= */
+        /* ==========================================================================
+           8. MUSIC PLAYER DECK (FLOATING)
+           ========================================================================== */
         #music-deck {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(150%);
-            width: 90%; max-width: 600px; height: 80px;
-            background: rgba(10, 10, 15, 0.95);
-            border: 1px solid var(--cyan); border-radius: 50px;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
-            backdrop-filter: blur(20px); z-index: 100;
-            display: flex; align-items: center; padding: 0 30px; gap: 20px;
-            transition: transform 0.6s var(--ease-out-expo);
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(200%);
+            width: 90%; max-width: 650px; height: 90px;
+            background: rgba(8, 10, 15, 0.95);
+            border: 1px solid var(--cyan); border-radius: 60px;
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(25px); z-index: 9000;
+            display: flex; align-items: center; padding: 0 35px; gap: 25px;
+            transition: transform 0.8s var(--ease-out-expo);
         }
         #music-deck.active { transform: translateX(-50%) translateY(0); }
 
         .deck-art {
-            width: 50px; height: 50px; border-radius: 50%; overflow: hidden;
+            width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
             border: 2px solid var(--border-light); flex-shrink: 0;
+            position: relative;
             animation: spinDisc 4s linear infinite; animation-play-state: paused;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
-        .deck-art.playing { animation-play-state: running; border-color: var(--cyan); }
+        .deck-art::after {
+            content:''; position: absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+            width: 15px; height: 15px; background: #111; border-radius: 50%; border: 2px solid #333;
+        }
+        .deck-art.playing { animation-play-state: running; border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
         .deck-art img { width: 100%; height: 100%; object-fit: cover; }
 
-        .deck-info { flex: 1; overflow: hidden; }
-        .deck-title { font-family: 'Orbitron'; font-size: 12px; color: var(--cyan); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .deck-status { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
-        .deck-controls { display: flex; align-items: center; gap: 15px; }
-        .ctrl-btn { color: #fff; font-size: 16px; transition: 0.2s; }
-        .ctrl-btn:hover { color: var(--cyan); transform: scale(1.1); }
-        .play-btn { 
-            width: 40px; height: 40px; background: var(--cyan); border-radius: 50%; 
-            color: #000; display: flex; align-items: center; justify-content: center; font-size: 14px;
+        .deck-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+        .deck-title { 
+            font-family: var(--font-tech); font-size: 13px; color: var(--cyan); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
         }
-        .play-btn:hover { background: #fff; box-shadow: 0 0 15px #fff; }
+        .deck-status { 
+            font-family: var(--font-code); font-size: 10px; color: var(--text-muted); margin-top: 4px; 
+            display: flex; align-items: center; gap: 6px;
+        }
 
-        /* Audio Visualizer (CSS Animation) */
-        .visualizer { display: flex; gap: 3px; height: 20px; align-items: flex-end; }
-        .bar { width: 3px; background: var(--red); height: 5px; border-radius: 2px; transition: height 0.1s; }
+        .deck-controls { display: flex; align-items: center; gap: 18px; }
+        .ctrl-btn { color: #fff; font-size: 18px; transition: 0.2s; opacity: 0.7; }
+        .ctrl-btn:hover { color: var(--cyan); transform: scale(1.1); opacity: 1; }
+        
+        .play-btn { 
+            width: 50px; height: 50px; background: var(--cyan); border-radius: 50%; 
+            color: #000; display: flex; align-items: center; justify-content: center; font-size: 18px;
+            box-shadow: 0 0 20px var(--cyan-glow); opacity: 1; transition: 0.3s;
+        }
+        .play-btn:hover { background: #fff; box-shadow: 0 0 30px #fff; transform: scale(1.1); }
+
+        /* Visualizer */
+        .visualizer { display: flex; gap: 4px; height: 25px; align-items: flex-end; margin-right: 15px; }
+        .bar { width: 4px; background: var(--red); height: 5px; border-radius: 2px; transition: height 0.1s; box-shadow: 0 0 5px var(--red); }
 
         @keyframes spinDisc { 100% { transform: rotate(360deg); } }
 
-        /* =========================================
-           8. ADMIN MODE & FOOTER
-           ========================================= */
+        /* ==========================================================================
+           9. FOOTER & MISC
+           ========================================================================== */
         footer {
-            border-top: 1px solid var(--border-light); padding: 40px; text-align: center;
-            background: #000; margin-top: auto;
+            border-top: 1px solid var(--border-light); padding: 50px; text-align: center;
+            background: #000; margin-top: auto; position: relative; z-index: 5;
         }
-        .footer-logo { font-family: 'Cinzel'; color: var(--text-muted); font-size: 20px; margin-bottom: 10px; }
-        .copyright { font-size: 10px; color: #444; font-family: 'JetBrains Mono'; }
+        .footer-logo { font-family: var(--font-royal); color: var(--text-muted); font-size: 24px; margin-bottom: 15px; letter-spacing: 2px; }
+        .copyright { font-size: 11px; color: #444; font-family: var(--font-code); }
 
-        /* Hidden Admin Trigger */
-        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 10px; height: 10px; cursor: default; opacity: 0; }
+        /* Admin Trigger (Hidden) */
+        .admin-trigger { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; z-index: 9999; }
 
-        /* =========================================
-           9. RESPONSIVE
-           ========================================= */
+        /* Media Queries */
         @media (max-width: 768px) {
             .royal-title { font-size: 2.5rem; }
-            .control-dock { padding: 15px; flex-direction: column; align-items: stretch; }
+            .top-nav { padding: 20px; }
+            .control-dock { padding: 20px; flex-direction: column; align-items: stretch; }
             .search-wrapper { max-width: 100%; }
-            .filter-wrapper { overflow-x: auto; padding-bottom: 5px; }
-            #music-deck { width: 95%; padding: 0 15px; border-radius: 20px; }
+            .filter-wrapper { overflow-x: auto; padding-bottom: 10px; }
+            #music-deck { width: 95%; padding: 0 20px; height: 80px; bottom: 20px; }
+            .deck-art { width: 45px; height: 45px; }
             .visualizer { display: none; }
+            .art-actions { grid-template-columns: 1fr 50px; }
         }
     </style>
 </head>
@@ -451,21 +539,27 @@
     <canvas id="star-canvas"></canvas>
     <div id="dust-container"></div>
 
-    <div id="intro-welcome">
-        <div class="welcome-msg">SELAMAT DATANG</div>
-        <div class="welcome-msg" style="font-size:1rem; font-family:'Orbitron'; margin-top:10px; color:var(--text-muted); animation-delay:1s;">ARCHITECT</div>
+    <div id="intro-terminal">
+        <div class="boot-log typing-effect" id="bootText"></div>
+        <div id="intro-welcome">
+            <div class="welcome-msg">WELCOME</div>
+            <div class="welcome-sub">IDENTITY CONFIRMED: ARCHITECT</div>
+        </div>
     </div>
 
     <div id="loader-overlay">
-        <svg class="loader-svg" viewBox="0 0 200 200">
-            <ellipse class="ring-path ring-cyan" cx="100" cy="100" rx="90" ry="30" />
-            <ellipse class="ring-path ring-red" cx="100" cy="100" rx="90" ry="30" />
-            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" 
-                  fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" 
-                  style="filter: drop-shadow(0 0 10px #fff);">IEA</text>
-        </svg>
+        <div class="loader-wrapper">
+            <svg class="loader-svg" viewBox="0 0 200 200">
+                <ellipse class="ring-path ring-cyan" cx="100" cy="100" rx="90" ry="30" />
+                <ellipse class="ring-path ring-red" cx="100" cy="100" rx="90" ry="30" />
+                <ellipse class="ring-path ring-inner" cx="100" cy="100" rx="60" ry="20" />
+                <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" 
+                      fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" 
+                      style="filter: drop-shadow(0 0 10px #fff);">IEA</text>
+            </svg>
+        </div>
         <div class="loading-bar-container"><div class="loading-bar"></div></div>
-        <div class="access-text">ESTABLISHING SECURE CONNECTION...</div>
+        <div class="access-text" style="font-family:'Orbitron'; font-size:10px; letter-spacing:3px; margin-top:15px; color:var(--cyan);">LOADING ROYAL REPOSITORY...</div>
     </div>
 
     <div id="main-wrapper">
@@ -474,15 +568,18 @@
             <div class="grid-horizon"></div>
             
             <div class="top-nav">
-                <a href="index.html" class="nav-btn"><i class="fas fa-arrow-left"></i> PORTAL</a>
-                <div style="font-family:'JetBrains Mono'; font-size:10px; color:var(--cyan);">SECURE CONNECTION ESTABLISHED</div>
+                <a href="index.html" class="nav-btn"><i class="fas fa-chevron-left"></i> RETURN TO PORTAL</a>
+                <div class="connection-status">
+                    <div class="status-blink"></div> SECURE LINK: 128-BIT
+                </div>
             </div>
 
             <div class="logo-container">
                 <svg class="main-logo-svg" viewBox="0 0 200 200">
                     <ellipse class="ring-path" stroke="#00f2ff" stroke-width="3" cx="100" cy="100" rx="90" ry="30" />
                     <ellipse class="ring-path" stroke="#ff0055" stroke-width="3" transform="rotate(45 100 100)" cx="100" cy="100" rx="90" ry="30" />
-                    <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="60">IEA</text>
+                    <circle cx="100" cy="100" r="5" fill="#fff" style="filter:drop-shadow(0 0 10px #fff);" />
+                    <text x="50%" y="160" text-anchor="middle" fill="#fff" font-family="Orbitron" font-size="14" letter-spacing="4">EST. 2026</text>
                 </svg>
             </div>
 
@@ -496,14 +593,14 @@
         <div class="control-dock">
             <div class="search-wrapper">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search Archives via Title or ID...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search Archives via Title, ID or Keyword...">
             </div>
             
             <div class="filter-wrapper">
-                <button class="filter-chip active" onclick="filterVault('all', this)">ALL DATA</button>
-                <button class="filter-chip" onclick="filterVault('audio', this)">AUDIO LOGS</button>
-                <button class="filter-chip" onclick="filterVault('book', this)">MANUSCRIPTS</button>
-                <button class="filter-chip" onclick="filterVault('doc', this)">RESEARCH</button>
+                <button class="filter-chip active" onclick="filterVault('all', this)"><i class="fas fa-globe"></i> ALL DATA</button>
+                <button class="filter-chip" onclick="filterVault('audio', this)"><i class="fas fa-music"></i> AUDIO</button>
+                <button class="filter-chip" onclick="filterVault('book', this)"><i class="fas fa-book-journal-whills"></i> BOOKS</button>
+                <button class="filter-chip" onclick="filterVault('doc', this)"><i class="fas fa-file-contract"></i> DOCS</button>
             </div>
         </div>
 
@@ -512,7 +609,7 @@
 
         <footer>
             <div class="footer-logo">IEA ROYAL ARCHIVES</div>
-            <div class="copyright">© 2026 INTERNATIONAL EDUCATION ASTRONOMY. ALL RIGHTS RESERVED.</div>
+            <div class="copyright">© 2026 INTERNATIONAL EDUCATION ASTRONOMY. AUTHORIZED PERSONNEL ONLY.</div>
         </footer>
 
     </div>
@@ -523,8 +620,8 @@
         </div>
         
         <div class="deck-info">
-            <div class="deck-title" id="player-title">NO SIGNAL</div>
-            <div class="deck-status" id="player-status">WAITING FOR INPUT...</div>
+            <div class="deck-title" id="player-title">SYSTEM STANDBY</div>
+            <div class="deck-status" id="player-status"><i class="fas fa-circle-notch fa-spin"></i> WAITING FOR INPUT...</div>
         </div>
 
         <div class="visualizer" id="visualizer">
@@ -539,67 +636,77 @@
         <audio id="audio-core"></audio>
     </div>
 
-    <div class="admin-trigger" onclick="alert('ADMIN ACCESS: RESTRICTED')"></div>
+    <a href="admin.html" class="admin-trigger"></a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
-        // --- CONFIGURATION ---
+        // --- 1. SYSTEM CONFIGURATION ---
         const config = { databaseURL: "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app" };
         const app = initializeApp(config);
         const db = getDatabase(app);
 
-        // --- STATE MANAGEMENT ---
         let vaultData = [];
         let isPlaying = false;
-        // Gambar default berkualitas tinggi (Nebula)
         const DEFAULT_COVER = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
 
-        // --- 1. INTRO SEQUENCE LOGIC ---
-        window.onload = () => {
-            initDust(); // Start particles
-            initVisualizer(); // Prepare visualizer bars
+        // --- 2. BOOT SEQUENCE & INTRO ---
+        const bootLines = [
+            "INITIALIZING KERNEL...",
+            "CONNECTING TO IEA MAINFRAME...",
+            "DECRYPTING ARCHIVES...",
+            "ACCESS GRANTED."
+        ];
 
-            // Step 1: Text Fade In/Out
+        window.onload = async () => {
+            initDust(); 
+            initVisualizer();
+
+            // Sequence 1: Typing Text
+            const bootEl = document.getElementById('bootText');
+            for(let line of bootLines) {
+                bootEl.innerText = line;
+                await new Promise(r => setTimeout(r, 600)); // Delay per line
+            }
+            bootEl.style.display = 'none';
+
+            // Sequence 2: Welcome Text
+            const intro = document.getElementById('intro-terminal');
+            const welcome = document.getElementById('intro-welcome');
+            welcome.style.opacity = '1';
+            
             setTimeout(() => {
-                document.getElementById('intro-welcome').style.opacity = '0';
-                setTimeout(() => document.getElementById('intro-welcome').style.display = 'none', 1000);
+                intro.style.opacity = '0';
+                setTimeout(() => intro.style.display = 'none', 1000);
                 
-                // Step 2: Show Loader
+                // Sequence 3: Logo Loader
                 const loader = document.getElementById('loader-overlay');
                 loader.style.opacity = '1';
                 loader.style.pointerEvents = 'auto';
 
-                // Step 3: Finish Loading
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     setTimeout(() => {
                         loader.style.display = 'none';
-                        // Step 4: Show Main Content
                         const main = document.getElementById('main-wrapper');
                         main.style.display = 'block';
                         setTimeout(() => main.style.opacity = '1', 100);
                     }, 800);
-                }, 3000); // Durasi loader
-            }, 3500); // Durasi text welcome
+                }, 2500); // Loader Duration
+            }, 2500); // Welcome Duration
         };
 
-        // --- 2. DATA FETCHING & RENDERING ---
+        // --- 3. DATA FETCHING & RENDERING (WITH DOWNLOAD LOGIC) ---
         onValue(ref(db, 'library'), (snapshot) => {
             const container = document.getElementById('grid-container');
             container.innerHTML = '';
 
             if (snapshot.exists()) {
-                vaultData = Object.values(snapshot.val()).reverse(); // Terbaru diatas
+                vaultData = Object.values(snapshot.val()).reverse();
                 renderVault(vaultData);
             } else {
-                // FALLBACK DEMO DATA (Supaya tidak kosong saat demo)
-                const demoData = [
-                    { title: "The Cosmic Perspective", category: "Book", description: "Buku panduan dasar astronomi untuk pemula.", thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500", link: "#" },
-                    { title: "Nebula Frequency", category: "Audio", description: "Rekaman suara frekuensi radio dari nebula Orion.", thumbnail: "https://images.unsplash.com/photo-1614730341194-75c60740a070?w=500", link: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }
-                ];
-                renderVault(demoData); // Render demo jika kosong
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open empty-icon"></i><br>ARCHIVES OFFLINE / EMPTY</div>`;
             }
         });
 
@@ -608,29 +715,58 @@
             container.innerHTML = '';
 
             data.forEach((item, index) => {
-                // Determine Type
+                // Determine Type & Icon
                 let type = 'ARCHIVE';
                 let icon = 'fa-file-alt';
+                let isAudio = false;
                 let cat = (item.category || '').toLowerCase();
                 
-                if (cat.includes('music') || cat.includes('audio')) { type = 'AUDIO LOG'; icon = 'fa-music'; }
+                if (cat.includes('music') || cat.includes('audio')) { type = 'AUDIO LOG'; icon = 'fa-music'; isAudio = true; }
                 else if (cat.includes('book') || cat.includes('pdf')) { type = 'MANUSCRIPT'; icon = 'fa-book'; }
                 else if (cat.includes('research')) { type = 'RESEARCH'; icon = 'fa-microscope'; }
 
                 const cover = item.thumbnail || DEFAULT_COVER;
-                const delay = index * 0.1; // Stagger animation
+                const delay = index * 0.1;
+                
+                // DOWNLOAD LINK GENERATOR
+                // Konversi link Google Drive "view" menjadi "export=download"
+                let downloadLink = item.link;
+                if(downloadLink.includes('drive.google.com') && downloadLink.includes('/view')) {
+                    // Coba ambil ID file
+                    const idMatch = downloadLink.match(/\/d\/(.+?)\//);
+                    if(idMatch && idMatch[1]) {
+                        downloadLink = `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+                    }
+                }
 
-                // Create Element
+                // Create Card
                 const card = document.createElement('div');
                 card.className = 'artifact';
                 card.style.animation = `fadeInUp 0.6s ease forwards ${delay}s`;
-                card.style.opacity = '0'; // Initial state for anim
+                card.style.opacity = '0';
 
-                // 3D TILT EVENTS
+                // 3D Tilt Logic
                 card.onmousemove = (e) => handleTilt(e, card);
                 card.onmouseleave = () => resetTilt(card);
 
-                // HTML Structure
+                // HTML Construction
+                // BUTTON LOGIC:
+                // Main Button = Play (Audio) or Open (Book)
+                // Secondary Button = Download (Icon Only)
+                
+                const mainBtnHTML = isAudio 
+                    ? `<button class="art-btn" style="flex:1" onclick="playTrack('${item.link}', '${item.title}', '${cover}')">
+                         <i class="fas fa-play"></i> PLAY
+                       </button>`
+                    : `<a href="${item.link}" target="_blank" class="art-btn" style="flex:1">
+                         <i class="fas fa-eye"></i> READ
+                       </a>`;
+
+                const downloadBtnHTML = `
+                    <a href="${downloadLink}" target="_blank" class="art-btn-dl" title="Download File">
+                        <i class="fas fa-download"></i>
+                    </a>`;
+
                 card.innerHTML = `
                     <div class="art-visual">
                         <div class="art-badge"><i class="fas ${icon}"></i> ${type}</div>
@@ -639,26 +775,22 @@
                     <div class="art-body">
                         <div class="art-title">${item.title}</div>
                         <div class="art-meta">
-                            <span><i class="fas fa-fingerprint"></i> ID-${Math.floor(Math.random()*9000)+1000}</span>
-                            <span><i class="far fa-clock"></i> ${item.date || 'Unknown'}</span>
+                            <span><i class="fas fa-fingerprint"></i> #${Math.floor(Math.random()*9000)+1000}</span>
+                            <span><i class="far fa-calendar"></i> ${item.date || 'Unknown'}</span>
                         </div>
-                        <div class="art-desc">${item.description || 'No description data provided.'}</div>
+                        <div class="art-desc">${item.description || 'No data.'}</div>
                         
-                        ${type === 'AUDIO LOG' 
-                            ? `<button class="art-btn" onclick="playTrack('${item.link}', '${item.title}', '${cover}')">
-                                 <i class="fas fa-play-circle"></i> INITIALIZE PLAYBACK
-                               </button>`
-                            : `<a href="${item.link}" target="_blank" class="art-btn">
-                                 <i class="fas fa-external-link-alt"></i> ACCESS DOCUMENT
-                               </a>`
-                        }
+                        <div class="art-actions">
+                            ${mainBtnHTML}
+                            ${downloadBtnHTML}
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // --- 3. FILTER & SEARCH ---
+        // --- 4. FILTER & SEARCH ---
         window.filterVault = (cat, btn) => {
             document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -675,15 +807,14 @@
             renderVault(filtered);
         });
 
-        // --- 4. MUSIC PLAYER SYSTEM ---
+        // --- 5. AUDIO SYSTEM (ADVANCED) ---
         const audio = document.getElementById('audio-core');
         const deck = document.getElementById('music-deck');
         
-        // Expose to window for HTML onclick
         window.playTrack = (url, title, img) => {
             deck.classList.add('active');
             document.getElementById('player-title').innerText = title;
-            document.getElementById('player-status').innerText = "STREAMING AUDIO DATA...";
+            document.getElementById('player-status').innerHTML = `<span style="color:#0f0">●</span> STREAMING DATA...`;
             document.getElementById('player-img').src = img;
             
             audio.src = url;
@@ -706,29 +837,25 @@
             if (isPlaying) {
                 icon.className = "fas fa-pause";
                 art.classList.add('playing');
-                status.innerText = "PLAYING >> 128kbps";
+                status.innerHTML = `<span style="color:var(--cyan)">●</span> PLAYING`;
                 animateVisualizer(true);
             } else {
                 icon.className = "fas fa-play";
                 art.classList.remove('playing');
-                status.innerText = "PAUSED";
+                status.innerHTML = `<span style="color:#555">●</span> PAUSED`;
                 animateVisualizer(false);
             }
         }
 
-        // --- 5. VISUAL FX LOGIC ---
-        
-        // 3D Tilt
+        // --- 6. VISUAL FX ---
         function handleTilt(e, card) {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
-            const rotateX = ((y - centerY) / centerY) * -8; // Max -8deg
-            const rotateY = ((x - centerX) / centerX) * 8; // Max 8deg
-            
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
         }
 
@@ -736,14 +863,13 @@
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
         }
 
-        // Dust Particles
         function initDust() {
             const container = document.getElementById('dust-container');
-            for(let i=0; i<40; i++) {
+            for(let i=0; i<50; i++) {
                 const p = document.createElement('div');
                 p.className = 'dust-particle';
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.width = Math.random() * 3 + 'px';
+                p.style.width = Math.random() * 2 + 'px';
                 p.style.height = p.style.width;
                 p.style.animationDuration = (Math.random() * 10 + 10) + 's';
                 p.style.animationDelay = (Math.random() * 5) + 's';
@@ -751,11 +877,10 @@
             }
         }
 
-        // Visualizer Bars
         let vizInterval;
         function initVisualizer() {
             const viz = document.getElementById('visualizer');
-            for(let i=0; i<20; i++) {
+            for(let i=0; i<15; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'bar';
                 viz.appendChild(bar);
@@ -765,25 +890,57 @@
         function animateVisualizer(active) {
             clearInterval(vizInterval);
             const bars = document.querySelectorAll('.visualizer .bar');
-            if (!active) {
-                bars.forEach(b => b.style.height = '3px');
-                return;
-            }
+            if (!active) { bars.forEach(b => b.style.height = '3px'); return; }
             
             vizInterval = setInterval(() => {
                 bars.forEach(b => {
-                    const h = Math.random() * 20 + 3;
+                    const h = Math.random() * 20 + 5;
                     b.style.height = h + 'px';
-                    // Warna dinamis merah/cyan
                     b.style.background = Math.random() > 0.5 ? 'var(--cyan)' : 'var(--red)';
                 });
             }, 100);
         }
 
-        // Add Keyframes via JS
+        // Inject Keyframes
         const styleSheet = document.createElement("style");
         styleSheet.innerText = `@keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }`;
         document.head.appendChild(styleSheet);
+
+        // Starfield
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, stars = [];
+        
+        const initStars = () => {
+            w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<100; i++) {
+                stars.push({
+                    x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.5,
+                    vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+                    color: Math.random() > 0.5 ? '#00f2ff' : '#ff0055'
+                });
+            }
+        };
+        
+        const animateStars = () => {
+            ctx.clearRect(0,0,w,h);
+            stars.forEach(s => {
+                s.x += s.vx; s.y += s.vy;
+                if(s.x < 0) s.x = w; if(s.x > w) s.x = 0; if(s.y < 0) s.y = h; if(s.y > h) s.y = 0;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fillStyle = s.color; ctx.fill();
+            });
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 0.5;
+            for(let i=0; i<stars.length; i++) {
+                for(let j=i+1; j<stars.length; j++) {
+                    const dx = stars[i].x - stars[j].x; const dy = stars[i].y - stars[j].y;
+                    if(Math.sqrt(dx*dx + dy*dy) < 100) { ctx.beginPath(); ctx.moveTo(stars[i].x, stars[i].y); ctx.lineTo(stars[j].x, stars[j].y); ctx.stroke(); }
+                }
+            }
+            requestAnimationFrame(animateStars);
+        };
+        window.addEventListener('resize', initStars);
+        initStars(); animateStars();
 
     </script>
 </body>
