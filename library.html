@@ -3,270 +3,788 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#050505">
-    <title>IEA ROYAL ARCHIVES</title>
+    <meta name="theme-color" content="#020204">
+    <meta name="description" content="IEA Royal Archives - Repository Knowledge Base">
+    <title>IEA | ROYAL ARCHIVES</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* =========================================
+           1. CORE VARIABLES & RESET
+           ========================================= */
         :root {
-            --bg: #050505;
-            --gold: #d4af37;
-            --gold-dim: #8a7024;
-            --text: #f0f0f0;
-            --card-bg: rgba(15, 15, 20, 0.9);
-            --border: rgba(212, 175, 55, 0.3);
+            /* PALET WARNA IEA: CONSTELLATION */
+            --bg-void: #010103;
+            --bg-panel: rgba(10, 12, 20, 0.85);
+            
+            /* Primary Accents */
+            --cyan: #00f2ff;
+            --cyan-glow: rgba(0, 242, 255, 0.4);
+            --cyan-dim: rgba(0, 242, 255, 0.1);
+            
+            --red: #ff0055;
+            --red-glow: rgba(255, 0, 85, 0.4);
+            --red-dim: rgba(255, 0, 85, 0.1);
+            
+            --gold: #ffd700; /* Untuk elemen Royal khusus */
+            
+            /* Text Colors */
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --text-dark: #000000;
+            
+            /* Borders & Shadows */
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(0, 242, 255, 0.5);
+            --shadow-card: 0 15px 40px rgba(0,0,0,0.6);
+            --neon-shadow: 0 0 15px var(--cyan);
+            
+            /* Animation Curves */
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Hide Scrollbar Chrome/Safari */
+        *::-webkit-scrollbar { display: none; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
             min-height: 100vh;
-            /* Background Mewah */
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 60%),
-                url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-size: cover; background-attachment: fixed; background-blend-mode: multiply;
+            overflow-x: hidden;
+            position: relative;
+            cursor: default;
         }
 
-        /* --- HEADER --- */
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; }
+
+        /* =========================================
+           2. BACKGROUND FX & PARTICLES
+           ========================================= */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        #dust-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .dust-particle {
+            position: absolute;
+            background: radial-gradient(circle, #fff, transparent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(20px) scale(1); opacity: 0; }
+        }
+
+        /* =========================================
+           3. INTRO SEQUENCE & LOADING
+           ========================================= */
+        /* Phase 1: Welcome Text */
+        #intro-welcome {
+            position: fixed; inset: 0; background: var(--bg-void); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 1s ease;
+        }
+        
+        .welcome-msg {
+            font-family: 'Cinzel', serif; font-size: 2.5rem; letter-spacing: 5px; color: transparent;
+            background: linear-gradient(90deg, var(--cyan), #fff, var(--red));
+            -webkit-background-clip: text; background-clip: text;
+            opacity: 0; animation: textFadeIn 4s forwards; text-align: center;
+        }
+        
+        /* Phase 2: Logo Loader */
+        #loader-overlay {
+            position: fixed; inset: 0; background: var(--bg-void); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 1s ease; opacity: 0; pointer-events: none; /* Hidden initially */
+        }
+
+        .loader-svg { width: 150px; height: 150px; overflow: visible; filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+        
+        /* Cincin Logo Berputar */
+        .ring-path { fill: none; stroke-width: 4; vector-effect: non-scaling-stroke; }
+        .ring-cyan { stroke: var(--cyan); transform-origin: center; animation: ringSpin 3s linear infinite; }
+        .ring-red { stroke: var(--red); transform-origin: center; animation: ringSpinRev 2s linear infinite; }
+        
+        @keyframes ringSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes ringSpinRev { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+        
+        .loading-bar-container {
+            width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 30px;
+            position: relative; overflow: hidden;
+        }
+        .loading-bar {
+            position: absolute; left: 0; top: 0; height: 100%; width: 100%;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: loadScan 1.5s infinite ease-in-out;
+        }
+        @keyframes loadScan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        
+        .access-text {
+            font-family: 'Orbitron'; font-size: 10px; letter-spacing: 4px; margin-top: 10px;
+            color: var(--text-muted); animation: pulseText 1s infinite alternate;
+        }
+        
+        @keyframes textFadeIn { 
+            0% { opacity: 0; transform: scale(0.9); } 
+            20% { opacity: 1; transform: scale(1); } 
+            80% { opacity: 1; transform: scale(1); } 
+            100% { opacity: 0; transform: scale(1.1); } 
+        }
+
+        /* =========================================
+           4. MAIN HEADER LAYOUT
+           ========================================= */
+        #main-wrapper {
+            opacity: 0; transition: opacity 1.5s ease; display: none;
+        }
+
         header {
-            text-align: center; padding: 40px 20px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            border-bottom: 1px solid var(--gold-dim);
-            position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+            position: relative;
+            height: 450px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-bottom: 1px solid var(--border-light);
+            background: radial-gradient(circle at 50% 100%, rgba(0, 242, 255, 0.05), transparent 70%);
+            overflow: hidden;
         }
-        .back-btn {
-            position: absolute; top: 20px; left: 20px;
-            color: var(--gold); font-size: 1.2rem; cursor: pointer;
-            border: 1px solid var(--gold-dim); padding: 8px 15px; border-radius: 50px;
-            transition: 0.3s; background: rgba(0,0,0,0.5);
-        }
-        .back-btn:hover { background: var(--gold); color: #000; }
 
-        h1 {
-            font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold);
-            text-transform: uppercase; letter-spacing: 2px; margin-top: 10px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        /* 3D Grid Floor Animation */
+        .grid-horizon {
+            position: absolute; bottom: -50%; left: -50%; width: 200%; height: 100%;
+            background-image: 
+                linear-gradient(var(--border-light) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(600px) rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+            opacity: 0.3; mask-image: linear-gradient(to top, black, transparent);
+            -webkit-mask-image: linear-gradient(to top, black, transparent);
+            pointer-events: none;
         }
-        .subtitle { font-family: 'Orbitron'; font-size: 0.7rem; color: #888; letter-spacing: 2px; margin-top: 5px; }
+        @keyframes gridMove { 0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 100% { transform: perspective(600px) rotateX(60deg) translateY(50px); } }
 
-        /* --- CONTROLS --- */
-        .controls {
-            padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px;
+        /* Top Navigation */
+        .top-nav {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
         }
-        .search-bar {
-            width: 100%; max-width: 500px; position: relative;
-        }
-        .search-bar input {
-            width: 100%; padding: 12px 20px; border-radius: 30px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--gold-dim);
-            color: var(--gold); font-family: 'Inter'; transition: 0.3s;
-        }
-        .search-bar input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
         
-        .filters { display: flex; gap: 10px; overflow-x: auto; width: 100%; justify-content: center; padding-bottom: 10px; }
-        .tag {
-            padding: 6px 16px; border: 1px solid var(--gold-dim); border-radius: 20px;
-            color: #aaa; font-size: 0.75rem; white-space: nowrap; cursor: pointer; transition: 0.3s;
-            font-family: 'Orbitron'; letter-spacing: 1px;
+        .nav-btn {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--cyan); font-family: 'Orbitron'; font-size: 12px; font-weight: bold;
+            border: 1px solid var(--border-light); padding: 8px 20px; border-radius: 30px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            transition: 0.3s;
         }
-        .tag.active, .tag:hover { background: var(--gold); color: #000; font-weight: bold; }
+        .nav-btn:hover { background: var(--cyan); color: #000; box-shadow: var(--neon-shadow); }
 
-        /* --- GRID CONTENT --- */
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px; padding: 10px 20px 100px; max-width: 1200px; margin: 0 auto;
+        /* Main Logo & Title Area */
+        .logo-container {
+            position: relative; z-index: 5; margin-bottom: 20px;
+            animation: floatLogo 6s ease-in-out infinite;
         }
+        @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-        /* --- ROYAL CARD --- */
-        .tome {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 8px; overflow: hidden; position: relative;
-            display: flex; flex-direction: column; transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .main-logo-svg { width: 140px; height: 140px; filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+
+        .title-block { text-align: center; z-index: 5; }
+        .iea-sub {
+            font-family: 'Orbitron'; font-size: 12px; letter-spacing: 8px; color: var(--cyan);
+            margin-bottom: 5px; text-transform: uppercase;
         }
-        .tome:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .royal-title {
+            font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 900; letter-spacing: 2px;
+            background: linear-gradient(180deg, #fff, #999); -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
         
-        /* Ornamen Sudut Emas */
-        .tome::before {
-            content: ''; position: absolute; top: 0; left: 0; 
-            border-top: 20px solid var(--gold); border-right: 20px solid transparent; 
-            width: 0; z-index: 2; opacity: 0.7;
+        /* Decorative Line */
+        .deco-line {
+            width: 2px; height: 60px; background: linear-gradient(to bottom, var(--cyan), transparent);
+            margin: 20px auto 0;
         }
 
-        .cover {
-            height: 160px; overflow: hidden; position: relative;
-            border-bottom: 1px solid var(--gold-dim);
-        }
-        .cover img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.8; }
-        .tome:hover .cover img { transform: scale(1.1); opacity: 1; }
-        
-        .cat-badge {
-            position: absolute; bottom: 10px; right: 10px;
-            background: #000; color: var(--gold); font-size: 0.6rem;
-            padding: 3px 8px; border: 1px solid var(--gold); font-family: 'Orbitron';
+        /* =========================================
+           5. CONTROL BAR (SEARCH & FILTER)
+           ========================================= */
+        .control-dock {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(2, 2, 4, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;
         }
 
-        .details { padding: 15px; flex: 1; display: flex; flex-direction: column; }
-        .tome-title {
-            font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold);
-            margin-bottom: 8px; line-height: 1.3; font-weight: 700;
+        .search-wrapper { position: relative; flex: 1; max-width: 400px; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-input {
+            width: 100%; padding: 12px 20px 12px 45px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
+            border-radius: 4px; color: #fff; font-family: 'Rajdhani'; font-size: 16px;
+            transition: 0.3s;
         }
-        .tome-desc {
-            font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 20px;
+        .search-input:focus { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-dim); }
+
+        .filter-wrapper { display: flex; gap: 10px; }
+        .filter-chip {
+            padding: 8px 16px; border: 1px solid var(--border-light); border-radius: 4px;
+            color: var(--text-muted); font-family: 'Orbitron'; font-size: 10px; font-weight: bold;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .filter-chip::before {
+            content:''; position: absolute; top:0; left:0; width:0%; height:100%;
+            background: var(--cyan-dim); transition: 0.3s; z-index: -1;
+        }
+        .filter-chip:hover, .filter-chip.active { color: var(--cyan); border-color: var(--cyan); }
+        .filter-chip.active::before { width: 100%; }
+
+        /* =========================================
+           6. CONTENT GRID & CARDS
+           ========================================= */
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 50px 5%;
+            max-width: 1600px; margin: 0 auto;
+            perspective: 1200px; /* Enable 3D Space */
+        }
+
+        /* --- THE ARTIFACT CARD --- */
+        .artifact {
+            position: relative;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            height: 420px;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        /* 3D Hover State handled by JS, Visual styles here */
+        .artifact:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 30px var(--cyan-dim);
+            z-index: 5;
+        }
+        .artifact::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+            opacity: 0; transition: 0.3s; pointer-events: none;
+        }
+        .artifact:hover::after { opacity: 1; }
+
+        /* Card Visual */
+        .art-visual {
+            height: 200px; position: relative; overflow: hidden;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .art-img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.5s var(--ease-out-expo);
+        }
+        .artifact:hover .art-img { transform: scale(1.1); filter: contrast(1.1); }
+
+        .art-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            border: 1px solid var(--cyan); color: var(--cyan);
+            padding: 4px 8px; font-family: 'Orbitron'; font-size: 8px;
+            border-radius: 2px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Card Body */
+        .art-body {
+            padding: 20px; flex: 1; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,242,255,0.02));
+        }
+
+        .art-title {
+            font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff;
+            margin-bottom: 8px; line-height: 1.3;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .art-meta {
+            display: flex; gap: 10px; font-size: 10px; color: var(--text-muted);
+            margin-bottom: 12px; font-family: 'JetBrains Mono';
+        }
+        .art-meta span i { color: var(--red); margin-right: 4px; }
+
+        .art-desc {
+            font-size: 13px; color: #888; line-height: 1.5;
             display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+            margin-bottom: auto; /* Push button to bottom */
         }
-        .btn-open {
-            margin-top: auto; width: 100%; padding: 10px;
-            background: transparent; border: 1px solid var(--gold-dim);
-            color: var(--gold); font-family: 'Orbitron'; font-size: 0.8rem;
-            cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none;
+
+        /* Action Button */
+        .art-btn {
+            margin-top: 15px; width: 100%; padding: 12px;
+            background: transparent; border: 1px solid var(--border-light);
+            color: var(--text-main); font-family: 'Orbitron'; font-size: 10px; font-weight: bold;
             display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; position: relative; overflow: hidden;
         }
-        .btn-open:hover { background: var(--gold); color: #000; }
-
-        /* --- MUSIC PLAYER --- */
-        #player {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 450px; background: rgba(10,10,10,0.95);
-            border: 1px solid var(--gold); border-radius: 40px; padding: 12px 25px;
-            display: none; align-items: center; gap: 15px; z-index: 100;
-            backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .art-btn::before {
+            content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 0%;
+            background: var(--cyan); transition: 0.3s;
         }
-        @keyframes slideUp { from{transform:translate(-50%, 100%);} to{transform:translate(-50%, 0);} }
+        .art-btn:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+        .art-btn:hover::before { width: 100%; }
 
-        .disc-anim { font-size: 1.8rem; color: var(--gold); animation: spin 3s linear infinite; }
-        @keyframes spin { 100%{transform:rotate(360deg);} }
-        .track-info { flex: 1; overflow: hidden; white-space: nowrap; }
-        .t-name { font-family: 'Cinzel'; color: #fff; font-size: 0.9rem; font-weight: bold; }
-        .t-stat { font-size: 0.65rem; color: var(--gold); font-family: 'Orbitron'; }
-        
-        .p-btn { background: none; border: none; color: var(--gold); font-size: 1.2rem; cursor: pointer; }
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 100px 0; color: var(--text-muted);
+        }
+        .empty-icon { font-size: 4rem; color: var(--border-light); margin-bottom: 20px; display: block; }
 
-        /* LOADER */
-        #loader { text-align: center; margin-top: 50px; font-family: 'Orbitron'; color: #666; font-size: 0.8rem; }
+        /* =========================================
+           7. MUSIC PLAYER DECK (ADVANCED)
+           ========================================= */
+        #music-deck {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(150%);
+            width: 90%; max-width: 600px; height: 80px;
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid var(--cyan); border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            backdrop-filter: blur(20px); z-index: 100;
+            display: flex; align-items: center; padding: 0 30px; gap: 20px;
+            transition: transform 0.6s var(--ease-out-expo);
+        }
+        #music-deck.active { transform: translateX(-50%) translateY(0); }
 
+        .deck-art {
+            width: 50px; height: 50px; border-radius: 50%; overflow: hidden;
+            border: 2px solid var(--border-light); flex-shrink: 0;
+            animation: spinDisc 4s linear infinite; animation-play-state: paused;
+        }
+        .deck-art.playing { animation-play-state: running; border-color: var(--cyan); }
+        .deck-art img { width: 100%; height: 100%; object-fit: cover; }
+
+        .deck-info { flex: 1; overflow: hidden; }
+        .deck-title { font-family: 'Orbitron'; font-size: 12px; color: var(--cyan); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .deck-status { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        .deck-controls { display: flex; align-items: center; gap: 15px; }
+        .ctrl-btn { color: #fff; font-size: 16px; transition: 0.2s; }
+        .ctrl-btn:hover { color: var(--cyan); transform: scale(1.1); }
+        .play-btn { 
+            width: 40px; height: 40px; background: var(--cyan); border-radius: 50%; 
+            color: #000; display: flex; align-items: center; justify-content: center; font-size: 14px;
+        }
+        .play-btn:hover { background: #fff; box-shadow: 0 0 15px #fff; }
+
+        /* Audio Visualizer (CSS Animation) */
+        .visualizer { display: flex; gap: 3px; height: 20px; align-items: flex-end; }
+        .bar { width: 3px; background: var(--red); height: 5px; border-radius: 2px; transition: height 0.1s; }
+
+        @keyframes spinDisc { 100% { transform: rotate(360deg); } }
+
+        /* =========================================
+           8. ADMIN MODE & FOOTER
+           ========================================= */
+        footer {
+            border-top: 1px solid var(--border-light); padding: 40px; text-align: center;
+            background: #000; margin-top: auto;
+        }
+        .footer-logo { font-family: 'Cinzel'; color: var(--text-muted); font-size: 20px; margin-bottom: 10px; }
+        .copyright { font-size: 10px; color: #444; font-family: 'JetBrains Mono'; }
+
+        /* Hidden Admin Trigger */
+        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 10px; height: 10px; cursor: default; opacity: 0; }
+
+        /* =========================================
+           9. RESPONSIVE
+           ========================================= */
+        @media (max-width: 768px) {
+            .royal-title { font-size: 2.5rem; }
+            .control-dock { padding: 15px; flex-direction: column; align-items: stretch; }
+            .search-wrapper { max-width: 100%; }
+            .filter-wrapper { overflow-x: auto; padding-bottom: 5px; }
+            #music-deck { width: 95%; padding: 0 15px; border-radius: 20px; }
+            .visualizer { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></div>
-        <h1>Royal Archives</h1>
-        <div class="subtitle">REPOSITORY IEA</div>
-    </header>
+    <canvas id="star-canvas"></canvas>
+    <div id="dust-container"></div>
 
-    <div class="controls">
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search Scrolls & Artefacts..." onkeyup="filter()">
-        </div>
-        <div class="filters">
-            <div class="tag active" onclick="filterCat('all', this)">ALL</div>
-            <div class="tag" onclick="filterCat('Music', this)">MUSIC</div>
-            <div class="tag" onclick="filterCat('Book', this)">BOOKS</div>
-            <div class="tag" onclick="filterCat('Research', this)">RESEARCH</div>
-        </div>
+    <div id="intro-welcome">
+        <div class="welcome-msg">SELAMAT DATANG</div>
+        <div class="welcome-msg" style="font-size:1rem; font-family:'Orbitron'; margin-top:10px; color:var(--text-muted); animation-delay:1s;">ARCHITECT</div>
     </div>
 
-    <div id="loader">DECRYPTING ARCHIVES...</div>
-    <div class="grid" id="grid"></div>
-
-    <div id="player">
-        <div class="disc-anim"><i class="fas fa-compact-disc"></i></div>
-        <div class="track-info">
-            <div class="t-name" id="mTitle">Unknown Track</div>
-            <div class="t-stat">NOW PLAYING</div>
-        </div>
-        <button class="p-btn" onclick="stopMusic()"><i class="fas fa-stop"></i></button>
-        <audio id="audioEl"></audio>
+    <div id="loader-overlay">
+        <svg class="loader-svg" viewBox="0 0 200 200">
+            <ellipse class="ring-path ring-cyan" cx="100" cy="100" rx="90" ry="30" />
+            <ellipse class="ring-path ring-red" cx="100" cy="100" rx="90" ry="30" />
+            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" 
+                  fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" 
+                  style="filter: drop-shadow(0 0 10px #fff);">IEA</text>
+        </svg>
+        <div class="loading-bar-container"><div class="loading-bar"></div></div>
+        <div class="access-text">ESTABLISHING SECURE CONNECTION...</div>
     </div>
 
-    <script>
-        // --- DATABASE CONFIG ---
-        const DB = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library.json";
-        let dataStore = [];
-        const DEF_IMG = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+    <div id="main-wrapper">
+        
+        <header>
+            <div class="grid-horizon"></div>
+            
+            <div class="top-nav">
+                <a href="index.html" class="nav-btn"><i class="fas fa-arrow-left"></i> PORTAL</a>
+                <div style="font-family:'JetBrains Mono'; font-size:10px; color:var(--cyan);">SECURE CONNECTION ESTABLISHED</div>
+            </div>
 
-        // --- INIT ---
-        window.onload = async () => {
-            try {
-                const req = await fetch(DB);
-                const json = await req.json();
-                document.getElementById('loader').style.display = 'none';
+            <div class="logo-container">
+                <svg class="main-logo-svg" viewBox="0 0 200 200">
+                    <ellipse class="ring-path" stroke="#00f2ff" stroke-width="3" cx="100" cy="100" rx="90" ry="30" />
+                    <ellipse class="ring-path" stroke="#ff0055" stroke-width="3" transform="rotate(45 100 100)" cx="100" cy="100" rx="90" ry="30" />
+                    <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="60">IEA</text>
+                </svg>
+            </div>
+
+            <div class="title-block">
+                <div class="iea-sub">INTERNATIONAL EDUCATION ASTRONOMY</div>
+                <div class="royal-title">ROYAL ARCHIVES</div>
+                <div class="deco-line"></div>
+            </div>
+        </header>
+
+        <div class="control-dock">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search Archives via Title or ID...">
+            </div>
+            
+            <div class="filter-wrapper">
+                <button class="filter-chip active" onclick="filterVault('all', this)">ALL DATA</button>
+                <button class="filter-chip" onclick="filterVault('audio', this)">AUDIO LOGS</button>
+                <button class="filter-chip" onclick="filterVault('book', this)">MANUSCRIPTS</button>
+                <button class="filter-chip" onclick="filterVault('doc', this)">RESEARCH</button>
+            </div>
+        </div>
+
+        <div class="library-grid" id="grid-container">
+            </div>
+
+        <footer>
+            <div class="footer-logo">IEA ROYAL ARCHIVES</div>
+            <div class="copyright">© 2026 INTERNATIONAL EDUCATION ASTRONOMY. ALL RIGHTS RESERVED.</div>
+        </footer>
+
+    </div>
+
+    <div id="music-deck">
+        <div class="deck-art" id="deck-art">
+            <img src="https://via.placeholder.com/50" id="player-img">
+        </div>
+        
+        <div class="deck-info">
+            <div class="deck-title" id="player-title">NO SIGNAL</div>
+            <div class="deck-status" id="player-status">WAITING FOR INPUT...</div>
+        </div>
+
+        <div class="visualizer" id="visualizer">
+            </div>
+
+        <div class="deck-controls">
+            <button class="ctrl-btn"><i class="fas fa-backward"></i></button>
+            <button class="ctrl-btn play-btn" onclick="togglePlay()"><i class="fas fa-play" id="playIcon"></i></button>
+            <button class="ctrl-btn"><i class="fas fa-forward"></i></button>
+        </div>
+        
+        <audio id="audio-core"></audio>
+    </div>
+
+    <div class="admin-trigger" onclick="alert('ADMIN ACCESS: RESTRICTED')"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        // --- CONFIGURATION ---
+        const config = { databaseURL: "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app" };
+        const app = initializeApp(config);
+        const db = getDatabase(app);
+
+        // --- STATE MANAGEMENT ---
+        let vaultData = [];
+        let isPlaying = false;
+        // Gambar default berkualitas tinggi (Nebula)
+        const DEFAULT_COVER = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
+
+        // --- 1. INTRO SEQUENCE LOGIC ---
+        window.onload = () => {
+            initDust(); // Start particles
+            initVisualizer(); // Prepare visualizer bars
+
+            // Step 1: Text Fade In/Out
+            setTimeout(() => {
+                document.getElementById('intro-welcome').style.opacity = '0';
+                setTimeout(() => document.getElementById('intro-welcome').style.display = 'none', 1000);
                 
-                if(json) {
-                    dataStore = Object.values(json).reverse();
-                    render(dataStore);
-                } else {
-                    document.getElementById('grid').innerHTML = "<div style='text-align:center;width:100%;color:#444;'>Archives Empty.</div>";
-                }
-            } catch(e) { console.log(e); }
+                // Step 2: Show Loader
+                const loader = document.getElementById('loader-overlay');
+                loader.style.opacity = '1';
+                loader.style.pointerEvents = 'auto';
+
+                // Step 3: Finish Loading
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        // Step 4: Show Main Content
+                        const main = document.getElementById('main-wrapper');
+                        main.style.display = 'block';
+                        setTimeout(() => main.style.opacity = '1', 100);
+                    }, 800);
+                }, 3000); // Durasi loader
+            }, 3500); // Durasi text welcome
         };
 
-        // --- RENDER LOGIC ---
-        function render(items) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            
-            items.forEach(item => {
-                // Deteksi Tipe (Musik/Buku)
-                const isMusic = (item.category && (item.category.toLowerCase().includes('music') || item.category.toLowerCase().includes('audio')));
-                const thumb = (item.thumbnail && item.thumbnail.length > 5) ? item.thumbnail : DEF_IMG;
+        // --- 2. DATA FETCHING & RENDERING ---
+        onValue(ref(db, 'library'), (snapshot) => {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = '';
+
+            if (snapshot.exists()) {
+                vaultData = Object.values(snapshot.val()).reverse(); // Terbaru diatas
+                renderVault(vaultData);
+            } else {
+                // FALLBACK DEMO DATA (Supaya tidak kosong saat demo)
+                const demoData = [
+                    { title: "The Cosmic Perspective", category: "Book", description: "Buku panduan dasar astronomi untuk pemula.", thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500", link: "#" },
+                    { title: "Nebula Frequency", category: "Audio", description: "Rekaman suara frekuensi radio dari nebula Orion.", thumbnail: "https://images.unsplash.com/photo-1614730341194-75c60740a070?w=500", link: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }
+                ];
+                renderVault(demoData); // Render demo jika kosong
+            }
+        });
+
+        function renderVault(data) {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = '';
+
+            data.forEach((item, index) => {
+                // Determine Type
+                let type = 'ARCHIVE';
+                let icon = 'fa-file-alt';
+                let cat = (item.category || '').toLowerCase();
                 
+                if (cat.includes('music') || cat.includes('audio')) { type = 'AUDIO LOG'; icon = 'fa-music'; }
+                else if (cat.includes('book') || cat.includes('pdf')) { type = 'MANUSCRIPT'; icon = 'fa-book'; }
+                else if (cat.includes('research')) { type = 'RESEARCH'; icon = 'fa-microscope'; }
+
+                const cover = item.thumbnail || DEFAULT_COVER;
+                const delay = index * 0.1; // Stagger animation
+
+                // Create Element
                 const card = document.createElement('div');
-                card.className = 'tome';
+                card.className = 'artifact';
+                card.style.animation = `fadeInUp 0.6s ease forwards ${delay}s`;
+                card.style.opacity = '0'; // Initial state for anim
+
+                // 3D TILT EVENTS
+                card.onmousemove = (e) => handleTilt(e, card);
+                card.onmouseleave = () => resetTilt(card);
+
+                // HTML Structure
                 card.innerHTML = `
-                    <div class="cover">
-                        <span class="cat-badge">${item.category || 'FILE'}</span>
-                        <img src="${thumb}" onerror="this.src='${DEF_IMG}'">
+                    <div class="art-visual">
+                        <div class="art-badge"><i class="fas ${icon}"></i> ${type}</div>
+                        <img src="${cover}" class="art-img" onerror="this.src='${DEFAULT_COVER}'">
                     </div>
-                    <div class="details">
-                        <div class="tome-title">${item.title}</div>
-                        <div class="tome-desc">${item.description || 'No data description.'}</div>
-                        ${isMusic 
-                            ? `<button class="btn-open" onclick="play('${item.link}', '${item.title}')"><i class="fas fa-play"></i> PLAY AUDIO</button>`
-                            : `<a href="${item.link}" target="_blank" class="btn-open"><i class="fas fa-book-open"></i> OPEN FILE</a>`
+                    <div class="art-body">
+                        <div class="art-title">${item.title}</div>
+                        <div class="art-meta">
+                            <span><i class="fas fa-fingerprint"></i> ID-${Math.floor(Math.random()*9000)+1000}</span>
+                            <span><i class="far fa-clock"></i> ${item.date || 'Unknown'}</span>
+                        </div>
+                        <div class="art-desc">${item.description || 'No description data provided.'}</div>
+                        
+                        ${type === 'AUDIO LOG' 
+                            ? `<button class="art-btn" onclick="playTrack('${item.link}', '${item.title}', '${cover}')">
+                                 <i class="fas fa-play-circle"></i> INITIALIZE PLAYBACK
+                               </button>`
+                            : `<a href="${item.link}" target="_blank" class="art-btn">
+                                 <i class="fas fa-external-link-alt"></i> ACCESS DOCUMENT
+                               </a>`
                         }
                     </div>
                 `;
-                grid.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        // --- MUSIC ---
-        function play(url, title) {
-            const p = document.getElementById('player');
-            const a = document.getElementById('audioEl');
-            document.getElementById('mTitle').innerText = title;
-            p.style.display = 'flex';
-            a.src = url; a.play();
-        }
-        function stopMusic() {
-            document.getElementById('audioEl').pause();
-            document.getElementById('player').style.display = 'none';
-        }
-
-        // --- FILTERS ---
-        function filterCat(cat, el) {
-            document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-            if(el) el.classList.add('active');
+        // --- 3. FILTER & SEARCH ---
+        window.filterVault = (cat, btn) => {
+            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
-            if(cat === 'all') render(dataStore);
-            else if(cat === 'Music') render(dataStore.filter(i => i.category.toLowerCase().includes('music') || i.category.toLowerCase().includes('audio')));
-            else if(cat === 'Book') render(dataStore.filter(i => !i.category.toLowerCase().includes('music') && !i.category.toLowerCase().includes('audio')));
-            else render(dataStore.filter(i => i.category === cat));
+            if (cat === 'all') renderVault(vaultData);
+            else if (cat === 'audio') renderVault(vaultData.filter(i => (i.category||'').toLowerCase().includes('music') || (i.category||'').toLowerCase().includes('audio')));
+            else if (cat === 'book') renderVault(vaultData.filter(i => (i.category||'').toLowerCase().includes('book') || (i.category||'').toLowerCase().includes('pdf')));
+            else renderVault(vaultData.filter(i => (i.category||'').toLowerCase().includes(cat)));
         }
 
-        function filter() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            render(dataStore.filter(i => i.title.toLowerCase().includes(q)));
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = vaultData.filter(i => i.title.toLowerCase().includes(val) || (i.description||'').toLowerCase().includes(val));
+            renderVault(filtered);
+        });
+
+        // --- 4. MUSIC PLAYER SYSTEM ---
+        const audio = document.getElementById('audio-core');
+        const deck = document.getElementById('music-deck');
+        
+        // Expose to window for HTML onclick
+        window.playTrack = (url, title, img) => {
+            deck.classList.add('active');
+            document.getElementById('player-title').innerText = title;
+            document.getElementById('player-status').innerText = "STREAMING AUDIO DATA...";
+            document.getElementById('player-img').src = img;
+            
+            audio.src = url;
+            audio.play();
+            isPlaying = true;
+            updateDeckState();
+        };
+
+        window.togglePlay = () => {
+            if (audio.paused) { audio.play(); isPlaying = true; } 
+            else { audio.pause(); isPlaying = false; }
+            updateDeckState();
+        };
+
+        function updateDeckState() {
+            const icon = document.getElementById('playIcon');
+            const art = document.getElementById('deck-art');
+            const status = document.getElementById('player-status');
+            
+            if (isPlaying) {
+                icon.className = "fas fa-pause";
+                art.classList.add('playing');
+                status.innerText = "PLAYING >> 128kbps";
+                animateVisualizer(true);
+            } else {
+                icon.className = "fas fa-play";
+                art.classList.remove('playing');
+                status.innerText = "PAUSED";
+                animateVisualizer(false);
+            }
         }
+
+        // --- 5. VISUAL FX LOGIC ---
+        
+        // 3D Tilt
+        function handleTilt(e, card) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -8; // Max -8deg
+            const rotateY = ((x - centerX) / centerX) * 8; // Max 8deg
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        }
+
+        function resetTilt(card) {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+        }
+
+        // Dust Particles
+        function initDust() {
+            const container = document.getElementById('dust-container');
+            for(let i=0; i<40; i++) {
+                const p = document.createElement('div');
+                p.className = 'dust-particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.width = Math.random() * 3 + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        // Visualizer Bars
+        let vizInterval;
+        function initVisualizer() {
+            const viz = document.getElementById('visualizer');
+            for(let i=0; i<20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                viz.appendChild(bar);
+            }
+        }
+
+        function animateVisualizer(active) {
+            clearInterval(vizInterval);
+            const bars = document.querySelectorAll('.visualizer .bar');
+            if (!active) {
+                bars.forEach(b => b.style.height = '3px');
+                return;
+            }
+            
+            vizInterval = setInterval(() => {
+                bars.forEach(b => {
+                    const h = Math.random() * 20 + 3;
+                    b.style.height = h + 'px';
+                    // Warna dinamis merah/cyan
+                    b.style.background = Math.random() > 0.5 ? 'var(--cyan)' : 'var(--red)';
+                });
+            }, 100);
+        }
+
+        // Add Keyframes via JS
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `@keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }`;
+        document.head.appendChild(styleSheet);
+
     </script>
 </body>
 </html>
