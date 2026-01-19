@@ -11,11 +11,12 @@
     <style>
       :root{
         --bg: #050508; 
-        --accent: #00f6ff;
-        --accent-glow: rgba(0, 246, 255, 0.4);
-        --glass: rgba(15, 15, 25, 0.7); 
+        --accent: #bc13fe;       
+        --accent-sec: #ff4500;   
+        --accent-glow: rgba(188, 19, 254, 0.7);
+        --glass: rgba(20, 10, 25, 0.7); 
         --glass-border: rgba(255, 255, 255, 0.08);
-        --dock-bg: rgba(5, 5, 10, 0.9);
+        --dock-bg: rgba(10, 5, 15, 0.9);
         --text-pri: #ffffff;
         --text-sec: #b0b0b0;
       }
@@ -31,43 +32,65 @@
         min-height: 100vh;
         position: relative;
         background-image: 
-            radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-            radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-            radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+            radial-gradient(var(--accent-glow), transparent 2px), 
+            radial-gradient(rgba(255, 69, 0, 0.5), transparent 2px), 
+            radial-gradient(var(--accent), transparent 1px); 
         background-size: 550px 550px, 350px 350px, 250px 250px;
         background-position: 0 0, 40px 60px, 130px 270px;
+      }
+
+      /* --- TEXTURE LAYER (Kaca Pecah Basah) --- */
+      .texture-layer {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          z-index: -10; opacity: 0.3;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
+          filter: contrast(150%) brightness(70%) blur(5px);
+          mix-blend-mode: overlay; pointer-events: none;
       }
 
       /* --- AMBIENT GLOW --- */
       body::before, body::after {
         content: ''; position: fixed; width: 60vw; height: 60vw; border-radius: 50%;
-        filter: blur(120px); opacity: 0.3; z-index: -1; animation: orbit 15s infinite alternate ease-in-out;
+        filter: blur(120px); opacity: 0.25; z-index: -2; animation: orbit 15s infinite alternate ease-in-out;
       }
-      body::before {
-        background: radial-gradient(circle, var(--accent), transparent 70%);
-        top: -20%; left: -20%;
+      body::before { background: radial-gradient(circle, var(--accent), transparent 70%); top: -20%; left: -20%; }
+      body::after { background: radial-gradient(circle, var(--accent-sec), transparent 70%); bottom: -20%; right: -20%; animation-delay: -7s; }
+      @keyframes orbit { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
+
+      /* --- LOGO ANIMATION (GLOW BOOSTED) --- */
+      .logo-svg { overflow: visible; filter: drop-shadow(0 0 15px var(--accent)) drop-shadow(0 0 25px var(--accent-sec)); }
+      .ring { fill: none; stroke-width: 5; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 8px currentColor); }
+      .ring-1 { stroke: var(--accent); transform-origin: center; animation: ringSpin 4s linear infinite; }
+      .ring-2 { stroke: var(--accent-sec); transform-origin: center; animation: ringSpinRev 3s linear infinite; }
+      
+      @keyframes ringSpin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+      @keyframes ringSpinRev { 0% { transform: rotate(0deg) scale(1.1); } 50% { transform: rotate(-180deg) scale(1); } 100% { transform: rotate(-360deg) scale(1.1); } }
+
+      /* --- CORNER LOGO --- */
+      .corner-brand {
+        position: fixed; top: 25px; left: 25px; z-index: 8000;
+        display: flex; align-items: center; gap: 10px; opacity: 0; /* Hidden initially */
+        transition: opacity 2s;
       }
-      body::after {
-        background: radial-gradient(circle, #7000ff, transparent 70%);
-        bottom: -20%; right: -20%; animation-delay: -7s;
+      .corner-logo { width: 40px; height: 40px; }
+      .corner-text { 
+        font-family: 'Orbitron'; font-weight: 900; font-size: 1rem; letter-spacing: 2px;
+        background: linear-gradient(90deg, #fff, var(--text-sec)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        display: none; 
       }
-      @keyframes orbit {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(30px, 50px) scale(1.1); }
-      }
+      @media(min-width: 768px){ .corner-text { display: block; } }
 
       /* --- LAYOUT WRAPPER --- */
       .wrap{
         max-width: 1000px; margin: 0 auto; 
         padding: 60px 20px 160px 20px; 
         position: relative; z-index: 2;
-        animation: portalOpen 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity: 0; transform: scale(0.95); /* Hidden initially */
+        transition: opacity 1.5s ease, transform 1.5s ease;
       }
-      @keyframes portalOpen { from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);} }
 
       /* --- HEADER SYSTEM --- */
       header{ text-align: center; margin-bottom: 50px; }
-      
       .status-pill {
         display: inline-flex; align-items: center; gap: 8px;
         padding: 6px 18px; border: 1px solid rgba(255,255,255,0.1);
@@ -75,7 +98,7 @@
         border-radius: 50px; background: rgba(0,0,0,0.4);
         backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(0,0,0,0.5);
       }
-      .status-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); animation: blink 2s infinite; }
+      .status-dot { width: 6px; height: 6px; background: var(--accent-sec); border-radius: 50%; box-shadow: 0 0 8px var(--accent-sec); animation: blink 2s infinite; }
       @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
       header h1{
@@ -84,18 +107,16 @@
         background: linear-gradient(180deg, #fff 0%, #ccc 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         letter-spacing: 3px; 
-        filter: drop-shadow(0 0 25px var(--accent-glow));
+        filter: drop-shadow(0 0 30px var(--accent)) drop-shadow(0 0 15px var(--accent-sec));
         margin-top: 20px;
         line-height: 1.1; font-weight: 900;
+        text-shadow: 0 0 15px var(--accent);
       }
 
-      /* --- GRID SYSTEM --- */
-      .grid{ 
-        display: grid; grid-template-columns: 1fr; gap: 20px; 
-      }
+      /* --- GRID & CARDS --- */
+      .grid{ display: grid; grid-template-columns: 1fr; gap: 20px; }
       @media(min-width: 768px){ .grid{ grid-template-columns: repeat(2, 1fr); gap: 25px; } }
 
-      /* --- CARD DESIGN --- */
       .card{
         background: var(--glass);
         border: 1px solid var(--glass-border);
@@ -108,37 +129,29 @@
       }
       .card:hover{
         transform: translateY(-5px);
-        border-color: rgba(0, 246, 255, 0.5);
-        box-shadow: 0 10px 40px rgba(0, 246, 255, 0.15);
-        background: linear-gradient(145deg, rgba(30,40,50,0.6), rgba(15,15,20,0.8));
+        border-color: rgba(188, 19, 254, 0.5);
+        box-shadow: 0 10px 40px rgba(188, 19, 254, 0.15);
+        background: linear-gradient(145deg, rgba(30,20,40,0.6), rgba(15,10,20,0.8));
       }
       .card:active { transform: scale(0.98); }
-
       .card-tag{
-        font-family: 'JetBrains Mono'; font-size: 0.6rem; color: var(--accent);
+        font-family: 'JetBrains Mono'; font-size: 0.6rem; color: var(--accent-sec);
         display: inline-block; margin-bottom: 12px; letter-spacing: 2px; font-weight: 700;
-        padding: 4px 8px; border-radius: 4px; background: rgba(0, 246, 255, 0.05); border: 1px solid rgba(0, 246, 255, 0.1);
+        padding: 4px 8px; border-radius: 4px; background: rgba(255, 69, 0, 0.05); border: 1px solid rgba(255, 69, 0, 0.1);
       }
       .card h2{
         font-family: 'Orbitron'; font-size: 1.3rem; margin-bottom: 8px; color: #fff;
         display: flex; align-items: center; justify-content: space-between;
       }
-      .card p{ 
-        font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; 
-        font-weight: 400; letter-spacing: 0.3px;
-      }
-      
-      .card-icon {
-        width: 24px; height: 24px; fill: rgba(255,255,255,0.1); 
-        transition: 0.4s; position: absolute; top: 25px; right: 25px;
-      }
+      .card p{ font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; font-weight: 400; letter-spacing: 0.3px; }
+      .card-icon { width: 24px; height: 24px; fill: rgba(255,255,255,0.1); transition: 0.4s; position: absolute; top: 25px; right: 25px; }
       .card:hover .card-icon { fill: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); transform: rotate(15deg); }
 
       /* --- DOCK NAVIGATION --- */
       .dock-wrap{
         position: fixed; bottom: 30px; left: 0; width: 100%;
         display: flex; justify-content: center; z-index: 9000; 
-        pointer-events: none;
+        pointer-events: none; opacity: 0; transition: opacity 2s;
       }
       .dock{
         background: var(--dock-bg); 
@@ -149,24 +162,15 @@
         box-shadow: 0 15px 50px rgba(0,0,0,0.6);
         transition: 0.3s;
       }
-      .dock:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(0, 246, 255, 0.1); }
-
-      .dock-btn{
-        background: transparent; border: none; cursor: pointer;
-        color: rgba(255,255,255,0.4); display: flex; flex-direction: column; 
-        align-items: center; gap: 6px; transition: 0.3s; padding: 0;
-      }
+      .dock:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(188, 19, 254, 0.1); }
+      .dock-btn{ background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.3s; padding: 0; }
       .dock-btn svg{ width: 22px; height: 22px; fill: currentColor; transition: 0.3s; }
       .dock-btn span{ font-size: 0.55rem; font-family: 'Orbitron'; letter-spacing: 1px; font-weight: 700; opacity: 0; transform: translateY(5px); transition: 0.3s; }
-      
       .dock-btn:hover { color: #fff; }
       .dock-btn:hover svg { transform: translateY(-5px); fill: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
       .dock-btn:hover span { opacity: 1; transform: translateY(0); color: var(--accent); }
 
-      .sys-footer {
-        text-align: center; margin-top: 40px; font-family: 'JetBrains Mono';
-        font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 2px;
-      }
+      .sys-footer { text-align: center; margin-top: 40px; font-family: 'JetBrains Mono'; font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 2px; }
 
       /* --- MODAL SYSTEM --- */
       .modal {
@@ -179,57 +183,168 @@
         background: #0a0a10;
         border: 1px solid var(--accent); border-radius: 20px;
         padding: 40px; text-align: center; position: relative;
-        box-shadow: 0 0 80px rgba(0, 246, 255, 0.15);
+        box-shadow: 0 0 80px rgba(188, 19, 254, 0.15);
         animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       @keyframes modalIn { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
-
       .btn-action {
-        width: 100%; padding: 15px; background: var(--accent); color: #000;
+        width: 100%; padding: 15px; background: var(--accent); color: #fff;
         font-weight: 800; border: none; border-radius: 10px; margin-top: 20px;
         cursor: pointer; font-family: 'Orbitron'; transition: 0.3s; letter-spacing: 1px;
-        box-shadow: 0 0 20px rgba(0, 246, 255, 0.2);
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.3); text-shadow: 0 0 5px rgba(0,0,0,0.5);
       }
-      .btn-action:hover { transform: scale(1.02); box-shadow: 0 0 40px var(--accent); background: #fff; }
+      .btn-action:hover { transform: scale(1.02); box-shadow: 0 0 40px var(--accent); background: #fff; color: var(--accent); }
       .btn-close { margin-top: 20px; color: #666; font-size: 0.75rem; cursor: pointer; letter-spacing: 1px; transition: 0.3s; font-family: 'JetBrains Mono'; }
       .btn-close:hover { color: #fff; }
 
-      /* --- GLOBAL LOADER --- */
+      /* --- SCREEN: 1. PROTOCOL/MANUAL (NEW) --- */
+      #protocol-screen {
+          position: fixed; inset: 0; background: #000; z-index: 30000;
+          display: flex; flex-direction: column; justify-content: center; align-items: center;
+          padding: 20px;
+          transition: opacity 1s ease;
+      }
+      .protocol-box {
+          width: 100%; max-width: 600px;
+          border: 1px solid var(--glass-border);
+          background: rgba(10, 10, 15, 0.9);
+          backdrop-filter: blur(20px);
+          padding: 30px; border-radius: 10px;
+          box-shadow: 0 0 50px rgba(0,0,0,0.8);
+          border-left: 3px solid var(--accent);
+      }
+      .protocol-header {
+          font-family: 'Orbitron'; font-size: 1.2rem; color: var(--accent-sec);
+          margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;
+          display: flex; justify-content: space-between; align-items: center;
+      }
+      .protocol-content {
+          font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #ccc; line-height: 1.6;
+          max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;
+      }
+      .protocol-content h4 { color: #fff; margin-top: 15px; margin-bottom: 5px; font-family: 'Orbitron'; }
+      .protocol-content ul { padding-left: 20px; }
+      .protocol-content li { margin-bottom: 8px; }
+
+      /* Scrollbar Keren */
+      .protocol-content::-webkit-scrollbar { width: 5px; }
+      .protocol-content::-webkit-scrollbar-track { background: #111; }
+      .protocol-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+      /* Checkbox & Button */
+      .protocol-confirm { display: flex; align-items: center; gap: 15px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+      .custom-checkbox {
+          width: 20px; height: 20px; border: 2px solid var(--accent-sec);
+          display: flex; justify-content: center; align-items: center; cursor: pointer;
+          transition: 0.3s; border-radius: 4px;
+      }
+      .custom-checkbox.checked { background: var(--accent-sec); box-shadow: 0 0 10px var(--accent-sec); }
+      .custom-checkbox i { color: #000; font-size: 12px; display: none; }
+      .custom-checkbox.checked i { display: block; font-weight: bold; }
+
+      #btn-init {
+          flex: 1; padding: 12px; background: #222; color: #555;
+          border: 1px solid #333; font-family: 'Orbitron'; letter-spacing: 2px;
+          cursor: not-allowed; transition: 0.5s; text-transform: uppercase; font-weight: bold;
+      }
+      #btn-init.active {
+          background: var(--accent); color: #fff; border-color: var(--accent);
+          cursor: pointer; box-shadow: 0 0 20px var(--accent);
+      }
+
+      /* --- SCREEN: 2. LOGO LOADER --- */
       #loader-overlay {
         position: fixed; inset: 0; 
         background: #050508;
         z-index: 20000; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        transition: opacity 0.8s ease; pointer-events: none;
+        display: none; /* Default Hidden, shown after protocol */
+        flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity 1s ease; pointer-events: none;
       }
       .loader-text { 
-        font-family: 'Orbitron'; color: var(--accent); margin-top: 25px; letter-spacing: 4px; font-weight: bold; font-size: 0.8rem;
-        text-shadow: 0 0 15px var(--accent); animation: textPulse 1s infinite alternate;
+        font-family: 'Orbitron'; color: var(--accent-sec); margin-top: 30px; letter-spacing: 5px; font-weight: bold; font-size: 0.9rem;
+        text-shadow: 0 0 15px var(--accent-sec); animation: textPulse 0.5s infinite alternate;
       }
-      .loader-ring {
-        width: 65px; height: 65px; 
-        border: 3px solid rgba(0, 246, 255, 0.1);
-        border-top-color: var(--accent); 
-        border-radius: 50%; 
-        animation: spin 0.8s linear infinite;
-        box-shadow: 0 0 40px rgba(0, 246, 255, 0.2);
+      .loader-logo-wrap { width: 150px; height: 150px; opacity: 0; animation: fadeLogoIn 1s forwards; }
+      @keyframes fadeLogoIn { to {opacity: 1;} }
+      @keyframes textPulse { from{opacity:0.6} to{opacity:1} }
+
+      .iea-glow {
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent-sec);
+        font-weight: bold; font-family: 'Orbitron';
       }
-      @keyframes spin { 100%{transform:rotate(360deg)} }
-      @keyframes textPulse { from{opacity:0.5} to{opacity:1} }
 
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-  <div id="loader-overlay">
-    <div class="loader-ring"></div>
-    <div class="loader-text" id="loaderMsg">SYSTEM INITIALIZING...</div>
+  <div class="texture-layer"></div>
+
+  <div id="protocol-screen">
+      <div class="protocol-box">
+          <div class="protocol-header">
+              <span>SECURITY PROTOCOL</span>
+              <span style="font-size: 0.7rem; opacity: 0.7;">V.3.3.01</span>
+          </div>
+          
+          <div class="protocol-content">
+              <p style="color:var(--accent); margin-bottom:10px;">// SYSTEM MANUAL & LEGEND //</p>
+              
+              <h4>01. CARA PENGGUNAAN</h4>
+              <ul>
+                  <li>Setiap panel berbentuk "Kartu" adalah gerbang menuju dimensi data berbeda. Klik untuk mengakses.</li>
+                  <li>Tombol navigasi di bawah (Dock) digunakan untuk Reset sistem, Perintah Admin, dan melihat Protokol Ulang.</li>
+              </ul>
+
+              <h4>02. LEGENDA JUDUL (THE LEGEND)</h4>
+              <ul>
+                  <li><b style="color:var(--accent-sec)">SECTOR ALPHA (Komunitas 1)</b>: Gerbang utama bagi rekrutan baru yang ingin memulai perjalanan di IEA.</li>
+                  <li><b style="color:var(--accent-sec)">SECTOR BETA (Komunitas 2)</b>: Divisi ekspansi untuk kolaborasi lanjutan.</li>
+                  <li><b style="color:var(--accent-sec)">COSMIC NETWORK</b>: Jurnal Ilmiah tempat para peneliti berbagi teori Node-Field.</li>
+                  <li><b style="color:var(--accent-sec)">ROYAL LIBRARY</b>: Gudang dokumen rahasia, buku, dan arsip musik kerajaan <span class="iea-glow">IEA</span>.</li>
+                  <li><b style="color:var(--accent-sec)">NEURAL NETWORK</b>: AI Assistant yang siap menjawab pertanyaan fenomena kosmik.</li>
+              </ul>
+
+              <h4>03. PERINGATAN</h4>
+              <p>Mengakses portal ini berarti Anda setuju untuk menjaga kerahasiaan data dan mematuhi etika "The Architect".</p>
+          </div>
+
+          <div class="protocol-confirm">
+              <div class="custom-checkbox" id="proto-check" onclick="toggleCheck()">
+                  <i>✓</i>
+              </div>
+              <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#888; cursor:pointer;" onclick="toggleCheck()">SAYA TELAH MEMBACA DAN MENGERTI</span>
+          </div>
+          
+          <button id="btn-init" onclick="initializeSystem()">AWAITING CONFIRMATION</button>
+      </div>
   </div>
 
-  <div class="wrap">
+  <div id="loader-overlay">
+    <div class="loader-logo-wrap">
+        <svg class="logo-svg" viewBox="0 0 200 200" style="width:100%; height:100%;">
+            <ellipse class="ring ring-1" cx="100" cy="100" rx="90" ry="30" />
+            <ellipse class="ring ring-2" cx="100" cy="100" rx="90" ry="30" />
+            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" style="filter: drop-shadow(0 0 15px #fff);">IEA</text>
+        </svg>
+    </div>
+    <div class="loader-text" id="loaderMsg">AUTHENTICATING...</div>
+  </div>
+
+  <div class="corner-brand" id="brand-corner">
+    <svg class="corner-logo logo-svg" viewBox="0 0 200 200">
+        <ellipse class="ring ring-1" cx="100" cy="100" rx="90" ry="30" />
+        <ellipse class="ring ring-2" cx="100" cy="100" rx="90" ry="30" />
+        <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" style="filter: drop-shadow(0 0 5px #fff);">IEA</text>
+    </svg>
+    <span class="corner-text">IEA SYSTEM</span>
+  </div>
+
+  <div class="wrap" id="main-wrap">
     <header>
       <div class="status-pill"><div class="status-dot"></div>SYSTEM OPERATIONAL</div>
-      <h1>IEA PORTAL</h1>
+      <h1><span class="iea-glow">IEA</span> PORTAL</h1>
       <p style="color:var(--text-sec); margin-top:10px; letter-spacing:2px; font-size:0.8rem; font-family:'JetBrains Mono'; opacity:0.8;">INTERNATIONAL EDUCATION ASTRONOMY</p>
     </header>
 
@@ -246,7 +361,7 @@
         <svg class="card-icon" viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         <span class="card-tag">SECTOR ALPHA</span>
         <h2>KOMUNITAS 1</h2>
-        <p>Gerbang rekrutmen utama. Protokol inisiasi untuk personel baru yang ingin bergabung dengan jaringan riset IEA.</p>
+        <p>Gerbang rekrutmen utama. Protokol inisiasi untuk personel baru yang ingin bergabung dengan jaringan riset <span class="iea-glow">IEA</span>.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/PENDAFTARAN-KOMUNITAS-1/komunitas2.html')">
@@ -267,13 +382,13 @@
         <svg class="card-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
         <span class="card-tag">DOCUMENT VAULT</span>
         <h2>ROYAL LIBRARY</h2>
-        <p>Arsip digital terpusat. Akses buku, dokumen riset, dan koleksi musik astronomi yang dikelola kerajaan IEA.</p>
+        <p>Arsip digital terpusat. Akses buku, dokumen riset, dan koleksi musik astronomi yang dikelola kerajaan <span class="iea-glow">IEA</span>.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/IEA-Web-premium/')">
         <svg class="card-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
         <span class="card-tag">CORE SYSTEM</span>
-        <h2>WEBSITE IEA</h2>
+        <h2>WEBSITE <span class="iea-glow">IEA</span></h2>
         <p>Akses level tinggi. Antarmuka manajemen pusat dengan fitur eksklusif dan database visual premium.</p>
       </div>
 
@@ -294,11 +409,11 @@
     </div>
 
     <div class="sys-footer">
-        IEA SYSTEM // SECURE CONNECTION ESTABLISHED
+        <span class="iea-glow">IEA</span> SYSTEM // SECURE CONNECTION ESTABLISHED
     </div>
   </div>
 
-  <div class="dock-wrap">
+  <div class="dock-wrap" id="dock-nav">
     <div class="dock">
       <button class="dock-btn" onclick="reloadPage()">
         <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -331,12 +446,55 @@
   </div>
 
   <script>
+    // --- PROTOCOL SCREEN LOGIC ---
+    let isChecked = false;
+    
+    function toggleCheck() {
+        const check = document.getElementById('proto-check');
+        const btn = document.getElementById('btn-init');
+        isChecked = !isChecked;
+        
+        if(isChecked) {
+            check.classList.add('checked');
+            btn.classList.add('active');
+            btn.innerText = "INITIALIZE LINK";
+            vibrate();
+        } else {
+            check.classList.remove('checked');
+            btn.classList.remove('active');
+            btn.innerText = "AWAITING CONFIRMATION";
+        }
+    }
+
+    function initializeSystem() {
+        if(!isChecked) return;
+        
+        // 1. Hide Protocol
+        document.getElementById('protocol-screen').style.opacity = '0';
+        setTimeout(() => { document.getElementById('protocol-screen').style.display = 'none'; }, 1000);
+        
+        // 2. Show Logo Loader
+        const loader = document.getElementById('loader-overlay');
+        loader.style.display = 'flex';
+        vibrate();
+        
+        // 3. Wait 3 seconds, then show Main Portal
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 1000);
+            
+            // Reveal Main Content
+            document.getElementById('brand-corner').style.opacity = '0.9';
+            const wrap = document.getElementById('main-wrap');
+            wrap.style.opacity = '1';
+            wrap.style.transform = 'scale(1)';
+            document.getElementById('dock-nav').style.opacity = '1';
+        }, 3000);
+    }
+
     // --- SYSTEM LOGIC ---
     function joinDiscord(){ closeModal('rulesModal'); goto("https://discord.gg/6FMjCyPg"); }
-    
-    function openModal(id){ 
-        const m = document.getElementById(id); m.style.display = 'flex';
-    }
+    function openModal(id){ document.getElementById(id).style.display = 'flex'; }
     function closeModal(id){ document.getElementById(id).style.display = 'none'; }
     function vibrate() { if(navigator.vibrate) navigator.vibrate([30]); }
 
@@ -351,24 +509,16 @@
 
     // --- INITIALIZATION ---
     window.onload = () => {
-        setTimeout(() => {
-            const loader = document.getElementById('loader-overlay');
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.style.display = 'none'; }, 800);
-        }, 1500);
-        
-        // Add haptic feedback to cards
+        // Now wait for user to interact with protocol
         document.querySelectorAll('.card, button').forEach(b => b.addEventListener('click', vibrate));
     };
 
-    // --- TRANSITION SEQUENCE (3.5 SEC) ---
+    // --- TRANSITION SEQUENCE ---
     function goto(url){
         const loader = document.getElementById('loader-overlay');
         loader.style.display = 'flex';
         setTimeout(() => loader.style.opacity = '1', 10);
         document.getElementById('loaderMsg').innerText = "ESTABLISHING CONNECTION...";
-        
-        // 3.5 Seconds Delay as Requested
         setTimeout(() => { window.location.href = url; }, 3500);
     }
   </script>
