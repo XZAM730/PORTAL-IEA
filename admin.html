@@ -3,350 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IEA COMMAND CENTER</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>IEA | ADMIN COMMANDER</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg: #030305;
-            --panel: rgba(20, 20, 25, 0.7);
+            /* TEMA: IEA CONSTELLATION */
+            --bg-deep: #020204;
+            --panel-bg: rgba(10, 12, 20, 0.9);
+            
+            --cyan: #00f2ff;
+            --cyan-dim: rgba(0, 242, 255, 0.1);
+            --red: #ff0055;
+            --red-dim: rgba(255, 0, 85, 0.1);
+            
+            --text-pri: #ffffff;
+            --text-sec: #94a3b8;
+            
             --border: rgba(255, 255, 255, 0.1);
-            --neon: #00f6ff;
-            --success: #0aff0a;
-            --error: #ff2a2a;
-            --text: #e0e0e0;
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-pri);
+            font-family: 'Rajdhani', sans-serif;
             min-height: 100vh;
-            display: flex; flex-direction: column;
-            background-image: 
-                linear-gradient(rgba(0, 246, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 246, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+            display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* --- AUTH SCREEN (PASSWORD) --- */
-        #auth-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
+        /* --- BACKGROUND FX --- */
+        #star-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.6; pointer-events: none; }
+
+        /* --- LOADING SCREEN --- */
+        #loader-overlay {
+            position: fixed; inset: 0; background: var(--bg-deep); z-index: 20000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        .logo-svg { width: 150px; height: 150px; overflow: visible; filter: drop-shadow(0 0 15px var(--cyan)); }
+        .ring { fill: none; stroke-width: 4; }
+        .ring-cyan { stroke: var(--cyan); transform-origin: center; animation: ringSpin 3s linear infinite; }
+        .ring-red { stroke: var(--red); transform-origin: center; animation: ringSpinRev 2s linear infinite; }
+        
+        @keyframes ringSpin { to { transform: rotate(360deg); } }
+        @keyframes ringSpinRev { to { transform: rotate(-360deg); } }
+        
+        .loader-text { 
+            font-family: 'Orbitron'; font-size: 12px; letter-spacing: 4px; margin-top: 30px; 
+            color: var(--cyan); animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+
+        /* --- AUTH SCREEN --- */
+        #auth-overlay {
+            position: fixed; inset: 0; background: rgba(2,2,4,0.95); z-index: 10000;
+            display: none; /* Hidden by default, shown via JS after load */
+            flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
         }
         .auth-box {
-            text-align: center; width: 300px;
+            background: var(--panel-bg); border: 1px solid var(--border);
+            padding: 40px; border-radius: 12px; text-align: center;
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); width: 350px;
+            border-top: 4px solid var(--cyan);
         }
         .auth-input {
-            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
-            color: var(--neon); font-family: 'Orbitron'; letter-spacing: 5px; text-align: center;
-            margin-bottom: 20px; border-radius: 5px; font-size: 1.2rem;
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.5); 
+            border: 1px solid var(--border); color: var(--cyan); 
+            font-family: 'Orbitron'; letter-spacing: 5px; text-align: center;
+            margin: 20px 0; border-radius: 4px; font-size: 1.2rem; transition: 0.3s;
         }
+        .auth-input:focus { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-dim); }
+        
         .auth-btn {
-            width: 100%; padding: 12px; background: var(--neon); color: #000;
-            border: none; font-weight: bold; cursor: pointer; font-family: 'JetBrains Mono';
+            width: 100%; padding: 12px; background: var(--cyan); color: #000;
+            border: none; font-weight: 900; cursor: pointer; font-family: 'Orbitron';
+            transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
+        .auth-btn:hover { background: #fff; box-shadow: 0 0 20px var(--cyan); }
 
-        /* --- HEADER --- */
+        /* --- MAIN INTERFACE --- */
+        #app-interface { display: none; flex-direction: column; min-height: 100vh; animation: fadeIn 1s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
         header {
             padding: 20px 40px; border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            background: rgba(2, 2, 4, 0.8); backdrop-filter: blur(10px);
         }
-        .brand {
-            font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; letter-spacing: 2px;
-        }
-        .brand span { color: var(--neon); }
+        .brand { font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; letter-spacing: 2px; }
         .sys-status {
-            font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--success);
-            border: 1px solid var(--success); padding: 5px 10px; border-radius: 4px;
+            font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--cyan);
+            border: 1px solid var(--cyan); padding: 5px 12px; border-radius: 20px;
+            background: var(--cyan-dim);
         }
 
-        /* --- LAYOUT --- */
         .container {
-            flex: 1; display: grid; grid-template-columns: 1fr 400px; gap: 40px;
+            flex: 1; display: grid; grid-template-columns: 1fr 380px; gap: 40px;
             padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%;
         }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
 
-        /* --- FORM PANEL --- */
+        /* FORM PANEL */
         .panel {
-            background: var(--panel); border: 1px solid var(--border);
+            background: var(--panel-bg); border: 1px solid var(--border);
             border-radius: 12px; padding: 30px; position: relative;
         }
         .panel h2 {
-            font-family: 'Orbitron'; color: var(--neon); margin-bottom: 25px;
+            font-family: 'Orbitron'; color: var(--cyan); margin-bottom: 25px;
             font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-width { grid-column: span 2; }
-
         .group { margin-bottom: 20px; }
+        
         label {
-            display: block; font-family: 'JetBrains Mono'; font-size: 0.7rem; color: #888;
+            display: block; font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-sec);
             margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
         }
         input, select, textarea {
-            width: 100%; padding: 12px; background: #0a0a0f; border: 1px solid #333;
-            color: #fff; border-radius: 6px; font-family: 'Inter'; font-size: 0.9rem;
-            transition: 0.3s;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.3); 
+            border: 1px solid var(--border); color: #fff; border-radius: 4px; 
+            font-family: 'Rajdhani'; font-size: 1rem; transition: 0.3s;
         }
         input:focus, select:focus, textarea:focus {
-            border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 246, 255, 0.1);
+            border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-dim);
         }
 
         .btn-submit {
-            width: 100%; padding: 15px; background: var(--neon); color: #000;
-            font-family: 'Orbitron'; font-weight: 900; border: none; border-radius: 6px;
-            cursor: pointer; transition: 0.3s; letter-spacing: 1px; margin-top: 10px;
+            width: 100%; padding: 16px; background: transparent; color: var(--cyan);
+            font-family: 'Orbitron'; font-weight: 900; border: 1px solid var(--cyan);
+            cursor: pointer; transition: 0.3s; letter-spacing: 2px; margin-top: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-submit:hover {
-            box-shadow: 0 0 20px var(--neon); transform: translateY(-2px); background: #fff;
-        }
+        .btn-submit:hover { background: var(--cyan); color: #000; box-shadow: 0 0 30px var(--cyan-dim); }
 
-        /* --- PREVIEW CARD (Royal Style) --- */
-        .preview-area {
-            position: sticky; top: 40px;
-        }
-        .preview-label {
-            text-align: center; font-family: 'JetBrains Mono'; color: #666; font-size: 0.7rem; margin-bottom: 10px;
-        }
+        /* PREVIEW CARD (MATCHING LIBRARY.HTML) */
+        .preview-sticky { position: sticky; top: 20px; }
+        .prev-label { text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; color: var(--text-sec); margin-bottom: 15px; letter-spacing: 2px; }
 
-        /* Kartu Preview (Mirip Library.html) */
-        .tome {
-            background: #0f0f0f; border: 1px solid #333; border-radius: 8px;
-            overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        .artifact {
+            background: rgba(10, 12, 18, 0.8); border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; position: relative;
+            display: flex; flex-direction: column; height: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-color: var(--cyan);
         }
-        .tome::before {
-            content: ''; position: absolute; top: 0; left: 0; 
-            border-top: 20px solid var(--neon); border-right: 20px solid transparent; 
-            width: 0; z-index: 2;
+        .art-visual { height: 200px; position: relative; border-bottom: 1px solid var(--border); }
+        .art-visual img { width: 100%; height: 100%; object-fit: cover; }
+        .art-badge {
+            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8);
+            border: 1px solid var(--cyan); color: var(--cyan); padding: 4px 8px;
+            font-family: 'Orbitron'; font-size: 9px; border-radius: 2px;
         }
-        .cover { height: 180px; overflow: hidden; position: relative; border-bottom: 1px solid #333; }
-        .cover img { width: 100%; height: 100%; object-fit: cover; }
-        .cat-badge {
-            position: absolute; bottom: 10px; right: 10px;
-            background: #000; color: var(--neon); font-size: 0.6rem;
-            padding: 3px 8px; border: 1px solid var(--neon); font-family: 'Orbitron';
-        }
-        .details { padding: 20px; }
-        .tome-title {
-            font-family: 'Orbitron'; font-size: 1.1rem; color: var(--neon);
+        .art-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .art-title {
+            font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff;
             margin-bottom: 8px; font-weight: 700;
         }
-        .tome-desc { font-size: 0.85rem; color: #aaa; line-height: 1.5; margin-bottom: 20px; }
-        .fake-btn {
-            width: 100%; padding: 10px; border: 1px solid #444; color: #444;
-            text-align: center; font-family: 'Orbitron'; font-size: 0.8rem; border-radius: 4px;
+        .art-desc {
+            font-size: 13px; color: #888; line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+            margin-bottom: auto;
+        }
+        .art-btn {
+            margin-top: 15px; width: 100%; padding: 10px; border: 1px solid var(--border);
+            color: var(--text-pri); font-family: 'Orbitron'; font-size: 10px; font-weight: bold;
+            text-align: center; border-radius: 4px;
         }
 
-        /* --- CONSOLE LOG --- */
+        /* CONSOLE */
         .console {
-            background: #000; border-top: 1px solid #333;
-            padding: 10px 20px; height: 150px; overflow-y: auto;
-            font-family: 'JetBrains Mono'; font-size: 0.75rem; color: #666;
+            background: #000; border-top: 1px solid var(--border);
+            padding: 15px 30px; height: 150px; overflow-y: auto;
+            font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #666;
         }
-        .log-line { margin-bottom: 4px; }
-        .log-succ { color: var(--success); }
-        .log-err { color: var(--error); }
-        .log-info { color: var(--neon); }
+        .log-line { margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2px; }
+        .success { color: #0aff0a; } .error { color: #ff2a2a; } .info { color: var(--cyan); }
 
     </style>
 </head>
 <body>
 
+    <canvas id="star-canvas"></canvas>
+
+    <div id="loader-overlay">
+        <svg class="logo-svg" viewBox="0 0 200 200">
+            <ellipse class="ring ring-cyan" cx="100" cy="100" rx="90" ry="30" />
+            <ellipse class="ring ring-red" cx="100" cy="100" rx="90" ry="30" />
+            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="50" style="filter: drop-shadow(0 0 10px #fff);">IEA</text>
+        </svg>
+        <div class="loader-text">INITIALIZING ADMIN PROTOCOL...</div>
+    </div>
+
     <div id="auth-overlay">
-        <div style="font-family:'Orbitron'; color:#fff; margin-bottom:20px; font-size:2rem;">IEA <span style="color:var(--neon)">SYSTEM</span></div>
+        <div style="font-family:'Orbitron'; color:#fff; margin-bottom:20px; font-size:2rem; letter-spacing: 5px;">ACCESS <span style="color:var(--red)">CONTROL</span></div>
         <div class="auth-box">
-            <input type="password" id="passcode" class="auth-input" placeholder="ACCESS CODE">
+            <input type="password" id="passcode" class="auth-input" placeholder="ENTER KEY">
             <button class="auth-btn" onclick="checkAuth()">UNLOCK TERMINAL</button>
-            <div id="auth-msg" style="color:red; margin-top:10px; font-family:'JetBrains Mono'; font-size:0.8rem;"></div>
+            <div id="auth-msg" style="color:var(--red); margin-top:15px; font-family:'JetBrains Mono'; font-size:0.7rem;"></div>
         </div>
     </div>
 
-    <div id="app-interface" style="display:none; flex-direction:column; height:100vh;">
-        
+    <div id="app-interface">
         <header>
-            <div class="brand">IEA <span>COMMAND</span></div>
-            <div class="sys-status">CONNECTED: FIREBASE RTDB</div>
+            <div class="brand">IEA <span>COMMANDER</span></div>
+            <div class="sys-status">STATUS: UPLINK SECURE</div>
         </header>
 
         <div class="container">
-            
             <div class="panel">
-                <h2><i class="fas fa-database"></i> INPUT DATA LIBRARY</h2>
+                <h2><span>DATA INJECTION</span> <i class="fas fa-satellite-dish" style="color:var(--cyan)"></i></h2>
                 
                 <div class="group">
-                    <label>JUDUL DOKUMEN / LAGU</label>
-                    <input id="inpTitle" placeholder="Contoh: Node-Field Theory Vol.1" onkeyup="updatePreview()">
+                    <label>JUDUL ARSIP / FILE</label>
+                    <input id="inpTitle" placeholder="Contoh: The Cosmic Perspective" onkeyup="updatePreview()">
                 </div>
 
                 <div class="form-grid">
                     <div class="group">
                         <label>KATEGORI</label>
                         <select id="inpCat" onchange="updatePreview()">
-                            <option value="Research">Research Log (Jurnal)</option>
-                            <option value="NFT Theory">NFT Theory (Teori)</option>
-                            <option value="Music">Music / Audio (Lagu)</option>
-                            <option value="Archive">General Archive</option>
+                            <option value="Research">Research Log</option>
+                            <option value="Book">Manuscript (Buku)</option>
+                            <option value="Audio">Audio Log (Musik)</option>
+                            <option value="Doc">Classified Doc</option>
                         </select>
                     </div>
                     <div class="group">
-                        <label>TANGGAL</label>
-                        <input type="text" id="inpDate" value="" disabled style="color:#555;">
+                        <label>TANGGAL ENTRI</label>
+                        <input type="text" id="inpDate" disabled style="color:#555; cursor:not-allowed;">
                     </div>
                 </div>
 
                 <div class="group">
-                    <label>DESKRIPSI SINGKAT</label>
-                    <textarea id="inpDesc" rows="3" placeholder="Jelaskan isi konten..." onkeyup="updatePreview()"></textarea>
+                    <label>DESKRIPSI DATA</label>
+                    <textarea id="inpDesc" rows="4" placeholder="Deskripsi singkat konten..." onkeyup="updatePreview()"></textarea>
                 </div>
 
                 <div class="group">
-                    <label>LINK FILE (PDF / MP3)</label>
-                    <input id="inpLink" placeholder="https://..." onkeyup="log('Link updated...')">
+                    <label>LINK AKSES (URL)</label>
+                    <input id="inpLink" placeholder="https://drive.google.com/..." onkeyup="log('Link buffer updated...')">
                 </div>
 
                 <div class="group">
-                    <label>LINK GAMBAR (COVER)</label>
+                    <label>COVER IMAGE URL</label>
                     <input id="inpThumb" placeholder="https://..." onkeyup="updatePreview()">
-                    <small style="color:#555; font-size:0.7rem;">*Biarkan kosong untuk gambar default Nebula.</small>
+                    <small style="color:#555; font-size:0.7rem;">*Kosongkan untuk gambar default Nebula.</small>
                 </div>
 
-                <button class="btn-submit" onclick="uploadData()">TRANSMIT DATA <i class="fas fa-bolt"></i></button>
+                <button class="btn-submit" onclick="uploadData()">INITIATE UPLOAD <i class="fas fa-upload"></i></button>
             </div>
 
-            <div class="preview-area">
-                <div class="preview-label">LIVE VISUAL PREVIEW</div>
-                <div class="tome">
-                    <div class="cover">
-                        <span class="cat-badge" id="prevCat">CATEGORY</span>
+            <div class="preview-sticky">
+                <div class="prev-label">LIVE ARTIFACT PREVIEW</div>
+                
+                <div class="artifact">
+                    <div class="art-visual">
+                        <div class="art-badge" id="prevCatBadge"><i class="fas fa-microscope"></i> RESEARCH</div>
                         <img id="prevImg" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
                     </div>
-                    <div class="details">
-                        <div class="tome-title" id="prevTitle">Judul Dokumen...</div>
-                        <div class="tome-desc" id="prevDesc">Deskripsi akan muncul di sini secara real-time saat Anda mengetik...</div>
-                        <div class="fake-btn"><i class="fas fa-eye"></i> ACTION BUTTON</div>
+                    <div class="art-content">
+                        <div class="art-title" id="prevTitle">Judul Arsip...</div>
+                        <div class="art-desc" id="prevDesc">Deskripsi konten akan muncul di sini secara real-time saat Anda mengetik data di panel kiri.</div>
+                        <div class="art-btn"><i class="fas fa-lock"></i> PREVIEW MODE</div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
 
         <div class="console" id="console">
-            <div class="log-line">> System initialized...</div>
-            <div class="log-line">> Waiting for admin input...</div>
+            <div class="log-line">> [SYS] System initialized...</div>
+            <div class="log-line">> [SYS] Waiting for admin authentication...</div>
         </div>
-
     </div>
 
-<script>
-    // --- 1. CONFIGURATION ---
-    const DB_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library";
-    const ACCESS_KEY = "IEA2026"; // PASSWORD ADMIN
-    const DEF_IMG = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+    <script>
+        // --- CONFIG ---
+        const DB_URL = "https://iea-pendaftaran-default-rtdb.asia-southeast1.firebasedatabase.app/library";
+        const ACCESS_KEY = "IEA2026";
+        const DEF_IMG = "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
 
-    // --- 2. AUTH SYSTEM ---
-    function checkAuth() {
-        const input = document.getElementById('passcode').value;
-        if(input === ACCESS_KEY) {
-            document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'flex';
-            document.getElementById('inpDate').value = new Date().toLocaleDateString();
-            log("User Authenticated. Welcome, Commander.");
-        } else {
-            document.getElementById('auth-msg').innerText = "INVALID PASSCODE";
-            log("Auth Failed: Invalid Attempt.");
-        }
-    }
-
-    // --- 3. LIVE PREVIEW ---
-    function updatePreview() {
-        const title = document.getElementById('inpTitle').value;
-        const desc = document.getElementById('inpDesc').value;
-        const cat = document.getElementById('inpCat').value;
-        const thumb = document.getElementById('inpThumb').value;
-
-        document.getElementById('prevTitle').innerText = title || "Judul Dokumen...";
-        document.getElementById('prevDesc').innerText = desc || "Deskripsi akan muncul di sini...";
-        document.getElementById('prevCat').innerText = cat;
-        
-        // Cek gambar valid atau tidak
-        const imgEl = document.getElementById('prevImg');
-        imgEl.src = (thumb.length > 5) ? thumb : DEF_IMG;
-        imgEl.onerror = () => { imgEl.src = DEF_IMG; };
-    }
-
-    // --- 4. UPLOAD LOGIC ---
-    async function uploadData() {
-        const title = document.getElementById('inpTitle').value;
-        const cat = document.getElementById('inpCat').value;
-        const link = document.getElementById('inpLink').value;
-        const thumb = document.getElementById('inpThumb').value;
-        const desc = document.getElementById('inpDesc').value;
-
-        if(!title || !link) {
-            log("ERROR: Judul dan Link File Wajib Diisi!", "err");
-            alert("Harap isi Judul dan Link File.");
-            return;
-        }
-
-        log("Initiating transmission to Firebase...", "info");
-
-        const payload = {
-            title: title,
-            category: cat,
-            link: link,
-            thumbnail: thumb,
-            description: desc,
-            timestamp: Date.now(),
-            date: new Date().toLocaleDateString()
+        // --- LOADER SEQUENCE ---
+        window.onload = () => {
+            initStars(); animateStars(); // Start BG
+            
+            setTimeout(() => {
+                document.getElementById('loader-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loader-overlay').style.display = 'none';
+                    document.getElementById('auth-overlay').style.display = 'flex';
+                    document.getElementById('passcode').focus();
+                }, 800);
+            }, 2500);
         };
 
-        try {
-            // Gunakan ID unik berdasarkan waktu
-            const uniqueID = "item_" + Date.now();
-            const response = await fetch(`${DB_URL}/${uniqueID}.json`, {
-                method: 'PUT',
-                body: JSON.stringify(payload)
-            });
-
-            if(response.ok) {
-                log(`Upload Success! ID: ${uniqueID}`, "succ");
-                alert("DATA BERHASIL DISIMPAN!");
-                resetForm();
+        // --- AUTH ---
+        function checkAuth() {
+            const input = document.getElementById('passcode').value;
+            if(input === ACCESS_KEY) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('app-interface').style.display = 'flex';
+                document.getElementById('inpDate').value = new Date().toLocaleDateString('id-ID');
+                log("Authentication successful. Welcome Commander.", "success");
             } else {
-                throw new Error("Server Rejected Request");
+                document.getElementById('auth-msg').innerText = "ACCESS DENIED: INVALID KEY";
+                document.getElementById('passcode').value = '';
+                log("Auth failed. Intruder detected.", "error");
             }
-        } catch(e) {
-            log(`FATAL ERROR: ${e}`, "err");
         }
-    }
 
-    // --- 5. UTILS ---
-    function resetForm() {
-        document.querySelectorAll('input, textarea').forEach(i => i.value = "");
-        document.getElementById('inpDate').value = new Date().toLocaleDateString();
-        updatePreview();
-        log("Form reset. Ready for next input.");
-    }
+        // --- PREVIEW UPDATE ---
+        function updatePreview() {
+            const title = document.getElementById('inpTitle').value;
+            const desc = document.getElementById('inpDesc').value;
+            const cat = document.getElementById('inpCat').value;
+            const thumb = document.getElementById('inpThumb').value;
 
-    function log(msg, type="") {
-        const cons = document.getElementById('console');
-        const line = document.createElement('div');
-        line.className = `log-line log-${type}`;
-        line.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
-        cons.prepend(line);
-    }
+            document.getElementById('prevTitle').innerText = title || "Judul Arsip...";
+            document.getElementById('prevDesc').innerText = desc || "Deskripsi konten...";
+            
+            // Icon Logic
+            let icon = 'fa-file-alt';
+            if(cat === 'Audio') icon = 'fa-music';
+            if(cat === 'Book') icon = 'fa-book';
+            if(cat === 'Research') icon = 'fa-microscope';
+            
+            document.getElementById('prevCatBadge').innerHTML = `<i class="fas ${icon}"></i> ${cat.toUpperCase()}`;
+            
+            // Image Logic
+            const imgEl = document.getElementById('prevImg');
+            imgEl.src = (thumb.length > 10) ? thumb : DEF_IMG;
+            imgEl.onerror = () => { imgEl.src = DEF_IMG; };
+        }
 
-    // Auto focus password
-    window.onload = () => document.getElementById('passcode').focus();
+        // --- UPLOAD ---
+        async function uploadData() {
+            const title = document.getElementById('inpTitle').value;
+            const cat = document.getElementById('inpCat').value;
+            const link = document.getElementById('inpLink').value;
+            const thumb = document.getElementById('inpThumb').value;
+            const desc = document.getElementById('inpDesc').value;
 
-</script>
+            if(!title || !link) {
+                alert("JUDUL dan LINK FILE Wajib Diisi!");
+                log("Upload aborted: Missing required fields.", "error");
+                return;
+            }
 
+            log("Encrypting data package...", "info");
+
+            const payload = {
+                title: title,
+                category: cat,
+                link: link,
+                thumbnail: thumb,
+                description: desc,
+                date: new Date().toLocaleDateString('id-ID'),
+                timestamp: Date.now()
+            };
+
+            try {
+                log("Sending packet to Firebase Node...", "info");
+                const uniqueID = "lib_" + Date.now();
+                
+                const response = await fetch(`${DB_URL}/${uniqueID}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                if(response.ok) {
+                    log(`Data Written Successfully. ID: ${uniqueID}`, "success");
+                    alert("DATA BERHASIL DIUPLOAD KE LIBRARY!");
+                    resetForm();
+                } else {
+                    throw new Error("Server Response Error");
+                }
+            } catch(e) {
+                log(`Transmission Failed: ${e}`, "error");
+                alert("Gagal Upload. Cek Koneksi.");
+            }
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+            document.getElementById('inpDate').value = new Date().toLocaleDateString('id-ID');
+            updatePreview();
+        }
+
+        function log(msg, type="") {
+            const cons = document.getElementById('console');
+            const d = new Date();
+            const time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+            const div = document.createElement('div');
+            div.className = `log-line ${type}`;
+            div.innerText = `> [${time}] ${msg}`;
+            cons.prepend(div);
+        }
+
+        // --- STARFIELD BACKGROUND (Sama dengan Library) ---
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, stars = [];
+
+        function initStars() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<80; i++) {
+                stars.push({
+                    x: Math.random() * w, y: Math.random() * h,
+                    r: Math.random() * 1.5,
+                    vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+                    color: Math.random() > 0.5 ? '#00f2ff' : '#ff0055'
+                });
+            }
+        }
+        
+        function animateStars() {
+            ctx.clearRect(0,0,w,h);
+            stars.forEach(s => {
+                s.x += s.vx; s.y += s.vy;
+                if(s.x < 0) s.x = w; if(s.x > w) s.x = 0;
+                if(s.y < 0) s.y = h; if(s.y > h) s.y = 0;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                ctx.fillStyle = s.color; ctx.fill();
+            });
+            // Lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 0.5;
+            for(let i=0; i<stars.length; i++) {
+                for(let j=i+1; j<stars.length; j++) {
+                    const dx = stars[i].x - stars[j].x;
+                    const dy = stars[i].y - stars[j].y;
+                    if(Math.sqrt(dx*dx + dy*dy) < 100) {
+                        ctx.beginPath(); ctx.moveTo(stars[i].x, stars[i].y); ctx.lineTo(stars[j].x, stars[j].y); ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateStars);
+        }
+        window.addEventListener('resize', initStars);
+
+    </script>
 </body>
 </html>
