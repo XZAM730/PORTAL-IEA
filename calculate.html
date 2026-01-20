@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000510">
+    <title>IEA | KALKULATOR</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Titillium+Web:wght@200;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =================================================================
+           SECTION 1: CORE VARIABLES (THE SOUL)
+           ================================================================= */
+        :root {
+            /* DIMENSIONS */
+            --header-h: 70px;
+            --nav-h: 80px;
+            
+            /* PALETTE IEA: AUTHORITY (NAVY), WEALTH (GOLD), PURITY (WHITE), TECH (CYAN) */
+            --void-dark: #000205;
+            --void-light: #000814;
+            
+            --panel-bg: rgba(5, 20, 40, 0.85);
+            --panel-border: rgba(0, 240, 255, 0.15);
+            
+            --neon-gold: #FFD700;
+            --neon-gold-dim: rgba(255, 215, 0, 0.2);
+            --neon-blue: #00F0FF;
+            --neon-blue-dim: rgba(0, 240, 255, 0.1);
+            --neon-red: #FF3333;
+            --neon-green: #00FF66;
+            
+            --text-main: #FFFFFF;
+            --text-sec: #8A9BB5;
+            
+            /* FX */
+            --glass: blur(15px);
+            --shadow-gold: 0 0 20px rgba(255, 215, 0, 0.15);
+            --shadow-blue: 0 0 20px rgba(0, 240, 255, 0.15);
+            
+            /* ANIMATIONS */
+            --trans-fast: 0.2s ease;
+            --trans-med: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* =================================================================
+           SECTION 2: GLOBAL RESET & UTILS
+           ================================================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
+        body {
+            background-color: var(--void-dark);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        /* SCROLLBAR CUSTOMIZATION */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--void-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-gold); }
+
+        /* BACKGROUND FX */
+        #starfield { position: fixed; inset: 0; z-index: -2; opacity: 0.6; pointer-events: none; }
+        .grid-layer {
+            position: fixed; inset: 0; z-index: -1;
+            background: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* =================================================================
+           SECTION 3: LOADING SCREEN (QUANTUM REACTOR)
+           ================================================================= */
+        #boot-sequence {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+
+        .reactor-core {
+            width: 150px; height: 150px;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .core-ring {
+            position: absolute; border-radius: 50%;
+            border: 2px solid transparent;
+        }
+
+        .r1 { width: 100%; height: 100%; border-top-color: var(--neon-blue); border-bottom-color: var(--neon-blue); animation: spin 4s linear infinite; box-shadow: 0 0 15px var(--neon-blue-dim); }
+        .r2 { width: 70%; height: 70%; border-left-color: var(--neon-gold); border-right-color: var(--neon-gold); animation: spin 2s linear infinite reverse; box-shadow: 0 0 15px var(--neon-gold-dim); }
+        .r3 { width: 40%; height: 40%; border: 1px dashed white; animation: spin 8s linear infinite; }
+        
+        .core-text {
+            font-family: 'Orbitron'; font-weight: 900; font-size: 1.8rem;
+            color: #fff; z-index: 10;
+            text-shadow: 0 0 20px var(--neon-blue);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .loading-log {
+            margin-top: 30px;
+            font-family: 'Share Tech Mono'; color: var(--neon-blue);
+            font-size: 0.8rem; height: 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
+
+        /* =================================================================
+           SECTION 4: UI FRAMEWORK (HEADER & NAV)
+           ================================================================= */
+        .system-header {
+            height: var(--header-h);
+            background: rgba(0, 5, 15, 0.9);
+            backdrop-filter: var(--glass);
+            border-bottom: 1px solid var(--neon-gold-dim);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px;
+            z-index: 100;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .iea-badge { 
+            font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; 
+            color: var(--text-main); letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, var(--neon-blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .iea-sub { font-family: 'Share Tech Mono'; color: var(--neon-gold); font-size: 0.7rem; letter-spacing: 3px; margin-top: 5px;}
+        
+        .sys-status { display: flex; gap: 15px; font-family: 'Share Tech Mono'; font-size: 0.8rem; color: var(--text-sec); }
+        .status-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 5px var(--neon-green); animation: blink 3s infinite;}
+
+        .main-deck {
+            flex: 1; position: relative; overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .module {
+            position: absolute; inset: 0;
+            padding: 20px;
+            display: flex; flex-direction: column;
+            opacity: 0; transform: scale(0.95) translateY(20px); pointer-events: none;
+            transition: var(--trans-med);
+            overflow-y: auto; overflow-x: hidden;
+        }
+        .module.active { opacity: 1; transform: scale(1) translateY(0); pointer-events: all; z-index: 10; }
+
+        .nav-rail {
+            height: var(--nav-h);
+            background: rgba(0, 5, 10, 0.95);
+            border-top: 1px solid var(--panel-border);
+            display: flex; justify-content: center; align-items: center;
+            gap: 15px; padding: 0 10px; z-index: 100;
+        }
+
+        .nav-btn {
+            background: transparent; border: 1px solid transparent;
+            color: var(--text-sec);
+            width: 60px; height: 60px;
+            border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Titillium Web'; font-weight: 700; font-size: 0.7rem;
+            gap: 5px; cursor: pointer; transition: 0.3s;
+        }
+        .nav-btn i { font-size: 1.4rem; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .nav-btn.active {
+            background: rgba(0, 240, 255, 0.05);
+            border-color: var(--neon-blue-dim);
+            color: var(--neon-gold);
+            box-shadow: inset 0 0 15px var(--neon-blue-dim);
+        }
+        .nav-btn.active i { transform: translateY(-3px); text-shadow: 0 0 10px var(--neon-gold); }
+
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+        /* =================================================================
+           SECTION 5: MODULE - CALCULATOR (OMEGA)
+           ================================================================= */
+        .calc-wrapper {
+            max-width: 600px; width: 100%; margin: 0 auto; height: 100%;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .screen-container {
+            flex: 0 0 180px;
+            background: linear-gradient(160deg, var(--void-light), #0b1a2b);
+            border: 1px solid var(--panel-border);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+        .screen-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgba(0,240,255,0.02) 50%); background-size: 100% 4px; pointer-events: none; }
+        
+        .mode-ind { font-family: 'Share Tech Mono'; color: var(--neon-gold); font-size: 0.8rem; opacity: 0.8; }
+        .expression-line { font-family: 'Share Tech Mono'; color: var(--text-sec); font-size: 1.2rem; text-align: right; overflow-x: auto; white-space: nowrap; margin-top: 10px; }
+        .result-line { font-family: 'Orbitron'; color: var(--neon-blue); font-size: 2.5rem; text-align: right; font-weight: 500; text-shadow: 0 0 10px var(--neon-blue-dim); overflow: hidden; text-overflow: ellipsis; }
+
+        .keyboard-grid {
+            flex: 1; display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 8px;
+            padding-bottom: 10px;
+        }
+
+        .key {
+            background: rgba(20, 40, 60, 0.4);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Rajdhani'; font-size: 1.2rem; font-weight: 600;
+            cursor: pointer; transition: 0.1s;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .key::after { content:''; position: absolute; top:50%; left:50%; width:0; height:0; background:rgba(255,255,255,0.2); border-radius:50%; transform:translate(-50%, -50%); transition: width 0.3s, height 0.3s; }
+        .key:active::after { width: 100px; height: 100px; }
+        .key:active { transform: scale(0.95); }
+
+        .k-num { background: rgba(255,255,255,0.02); font-size: 1.4rem; }
+        .k-op { color: var(--neon-gold); font-weight: 700; background: rgba(255, 215, 0, 0.05); }
+        .k-fn { color: var(--neon-blue); font-size: 1rem; }
+        .k-ent { grid-column: span 2; background: linear-gradient(135deg, var(--neon-blue-dim), rgba(0, 100, 255, 0.3)); border-color: var(--neon-blue); color: var(--neon-blue); font-family: 'Orbitron'; letter-spacing: 2px; }
+        .k-del { color: var(--neon-red); }
+
+        /* =================================================================
+           SECTION 6: MODULE - GRAPH (VISUALIZER)
+           ================================================================= */
+        .graph-panel {
+            width: 100%; height: 100%; display: flex; flex-direction: column; gap: 10px;
+        }
+        .graph-controls {
+            display: flex; gap: 10px;
+        }
+        .func-input {
+            flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue);
+            color: #fff; padding: 10px 15px; border-radius: 5px; font-family: 'Share Tech Mono';
+        }
+        .graph-btn {
+            background: var(--neon-blue-dim); border: 1px solid var(--neon-blue); color: var(--neon-blue);
+            padding: 0 20px; border-radius: 5px; font-family: 'Orbitron'; cursor: pointer;
+        }
+        .canvas-container {
+            flex: 1; background: #050a10; border: 1px solid var(--panel-border);
+            border-radius: 10px; position: relative; overflow: hidden;
+        }
+        #graphCanvas { width: 100%; height: 100%; }
+
+        /* =================================================================
+           SECTION 7: MODULE - CODEX (DATABASE)
+           ================================================================= */
+        .codex-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;
+        }
+        .codex-card {
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 8px; padding: 15px;
+            display: flex; align-items: center; gap: 15px;
+            transition: 0.3s; cursor: pointer;
+        }
+        .codex-card:hover { border-color: var(--neon-gold); transform: translateY(-3px); box-shadow: var(--shadow-gold); }
+        .c-icon {
+            width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Times New Roman'; font-size: 1.5rem; color: var(--neon-gold); font-style: italic;
+        }
+        .c-info h4 { font-family: 'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 3px; }
+        .c-info p { font-size: 0.75rem; color: var(--text-sec); }
+        .c-val { color: var(--neon-blue); font-family: 'Share Tech Mono'; font-size: 0.8rem; margin-top: 5px; }
+
+        /* =================================================================
+           SECTION 8: MODULE - MATRIX (VOID)
+           ================================================================= */
+        .matrix-ui { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .matrix-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .m-inp { width: 60px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); color: #fff; text-align: center; font-family: 'Share Tech Mono'; }
+        .m-res-box { width: 100%; padding: 20px; background: rgba(0,0,0,0.5); border-left: 3px solid var(--neon-green); font-family: 'Share Tech Mono'; }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+    <div class="grid-layer"></div>
+
+    <div id="boot-sequence">
+        <div class="reactor-core">
+            <div class="core-ring r1"></div>
+            <div class="core-ring r2"></div>
+            <div class="core-ring r3"></div>
+            <div class="core-text">IEA</div>
+        </div>
+        <div class="loading-log" id="loadLog">INITIALIZING CORE...</div>
+    </div>
+
+    <header class="system-header">
+        <div class="logo-area">
+            <i class="fas fa-atom" style="font-size: 2rem; color: var(--neon-gold); animation: spin 10s linear infinite;"></i>
+            <div>
+                <div class="iea-badge">IEA <span style="font-weight:300;">CALCULATOR</span></div>
+                <div class="iea-sub">IEA SYSTEM</div>
+            </div>
+        </div>
+        <div class="sys-status">
+            <div class="status-item"><div class="dot"></div> ONLINE</div>
+            <div class="status-item" id="clock">00:00:00</div>
+        </div>
+    </header>
+
+    <main class="main-deck" id="viewport">
+        
+        <div id="mod-calc" class="module active">
+            <div class="calc-wrapper">
+                <div class="screen-container">
+                    <div class="screen-overlay"></div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="mode-ind">DEG | FLOAT</span>
+                        <span class="mode-ind"><i class="fas fa-history"></i> MEM: <span id="mem-indicator">0</span></span>
+                    </div>
+                    <div class="expression-line" id="calcExp"></div>
+                    <div class="result-line" id="calcRes">0</div>
+                </div>
+                <div class="keyboard-grid">
+                    <button class="key k-fn" onclick="app.calc.ins('Math.sin(')">sin</button>
+                    <button class="key k-fn" onclick="app.calc.ins('Math.cos(')">cos</button>
+                    <button class="key k-fn" onclick="app.calc.ins('Math.tan(')">tan</button>
+                    <button class="key k-del" onclick="app.calc.clr()">AC</button>
+                    <button class="key k-del" onclick="app.calc.del()">⌫</button>
+                    
+                    <button class="key k-fn" onclick="app.calc.ins('Math.log10(')">log</button>
+                    <button class="key k-fn" onclick="app.calc.ins('Math.log(')">ln</button>
+                    <button class="key k-fn" onclick="app.calc.ins('(')">(</button>
+                    <button class="key k-fn" onclick="app.calc.ins(')')">)</button>
+                    <button class="key k-op" onclick="app.calc.ins('/')">÷</button>
+                    
+                    <button class="key k-fn" onclick="app.calc.ins('**')">^</button>
+                    <button class="key k-num" onclick="app.calc.ins('7')">7</button>
+                    <button class="key k-num" onclick="app.calc.ins('8')">8</button>
+                    <button class="key k-num" onclick="app.calc.ins('9')">9</button>
+                    <button class="key k-op" onclick="app.calc.ins('*')">×</button>
+                    
+                    <button class="key k-fn" onclick="app.calc.ins('Math.sqrt(')">√</button>
+                    <button class="key k-num" onclick="app.calc.ins('4')">4</button>
+                    <button class="key k-num" onclick="app.calc.ins('5')">5</button>
+                    <button class="key k-num" onclick="app.calc.ins('6')">6</button>
+                    <button class="key k-op" onclick="app.calc.ins('-')">-</button>
+                    
+                    <button class="key k-fn" onclick="app.calc.ins('3.14159')">π</button>
+                    <button class="key k-num" onclick="app.calc.ins('1')">1</button>
+                    <button class="key k-num" onclick="app.calc.ins('2')">2</button>
+                    <button class="key k-num" onclick="app.calc.ins('3')">3</button>
+                    <button class="key k-op" onclick="app.calc.ins('+')">+</button>
+
+                    <button class="key k-fn" onclick="app.calc.ins('2.718')">e</button>
+                    <button class="key k-num" onclick="app.calc.ins('.')">.</button>
+                    <button class="key k-num" onclick="app.calc.ins('0')">0</button>
+                    <button class="key k-ent" onclick="app.calc.solve()">EXECUTE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mod-graph" class="module">
+            <h2 style="font-family:'Orbitron'; color:var(--neon-blue); margin-bottom:15px; border-bottom:1px solid var(--panel-border); padding-bottom:10px;">QUANTUM VISUALIZER</h2>
+            <div class="graph-panel">
+                <div class="graph-controls">
+                    <span style="display:flex; align-items:center; font-family:'Share Tech Mono'; margin-right:5px;">f(x) =</span>
+                    <input type="text" id="fnInput" class="func-input" value="Math.sin(x) * x" placeholder="e.g. Math.sin(x)">
+                    <button class="graph-btn" onclick="app.graph.draw()">RENDER</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="graphCanvas"></canvas>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-sec); font-family:'Share Tech Mono'; text-align:center;">
+                    Range: -10 to 10 | Grid: Auto-Adaptive
+                </div>
+            </div>
+        </div>
+
+        <div id="mod-codex" class="module">
+            <h2 style="font-family:'Orbitron'; color:var(--neon-gold); margin-bottom:15px; border-bottom:1px solid var(--panel-border); padding-bottom:10px;">UNIVERSAL CODEX</h2>
+            <input type="text" id="codexSearch" placeholder="SEARCH DATABASE..." style="width:100%; padding:15px; background:rgba(255,255,255,0.05); border:1px solid var(--neon-gold); color:#fff; font-family:'Orbitron'; margin-bottom:20px; border-radius:5px;" oninput="app.codex.filter()">
+            <div class="codex-grid" id="codexList"></div>
+        </div>
+
+        <div id="mod-matrix" class="module">
+             <h2 style="font-family:'Orbitron'; color:var(--neon-green); margin-bottom:15px; border-bottom:1px solid var(--panel-border); padding-bottom:10px;">MATRIX SOLVER (3x3)</h2>
+             <div class="matrix-ui">
+                 <div style="color:var(--text-sec);">INPUT MATRIX A:</div>
+                 <div class="matrix-grid" id="matrixInputs">
+                     </div>
+                 <button class="graph-btn" style="border-color:var(--neon-green); color:var(--neon-green);" onclick="app.matrix.det()">CALCULATE DETERMINANT</button>
+                 <div class="m-res-box" id="matrixRes">RESULT: WAITING FOR INPUT...</div>
+             </div>
+        </div>
+
+    </main>
+
+    <nav class="nav-rail">
+        <button class="nav-btn active" onclick="app.ui.nav('calc')"><i class="fas fa-calculator"></i> CALC</button>
+        <button class="nav-btn" onclick="app.ui.nav('graph')"><i class="fas fa-wave-square"></i> GRAPH</button>
+        <button class="nav-btn" onclick="app.ui.nav('codex')"><i class="fas fa-book-journal-whills"></i> CODEX</button>
+        <button class="nav-btn" onclick="app.ui.nav('matrix')"><i class="fas fa-border-all"></i> MATRX</button>
+        <button class="nav-btn" onclick="alert('Module under construction by Xzam.')"><i class="fas fa-cogs"></i> SYS</button>
+    </nav>
+
+    <script>
+        /* IEA TRINITY CORE JAVASCRIPT
+           DESIGNED FOR HIGH PERFORMANCE COMPUTING SIMULATION
+        */
+
+        const app = {
+            
+            // --- UI CONTROLLER ---
+            ui: {
+                nav: (id) => {
+                    document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+                    document.getElementById('mod-'+id).classList.add('active');
+                    
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    event.currentTarget.classList.add('active');
+                    
+                    app.sfx.play('click');
+                    
+                    // Specific Init
+                    if(id === 'graph') app.graph.init();
+                    if(id === 'matrix') app.matrix.init();
+                },
+                boot: () => {
+                    const logs = ["LOADING QUANTUM CORE...", "CONNECTING TO IEA MAINFRAME...", "CALIBRATING SENSORS...", "SYSTEM READY."];
+                    let i = 0;
+                    const logEl = document.getElementById('loadLog');
+                    const interval = setInterval(() => {
+                        logEl.innerText = logs[i];
+                        i++;
+                        if(i >= logs.length) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                document.getElementById('boot-sequence').style.opacity = '0';
+                                document.getElementById('boot-sequence').style.visibility = 'hidden';
+                                app.bg.init();
+                            }, 500);
+                        }
+                    }, 600);
+                }
+            },
+
+            // --- AUDIO ENGINE ---
+            sfx: {
+                ctx: null,
+                init: () => {
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                    app.sfx.ctx = new AudioContext();
+                },
+                play: (type) => {
+                    if(!app.sfx.ctx) app.sfx.init();
+                    const osc = app.sfx.ctx.createOscillator();
+                    const gain = app.sfx.ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(app.sfx.ctx.destination);
+                    
+                    if(type === 'click') {
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(800, app.sfx.ctx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(300, app.sfx.ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.1, app.sfx.ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, app.sfx.ctx.currentTime + 0.1);
+                        osc.start(); osc.stop(app.sfx.ctx.currentTime + 0.1);
+                    }
+                    if(type === 'success') {
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(400, app.sfx.ctx.currentTime);
+                        osc.frequency.linearRampToValueAtTime(600, app.sfx.ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.1, app.sfx.ctx.currentTime);
+                        gain.gain.linearRampToValueAtTime(0, app.sfx.ctx.currentTime + 0.3);
+                        osc.start(); osc.stop(app.sfx.ctx.currentTime + 0.3);
+                    }
+                }
+            },
+
+            // --- CALCULATOR ENGINE ---
+            calc: {
+                exp: '',
+                ins: (v) => {
+                    app.calc.exp += v;
+                    app.calc.update();
+                    app.sfx.play('click');
+                },
+                del: () => {
+                    app.calc.exp = app.calc.exp.slice(0, -1);
+                    app.calc.update();
+                    app.sfx.play('click');
+                },
+                clr: () => {
+                    app.calc.exp = '';
+                    app.calc.update();
+                    document.getElementById('calcRes').innerText = '0';
+                    app.sfx.play('click');
+                },
+                update: () => {
+                    document.getElementById('calcExp').innerText = app.calc.exp;
+                },
+                solve: () => {
+                    try {
+                        const res = eval(app.calc.exp);
+                        document.getElementById('calcRes').innerText = parseFloat(res.toFixed(8));
+                        app.calc.exp = res.toString();
+                        app.sfx.play('success');
+                    } catch (e) {
+                        document.getElementById('calcRes').innerText = "ERR: SYNTAX";
+                    }
+                }
+            },
+
+            // --- GRAPH ENGINE ---
+            graph: {
+                ctx: null,
+                w: 0, h: 0,
+                init: () => {
+                    const c = document.getElementById('graphCanvas');
+                    app.graph.ctx = c.getContext('2d');
+                    app.graph.w = c.width = c.parentElement.clientWidth;
+                    app.graph.h = c.height = c.parentElement.clientHeight;
+                    app.graph.draw(); // draw grid initially
+                },
+                draw: () => {
+                    const ctx = app.graph.ctx;
+                    const w = app.graph.w;
+                    const h = app.graph.h;
+                    const fnStr = document.getElementById('fnInput').value;
+
+                    // Clear
+                    ctx.fillStyle = "#050a10";
+                    ctx.fillRect(0, 0, w, h);
+
+                    // Grid
+                    ctx.strokeStyle = "rgba(0, 240, 255, 0.1)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    // Center Axis
+                    const cx = w / 2;
+                    const cy = h / 2;
+                    const scale = 30; // pixels per unit
+
+                    for(let i=0; i<w; i+=scale) { ctx.moveTo(i,0); ctx.lineTo(i,h); }
+                    for(let i=0; i<h; i+=scale) { ctx.moveTo(0,i); ctx.lineTo(w,i); }
+                    ctx.stroke();
+
+                    // Main Axis
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+                    ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+                    ctx.stroke();
+
+                    // Plot Function
+                    ctx.strokeStyle = "#00F0FF";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    let first = true;
+                    for(let px = 0; px < w; px++) {
+                        const x = (px - cx) / scale;
+                        try {
+                            // Safe eval for math functions
+                            const val = eval(fnStr.replace(/sin/g, "Math.sin").replace(/cos/g, "Math.cos").replace(/tan/g, "Math.tan")); 
+                            const py = cy - (val * scale);
+                            if(first) { ctx.moveTo(px, py); first=false; }
+                            else { ctx.lineTo(px, py); }
+                        } catch(e) {}
+                    }
+                    ctx.stroke();
+                    app.sfx.play('success');
+                }
+            },
+
+            // --- CODEX DATA ---
+            codex: {
+                db: [
+                    {s:"c", n:"Speed of Light", v:"299,792,458 m/s", d:"Universal speed limit."},
+                    {s:"G", n:"Gravitational Const", v:"6.674×10⁻¹¹", d:"Force between masses."},
+                    {s:"h", n:"Planck Constant", v:"6.626×10⁻³⁴ J⋅s", d:"Quantum action quantum."},
+                    {s:"π", n:"Pi", v:"3.14159...", d:"Circle ratio."},
+                    {s:"φ", n:"Golden Ratio", v:"1.61803...", d:"Divine proportion."},
+                    {s:"e", n:"Euler's Number", v:"2.71828...", d:"Natural growth base."},
+                    {s:"NA", n:"Avogadro Num", v:"6.022×10²³", d:"Particles in a mole."},
+                    {s:"kB", n:"Boltzmann Const", v:"1.380×10⁻²³ J/K", d:"Energy to temp relation."},
+                    {s:"α", n:"Fine Structure", v:"1/137.035...", d:"EM interaction strength."}
+                ],
+                init: () => {
+                    const el = document.getElementById('codexList');
+                    el.innerHTML = "";
+                    app.codex.db.forEach(item => {
+                        el.innerHTML += `
+                        <div class="codex-card" onclick="app.calc.ins('${item.v.split(' ')[0]}')">
+                            <div class="c-icon">${item.s}</div>
+                            <div class="c-info">
+                                <h4>${item.n}</h4>
+                                <p>${item.d}</p>
+                                <div class="c-val">${item.v}</div>
+                            </div>
+                        </div>`;
+                    });
+                },
+                filter: () => {
+                    const term = document.getElementById('codexSearch').value.toLowerCase();
+                    const cards = document.querySelectorAll('.codex-card');
+                    cards.forEach(c => {
+                        c.style.display = c.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+                    });
+                }
+            },
+
+            // --- MATRIX ENGINE ---
+            matrix: {
+                init: () => {
+                    const c = document.getElementById('matrixInputs');
+                    if(c.innerHTML.trim() === "") {
+                        for(let i=0; i<9; i++) {
+                            c.innerHTML += `<input type="number" id="m${i}" class="m-inp" value="${Math.floor(Math.random()*10)}">`;
+                        }
+                    }
+                },
+                det: () => {
+                    const m = [];
+                    for(let i=0; i<9; i++) m.push(parseFloat(document.getElementById('m'+i).value)||0);
+                    // Rule of Sarrus for 3x3
+                    const det = (m[0]*m[4]*m[8] + m[1]*m[5]*m[6] + m[2]*m[3]*m[7]) - (m[2]*m[4]*m[6] + m[1]*m[3]*m[8] + m[0]*m[5]*m[7]);
+                    document.getElementById('matrixRes').innerText = "DETERMINANT: " + det;
+                    app.sfx.play('success');
+                }
+            },
+
+            // --- BACKGROUND FX ---
+            bg: {
+                init: () => {
+                    const c = document.getElementById('starfield');
+                    const ctx = c.getContext('2d');
+                    let w, h, stars=[];
+                    
+                    const resize = () => { w=c.width=window.innerWidth; h=c.height=window.innerHeight; stars=[]; for(let i=0;i<100;i++) stars.push({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.5}); };
+                    window.addEventListener('resize', resize); resize();
+                    
+                    function loop() {
+                        ctx.clearRect(0,0,w,h);
+                        ctx.fillStyle='#FFF';
+                        stars.forEach(s=>{
+                            s.y -= s.s * 0.5;
+                            if(s.y<0) s.y=h;
+                            ctx.globalAlpha = Math.random()*0.5 + 0.3;
+                            ctx.beginPath(); ctx.arc(s.x,s.y,s.s,0,6.28); ctx.fill();
+                        });
+                        requestAnimationFrame(loop);
+                    }
+                    loop();
+                }
+            }
+        };
+
+        // GLOBAL BOOT
+        window.onload = () => {
+            app.ui.boot();
+            app.codex.init();
+            
+            // Clock
+            setInterval(() => {
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID');
+            }, 1000);
+        };
+
+    </script>
+</body>
+</html>
