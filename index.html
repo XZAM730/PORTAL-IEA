@@ -274,7 +274,77 @@
         text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent-sec);
         font-weight: bold; font-family: 'Orbitron';
       }
+  /* --- SEARCH SYSTEM STYLE --- */
+.search-container {
+    position: relative;
+    max-width: 400px;
+    margin: 30px auto 0;
+    opacity: 0.8;
+    transition: 0.3s;
+}
+.search-container:focus-within { opacity: 1; transform: scale(1.02); }
 
+#portalSearch {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'JetBrains Mono';
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    outline: none;
+    backdrop-filter: blur(10px);
+}
+#portalSearch::placeholder { color: rgba(255,255,255,0.3); }
+#portalSearch:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(188, 19, 254, 0.2); }
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    fill: var(--accent);
+}
+/* --- LIVE ANNOUNCEMENT BANNER --- */
+.announcement-bar {
+    width: 100%;
+    background: rgba(188, 19, 254, 0.1);
+    border-top: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    padding: 5px 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 100;
+}
+
+.marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono';
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.status-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono';
+}
+  
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -284,12 +354,12 @@
   <div id="protocol-screen">
       <div class="protocol-box">
           <div class="protocol-header">
-              <span>SECURITY PROTOCOL</span>
+              <span>PROTOCOL</span>
               <span style="font-size: 0.7rem; opacity: 0.7;">IEA</span>
           </div>
           
           <div class="protocol-content">
-              <p style="color:var(--accent); margin-bottom:10px;">// SYSTEM MANUAL & LEGEND //</p>
+              <p style="color:var(--accent); margin-bottom:10px;">// SYSTEM MANUAL //</p>
               
               <h4>01. CARA PENGGUNAAN</h4>
               <ul>
@@ -297,13 +367,16 @@
                   <li>Tombol navigasi di bawah (Dock) digunakan untuk Reset sistem, Perintah Admin, dan melihat Protokol Ulang.</li>
               </ul>
 
-              <h4>02. LEGENDA JUDUL (THE LEGEND)</h4>
+              <h4>02. JUDUL</h4>
               <ul>
-                  <li><b style="color:var(--accent-sec)">SECTOR ALPHA (Komunitas 1)</b>: Gerbang utama bagi rekrutan baru yang ingin memulai perjalanan di IEA.</li>
-                  <li><b style="color:var(--accent-sec)">SECTOR BETA (Komunitas 2)</b>: Divisi ekspansi untuk kolaborasi lanjutan.</li>
-                  <li><b style="color:var(--accent-sec)">COSMIC NETWORK</b>: Jurnal Ilmiah tempat para peneliti berbagi teori Node-Field.</li>
-                  <li><b style="color:var(--accent-sec)">ROYAL LIBRARY</b>: Gudang dokumen rahasia, buku, dan arsip musik kerajaan <span class="iea-glow">IEA</span>.</li>
-                  <li><b style="color:var(--accent-sec)">NEURAL NETWORK</b>: AI Assistant yang siap menjawab pertanyaan fenomena kosmik.</li>
+                  <li><b style="color:var(--accent-sec)">KOMUNITAS 1</b>: Divisi 1 bagi rekrutan lama.</li>
+                  <li><b style="color:var(--accent-sec)">KOMUNITAS 2</b>: Divisi 2 untuk yang baru join.</li>
+                  <li><b style="color:var(--accent-sec)">IEA JOURNAL</b>: Jurnal Ilmiah tempat para peneliti berbagi teori.</li>
+                  <li><b style="color:var(--accent-sec)">IEA LIBRARY</b>: Gudang dokumen rahasia, buku, dan arsip musik.</li>
+                  <li><b style="color:var(--accent-sec)">AI NETWORK</b>: AI Assistant yang siap menjawab pertanyaan fenomena kosmik.</li>
+                  <li><b style="color:var(--accent-sec)">DISCORD IEA</b>: Tempat diskusi,berdebat.</li>
+                  <li><b style="color:var(--accent-sec)">SALURAN IEA</b>: Informasi penting.</li>
+                  <li><b style="color:var(--accent-sec)">IEA CALCULATOR</b>: Menghitung terkait banyak hal.</li>
               </ul>
 
               <h4>03. PERINGATAN</h4>
@@ -331,6 +404,11 @@
     </div>
     <div class="loader-text" id="loaderMsg">AUTHENTICATING...</div>
   </div>
+  <div class="announcement-bar">
+    <div class="marquee-text">
+        [ SYSTEM NOTICE ] :: SELAMAT DATANG DI IEA PORTAL :: PENDAFTARAN KOMUNITAS 2 SEDANG DIBUKA :: PASTIKAN MEMBACA PROTOKOL SEBELUM BERGABUNG :: STAY SCIENTIFIC!
+    </div>
+</div>
 
   <div class="corner-brand" id="brand-corner">
     <svg class="corner-logo logo-svg" viewBox="0 0 200 200">
@@ -346,7 +424,16 @@
       <div class="status-pill"><div class="status-dot"></div>SYSTEM OPERATIONAL</div>
       <h1><span class="iea-glow">IEA</span> PORTAL</h1>
       <p style="color:var(--text-sec); margin-top:10px; letter-spacing:2px; font-size:0.8rem; font-family:'JetBrains Mono'; opacity:0.8;">INTERNATIONAL EDUCATION ASTRONOMY</p>
+      <div class="search-container">
+    <input type="text" id="portalSearch" placeholder="SEARCH SYSTEM DATA..." onkeyup="filterCards()">
+    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+</div>
     </header>
+    <div class="status-indicator">
+    <span style="color:#4CAF50;">DATABASE:ONLINE</span>
+    <span style="color:var(--accent-sec);">SERVER LOAD:24%</span>
+    <span style="color:#2196F3;">ACTIVE RESEARCHERS:128</span>
+</div>
 
     <div class="grid">
       
@@ -382,7 +469,7 @@
         <svg class="card-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
         <span class="card-tag">DOCUMENT VAULT</span>
         <h2>ROYAL LIBRARY</h2>
-        <p>Arsip digital terpusat. Akses buku, dokumen riset, dan koleksi musik astronomi yang dikelola kerajaan <span class="iea-glow">IEA</span>.</p>
+        <p>Arsip digital terpusat. Akses buku, dokumen riset, dan koleksi musik astronomi yang dikelola <span class="iea-glow">IEA</span>.</p>
       </div>
 
       <div class="card" onclick="goto('https://xzam730.github.io/IEA-Web-premium/')">
@@ -402,7 +489,7 @@
       <div class="card" onclick="goto('https://xzam730.github.io/PORTAL-IEA/calculate.html')">
         <svg class="card-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h5v-2h-5v2zm0-4h5v-2h-5v2zm0-4h5V7h-5v2zM7 7v2h5V7H7zm0 4h5v-2H7v2zm0 4h5v-2H7v2z"/></svg>
         <span class="card-tag">OMEGA TOOLS</span>
-        <h2>IEA CALCULATOR</h2>
+        <h2>QUANTUM CALCULATOR</h2>
         <p>Unit pemrosesan data ilmiah. Kalkulator fisika, konverter materi, dan terminal enkripsi data.</p>
       </div>
 
@@ -528,6 +615,25 @@
         document.getElementById('loaderMsg').innerText = "ESTABLISHING CONNECTION...";
         setTimeout(() => { window.location.href = url; }, 3500);
     }
+  // --- SEARCH LOGIC ---
+function filterCards() {
+    let input = document.getElementById('portalSearch').value.toUpperCase();
+    let grid = document.querySelector('.grid');
+    let cards = grid.getElementsByClassName('card');
+
+    for (let i = 0; i < cards.length; i++) {
+        // Kita ambil teks dari H2 (judul) dan P (deskripsi)
+        let title = cards[i].getElementsByTagName('h2')[0].innerText;
+        let desc = cards[i].getElementsByTagName('p')[0].innerText;
+        
+        if (title.toUpperCase().indexOf(input) > -1 || desc.toUpperCase().indexOf(input) > -1) {
+            cards[i].style.display = "";
+            cards[i].style.animation = "fadeIn 0.3s ease forwards";
+        } else {
+            cards[i].style.display = "none";
+        }
+    }
+}
   </script>
 
 </body>
