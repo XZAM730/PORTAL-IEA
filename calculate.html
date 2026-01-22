@@ -3,501 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#000205">
-    <meta name="description" content="IEA Ultimate Scientific Computing System">
-    <meta name="author" content="Sami / IEA">
+    <meta name="theme-color" content="#050508">
     <title>IEA | CALCULATE</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Titillium+Web:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ================= IEA VISUAL CORE V2 ================= */
         :root {
-            --bg-void: #000205;
-            --bg-panel: rgba(10, 15, 25, 0.95);
-            --bg-key: #0f1520;
-            --neon-cyan: #00f2ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff0055;
-            --neon-gold: #ffd700;
-            --neon-green: #0aff0a;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: 1px solid rgba(255, 255, 255, 0.08);
-            --header-h: 60px;
-            --nav-h: 70px;
+            --bg-deep: #050508;
+            --neon-pri: #bc13fe; /* Ungu IEA */
+            --neon-sec: #ff4500; /* Oranye IEA */
+            --neon-tri: #00f2ff; /* Cyan Sci-Fi */
+            --glass-bg: rgba(20, 20, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-blur: blur(25px);
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
         }
 
-        /* GLOBAL RESET */
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body {
-            background-color: var(--bg-void); color: #e0e0e0; font-family: 'Rajdhani', sans-serif;
-            height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column;
-        }
-
-        /* ANIMATED BACKGROUND */
-        #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.6; }
-        .grid-overlay {
-            position: fixed; inset: 0; z-index: -1; pointer-events: none;
-            background-image: linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px; opacity: 0.5;
-        }
-
-        /* BOOT SCREEN */
-        #boot-layer {
-            position: fixed; inset: 0; z-index: 9999; background: #000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        .loader-ring {
-            width: 120px; height: 120px; border: 4px solid transparent;
-            border-top-color: var(--neon-cyan); border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        .loader-text { margin-top: 20px; font-family: 'Orbitron'; color: var(--neon-cyan); letter-spacing: 3px; animation: blink 1s infinite; }
-
-        /* HEADER */
-        .hud-header {
-            height: var(--header-h); background: rgba(5, 10, 15, 0.9);
-            border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; backdrop-filter: blur(10px); z-index: 100;
-        }
-        .brand { font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; color: #fff; letter-spacing: 2px; }
-        .brand span { color: var(--neon-cyan); }
-        .sys-stat { font-family: 'Share Tech Mono'; font-size: 0.8rem; color: var(--neon-gold); }
-
-        /* VIEWPORT & PAGES */
-        #viewport { flex: 1; position: relative; overflow: hidden; }
-        .page {
-            position: absolute; inset: 0; padding: 20px; overflow-y: auto;
-            opacity: 0; transform: scale(0.95); pointer-events: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .page.active { opacity: 1; transform: scale(1); pointer-events: auto; z-index: 10; }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 2px; }
-
-        /* --- MODULE: CALCULATOR --- */
-        .calc-screen {
-            background: linear-gradient(180deg, #0a1018, #000); border: 1px solid var(--neon-purple);
-            border-radius: 10px; padding: 15px; text-align: right; min-height: 140px;
-            display: flex; flex-direction: column; justify-content: flex-end; margin-bottom: 10px;
-            box-shadow: inset 0 0 20px rgba(188, 19, 254, 0.1);
-        }
-        .c-hist { font-family: 'Share Tech Mono'; color: #666; font-size: 0.9rem; margin-bottom: 5px; }
-        .c-input { font-family: 'Share Tech Mono'; color: #fff; font-size: 2.5rem; overflow-x: auto; white-space: nowrap; }
-        .c-res { font-family: 'Orbitron'; color: var(--neon-cyan); font-size: 1.2rem; margin-top: 5px; text-shadow: 0 0 10px rgba(0,242,255,0.4); }
+        /* --- BASE SETUP (HD RESET) --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
         
-        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
-        .btn {
-            background: var(--bg-key); border: 1px solid rgba(255,255,255,0.05); color: #fff;
-            border-radius: 6px; font-family: 'Titillium Web'; font-size: 1.2rem; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: 0.1s; position: relative; overflow: hidden;
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh; overflow: hidden;
+            background-image: radial-gradient(circle at 50% -20%, #1a0b2e, #000);
         }
-        .btn:active { transform: translateY(2px); background: #222; }
-        .btn.op { color: var(--neon-gold); }
-        .btn.sci { color: var(--neon-purple); font-size: 1rem; font-family: 'Orbitron'; }
-        .btn.ac { color: var(--neon-red); border-color: rgba(255,0,85,0.3); }
-        .btn.eq { background: var(--neon-cyan); color: #000; grid-column: span 2; box-shadow: 0 0 15px rgba(0,242,255,0.3); }
 
-        /* --- MODULE: CODEX --- */
-        .search-bar { width: 100%; padding: 12px; background: #000; border: 1px solid var(--neon-purple); color: #fff; font-family: 'Orbitron'; border-radius: 6px; margin-bottom: 15px; }
-        .codex-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-        .codex-item {
-            background: var(--bg-panel); border: var(--border); padding: 15px; border-radius: 8px;
+        /* --- HD TEXTURE (BROKEN GLASS EFFECT) --- */
+        .shattered-overlay {
+            position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* --- YOUR REQUESTED LOADING SCREEN --- */
+        #loader-overlay {
+            position: fixed; inset: 0; 
+            background: #050508;
+            z-index: 20000; 
+            display: none; /* Muncul via JS */
+            flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease; pointer-events: none;
+        }
+
+        /* Logo SVG untuk Loader */
+        .loader-svg { width: 120px; height: 120px; overflow: visible; }
+        .ring { fill: none; stroke-width: 4; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 8px currentColor); }
+        .ring-1 { stroke: var(--neon-pri); transform-origin: center; animation: ringSpin 2s linear infinite; }
+        .ring-2 { stroke: var(--neon-sec); transform-origin: center; animation: ringSpinRev 1.5s linear infinite; }
+
+        @keyframes ringSpin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+        @keyframes ringSpinRev { 0% { transform: rotate(0deg) scale(1.1); } 50% { transform: rotate(-180deg) scale(1); } 100% { transform: rotate(-360deg) scale(1.1); } }
+        
+        .loader-text {
+            font-family: 'Orbitron'; letter-spacing: 4px; color: var(--neon-sec);
+            margin-top: 25px; font-size: 0.8rem; animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse { from{opacity:0.6} to{opacity:1} }
+
+
+        /* --- UI LAYOUT --- */
+        .header-bar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px; z-index: 100;
+        }
+        .brand { font-family: 'Orbitron'; font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; }
+        .brand span { color: var(--neon-pri); text-shadow: 0 0 15px var(--neon-pri); }
+        
+        .menu-btn {
+            width: 45px; height: 45px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; color: var(--neon-tri);
+        }
+        .menu-btn:hover { background: var(--neon-pri); color: #fff; box-shadow: 0 0 20px var(--neon-pri); border-color: transparent; }
+
+        /* --- GLASS MODULE CONTAINER --- */
+        .viewport {
+            position: absolute; top: 80px; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 500px;
+            display: flex; flex-direction: column;
+        }
+
+        .module {
+            flex: 1; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: none; /* Hidden by default */
+            flex-direction: column; overflow: hidden;
+            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .module.active { display: flex; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+        .mod-header {
+            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: 'Orbitron'; color: var(--text-dim); font-size: 0.9rem; letter-spacing: 2px;
+            display: flex; justify-content: space-between;
+        }
+        .mod-content { flex: 1; padding: 20px; overflow-y: auto; position: relative; }
+
+        /* --- GLOBAL MENU OVERLAY --- */
+        .mega-menu {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.95); z-index: 5000;
+            backdrop-filter: blur(20px); display: flex; flex-direction: column;
+            padding: 80px 20px 20px 20px; opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mega-menu.open { opacity: 1; pointer-events: auto; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .nav-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 15px; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+        }
+        .nav-card i { font-size: 2rem; color: var(--text-dim); transition: 0.3s; }
+        .nav-card span { font-family: 'Orbitron'; font-size: 0.75rem; letter-spacing: 1px; color: #fff; }
+        
+        .nav-card:hover { background: rgba(188, 19, 254, 0.15); border-color: var(--neon-pri); transform: translateY(-5px); }
+        .nav-card:hover i { color: var(--neon-pri); text-shadow: 0 0 10px var(--neon-pri); }
+
+        /* --- COMPONENTS STYLE --- */
+        .sys-input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+            padding: 15px; color: #fff; font-family: 'JetBrains Mono'; font-size: 1.1rem;
+            border-radius: 10px; margin-bottom: 15px; text-align: right;
+            transition: 0.3s;
+        }
+        .sys-input:focus { border-color: var(--neon-tri); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        
+        .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .btn {
+            height: 60px; border: none; background: rgba(255,255,255,0.05);
+            color: #fff; font-family: 'Inter'; font-size: 1.3rem; border-radius: 10px;
             cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
         }
-        .codex-item:hover { border-color: var(--neon-cyan); transform: translateY(-3px); }
-        .codex-sym { font-size: 2rem; color: var(--neon-cyan); font-family: 'Times New Roman', serif; font-style: italic; }
-        .codex-name { font-size: 0.8rem; color: #aaa; margin-top: 5px; }
+        .btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .btn.op { color: var(--neon-sec); font-family: 'Orbitron'; font-weight: bold; background: rgba(255, 69, 0, 0.08); }
+        .btn.eq { grid-column: span 2; background: var(--neon-pri); box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); }
+        .btn.sci { font-size: 0.9rem; color: var(--neon-tri); font-family: 'Orbitron'; }
 
-        /* --- MODULE: ASTROPHYSICS (NEW) --- */
-        .astro-panel { background: rgba(20, 20, 30, 0.5); padding: 15px; border-radius: 8px; border-left: 3px solid var(--neon-red); }
-        .astro-input { width: 100%; background: #000; border: 1px solid #333; color: var(--neon-red); padding: 8px; font-family: 'Share Tech Mono'; margin: 5px 0; }
-        .astro-res { text-align: right; color: #fff; font-size: 1.2rem; font-family: 'Orbitron'; margin-top: 10px; }
-        .section-head { font-family: 'Orbitron'; color: var(--neon-red); margin-bottom: 10px; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
-
-        /* --- MODULE: ENCRYPTION (NEW) --- */
-        .crypt-box { display: flex; flex-direction: column; gap: 10px; height: 100%; }
-        .crypt-area { flex: 1; background: #050a10; border: 1px solid var(--neon-green); color: var(--neon-green); font-family: 'Share Tech Mono'; padding: 10px; resize: none; border-radius: 5px; }
-        .crypt-controls { display: flex; gap: 10px; }
-        .crypt-btn { flex: 1; padding: 10px; background: var(--glass); border: 1px solid var(--neon-green); color: #fff; cursor: pointer; font-family: 'Orbitron'; }
-        .crypt-btn:hover { background: var(--neon-green); color: #000; }
-
-        /* NAV DOCK */
-        .nav-dock {
-            height: var(--nav-h); background: rgba(5, 10, 15, 0.95); border-top: var(--border);
-            display: flex; overflow-x: auto; padding: 0 5px; gap: 5px; z-index: 100;
+        .result-display {
+            background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; margin-top: 20px;
+            text-align: center; border: 1px solid var(--glass-border);
         }
-        .nav-item {
-            min-width: 65px; height: 100%; background: transparent; border: none;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #666; transition: 0.3s; cursor: pointer;
-        }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
-        .nav-item span { font-size: 0.6rem; font-family: 'Orbitron'; letter-spacing: 1px; }
-        .nav-item.active { color: var(--neon-cyan); background: linear-gradient(to top, rgba(0,242,255,0.1), transparent); }
-        .nav-item.active i { transform: translateY(-3px); text-shadow: 0 0 10px var(--neon-cyan); }
+        .res-val { font-family: 'Orbitron'; font-size: 1.8rem; color: var(--neon-tri); text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); word-wrap: break-word;}
 
-        /* UTILS */
-        .t-cyan { color: var(--neon-cyan); } .t-purp { color: var(--neon-purple); } .t-gold { color: var(--neon-gold); }
-        .section-title { font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <canvas id="star-canvas"></canvas>
-    <div class="grid-overlay"></div>
+    <div class="shattered-overlay"></div>
 
-    <div id="boot-layer">
-        <div class="loader-ring"></div>
-        <div class="loader-text">CALCULATE IEA</div>
+    <div id="loader-overlay">
+        <svg class="loader-svg" viewBox="0 0 200 200">
+            <ellipse class="ring ring-1" cx="100" cy="100" rx="90" ry="30" />
+            <ellipse class="ring ring-2" cx="100" cy="100" rx="90" ry="30" />
+            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="40" style="filter: drop-shadow(0 0 10px var(--neon-pri));">IEA</text>
+        </svg>
+        <div class="loader-text">SYSTEM LOADING...</div>
     </div>
 
-    <header class="hud-header">
-        <div class="brand">IEA <span>CALCULATOR</span></div>
-        <div class="sys-stat" id="clock">00:00:00</div>
-    </header>
+    <div class="header-bar">
+        <div class="brand">IEA <span>CALCULATE</span></div>
+        <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-grid-2"></i><i class="fas fa-bars"></i></div>
+    </div>
 
-    <div id="viewport">
+    <div class="viewport">
 
-        <div id="page-calc" class="page active">
-            <div class="calc-screen">
-                <div class="c-hist" id="calc-hist">READY</div>
-                <div class="c-input" id="calc-disp">0</div>
-                <div class="c-res" id="calc-preview">= 0</div>
-            </div>
-            <div class="keypad">
-                <button class="btn sci" onclick="titan.calc.ins('Math.sin(')">sin</button>
-                <button class="btn sci" onclick="titan.calc.ins('Math.cos(')">cos</button>
-                <button class="btn sci" onclick="titan.calc.ins('Math.tan(')">tan</button>
-                <button class="btn sci" onclick="titan.calc.ins('Math.log10(')">log</button>
-
-                <button class="btn sci" onclick="titan.calc.ins('(')">(</button>
-                <button class="btn sci" onclick="titan.calc.ins(')')">)</button>
-                <button class="btn sci" onclick="titan.calc.ins('**')">^</button>
-                <button class="btn sci" onclick="titan.calc.ins('Math.sqrt(')">√</button>
-
-                <button class="btn" onclick="titan.calc.ins('7')">7</button>
-                <button class="btn" onclick="titan.calc.ins('8')">8</button>
-                <button class="btn" onclick="titan.calc.ins('9')">9</button>
-                <button class="btn ac" onclick="titan.calc.clr()">AC</button>
-
-                <button class="btn" onclick="titan.calc.ins('4')">4</button>
-                <button class="btn" onclick="titan.calc.ins('5')">5</button>
-                <button class="btn" onclick="titan.calc.ins('6')">6</button>
-                <button class="btn op" onclick="titan.calc.ins('*')">×</button>
-
-                <button class="btn" onclick="titan.calc.ins('1')">1</button>
-                <button class="btn" onclick="titan.calc.ins('2')">2</button>
-                <button class="btn" onclick="titan.calc.ins('3')">3</button>
-                <button class="btn op" onclick="titan.calc.ins('-')">-</button>
-
-                <button class="btn" onclick="titan.calc.ins('0')">0</button>
-                <button class="btn" onclick="titan.calc.ins('.')">.</button>
-                <button class="btn op" onclick="titan.calc.del()">⌫</button>
-                <button class="btn op" onclick="titan.calc.ins('+')">+</button>
-
-                <button class="btn sci" onclick="titan.calc.ins('3.14159')">π</button>
-                <button class="btn sci" onclick="titan.calc.ins('2.718')">e</button>
-                <button class="btn eq" onclick="titan.calc.solve()">=</button>
-            </div>
-        </div>
-
-        <div id="page-codex" class="page">
-            <h2 class="section-title t-purp">UNIVERSAL DATA</h2>
-            <input type="text" class="search-bar" id="codexSearch" placeholder="Search Constants..." oninput="titan.codex.filter()">
-            <div class="codex-list" id="codexList"></div>
-        </div>
-
-        <div id="page-astro" class="page">
-            <h2 class="section-title t-red">ASTROPHYSICS ENGINE</h2>
-            
-            <div class="astro-panel">
-                <div class="section-head"><i class="fas fa-clock"></i> TIME DILATION</div>
-                <label style="font-size:0.7rem; color:#888;">VELOCITY (% of Light Speed, e.g., 0.99)</label>
-                <input type="number" id="astroV" class="astro-input" value="0.5" step="0.01" max="0.99999">
-                <label style="font-size:0.7rem; color:#888;">EARTH TIME (Years)</label>
-                <input type="number" id="astroT" class="astro-input" value="1">
-                <button class="btn sci" style="width:100%; margin-top:5px;" onclick="titan.astro.calcTime()">CALCULATE</button>
-                <div class="astro-res" id="resTime">Ship Time: 0.866 Yrs</div>
-            </div>
-
-            <div class="astro-panel" style="margin-top:15px; border-color:var(--neon-purple);">
-                <div class="section-head"><i class="fas fa-circle"></i> SCHWARZSCHILD RADIUS</div>
-                <label style="font-size:0.7rem; color:#888;">MASS (in Solar Masses)</label>
-                <input type="number" id="astroM" class="astro-input" value="1">
-                <button class="btn sci" style="width:100%; margin-top:5px;" onclick="titan.astro.calcBH()">CALCULATE</button>
-                <div class="astro-res" id="resBH">Rs: 2.95 km</div>
-            </div>
-        </div>
-
-        <div id="page-intel" class="page">
-            <h2 class="section-title t-green">IEA INTEL: ENCRYPT</h2>
-            <div class="crypt-box">
-                <textarea id="cryptIn" class="crypt-area" placeholder="ENTER TOP SECRET DATA..."></textarea>
-                <div class="crypt-controls">
-                    <button class="crypt-btn" onclick="titan.intel.process('enc')"><i class="fas fa-lock"></i> LOCK</button>
-                    <button class="crypt-btn" onclick="titan.intel.process('dec')"><i class="fas fa-lock-open"></i> UNLOCK</button>
+        <div id="mod-calc" class="module active">
+            <div class="mod-header">CAL<span>IEA</span></div>
+            <div class="mod-content" style="display:flex; flex-direction:column; justify-content:flex-end;">
+                <div id="calc-hist" style="text-align:right; font-family:'JetBrains Mono'; color:var(--text-dim); margin-bottom:5px;">READY</div>
+                <input type="text" id="calc-disp" class="sys-input" value="0" readonly style="font-size:2.5rem; border:none; background:transparent;">
+                
+                <div class="btn-grid">
+                    <button class="btn sci" onclick="ins('Math.sin(')">sin</button>
+                    <button class="btn sci" onclick="ins('Math.cos(')">cos</button>
+                    <button class="btn sci" onclick="ins('Math.sqrt(')">√</button>
+                    <button class="btn op" onclick="ins('/')">÷</button>
+                    
+                    <button class="btn" onclick="ins('7')">7</button>
+                    <button class="btn" onclick="ins('8')">8</button>
+                    <button class="btn" onclick="ins('9')">9</button>
+                    <button class="btn op" onclick="ins('*')">×</button>
+                    
+                    <button class="btn" onclick="ins('4')">4</button>
+                    <button class="btn" onclick="ins('5')">5</button>
+                    <button class="btn" onclick="ins('6')">6</button>
+                    <button class="btn op" onclick="ins('-')">-</button>
+                    
+                    <button class="btn" onclick="ins('1')">1</button>
+                    <button class="btn" onclick="ins('2')">2</button>
+                    <button class="btn" onclick="ins('3')">3</button>
+                    <button class="btn op" onclick="ins('+')">+</button>
+                    
+                    <button class="btn sci" onclick="cls()" style="color:var(--neon-sec);">AC</button>
+                    <button class="btn" onclick="ins('0')">0</button>
+                    <button class="btn" onclick="ins('.')">.</button>
+                    <button class="btn eq" onclick="solve()">=</button>
                 </div>
-                <textarea id="cryptOut" class="crypt-area" placeholder="OUTPUT GENERATED HERE..." readonly></textarea>
             </div>
         </div>
 
-        <div id="page-unit" class="page">
-            <h2 class="section-title t-gold">UNIT CONVERTER</h2>
-            <div style="background:var(--bg-panel); padding:20px; border-radius:10px;">
-                <select id="uType" class="search-bar" onchange="titan.unit.render()">
-                    <option value="len">Length / Distance</option>
-                    <option value="mass">Mass / Weight</option>
-                    <option value="data">Digital Storage</option>
+                <div id="mod-astro" class="module">
+            <div class="mod-header">COSMOLOGY ENGINE <i class="fas fa-atom"></i></div>
+            <div class="mod-content">
+                <select id="astro-mode" class="sys-input" onchange="uiAstro()" style="text-align:left;">
+                    <option value="time">Time Dilation (Relativity)</option>
+                    <option value="bh">Black Hole (Schwarzschild)</option>
+                    <option value="energy">Energy (E=mc²)</option>
                 </select>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="number" id="uVal" class="astro-input" value="1" oninput="titan.unit.calc()">
-                    <select id="uFrom" class="astro-input" style="width:100px;" onchange="titan.unit.calc()"></select>
+
+                <div id="astro-inputs">
+                    <input type="number" id="at-v" class="sys-input" placeholder="Velocity (0.0 - 0.99c)">
+                    <input type="number" id="at-t" class="sys-input" placeholder="Time on Earth (Years)">
                 </div>
-                <div style="text-align:center; margin:10px 0; color:var(--neon-gold);"><i class="fas fa-arrow-down"></i></div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="text" id="uRes" class="astro-input" readonly>
-                    <select id="uTo" class="astro-input" style="width:100px;" onchange="titan.unit.calc()"></select>
+
+                <button class="btn eq" style="width:100%; margin-top:10px;" onclick="calcAstro()">CALCULATE DATA</button>
+                
+                <div class="result-display">
+                    <div class="res-val" id="at-res">0</div>
+                    <div id="at-label" style="font-size:0.7rem; color:#888;">RESULT</div>
                 </div>
             </div>
         </div>
 
-        <div id="page-graph" class="page">
-            <h2 class="section-title t-cyan">QUANTUM PLOTTER</h2>
-            <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <span style="padding:10px; background:#222; color:#fff; font-family:'Share Tech Mono';">y =</span>
-                <input type="text" id="fnGraph" class="search-bar" style="margin:0;" value="Math.sin(x) * x">
-                <button class="btn sci" style="width:60px;" onclick="titan.graph.draw()">GO</button>
-            </div>
-            <div style="flex:1; border:1px solid #333; background:#000; border-radius:8px; overflow:hidden;">
-                <canvas id="graphCanvas"></canvas>
+                <div id="mod-conv" class="module">
+            <div class="mod-header">UNIVERSAL TRANSLATOR <i class="fas fa-exchange-alt"></i></div>
+            <div class="mod-content">
+                <select id="cv-type" class="sys-input" onchange="updUnits()" style="text-align:left;">
+                    <option value="len">Length (Jarak)</option>
+                    <option value="mass">Mass (Berat)</option>
+                    <option value="temp">Temperature (Suhu)</option>
+                    <option value="spd">Speed (Kecepatan)</option>
+                    <option value="data">Digital Data</option>
+                </select>
+
+                <input type="number" id="cv-in" class="sys-input" placeholder="Input Value">
+                
+                <div style="display:grid; grid-template-columns: 1fr 20px 1fr; gap:10px; align-items:center; margin-bottom:15px;">
+                    <select id="cv-from" class="sys-input" style="margin:0; text-align:center; padding:10px; font-size:0.8rem;"></select>
+                    <i class="fas fa-arrow-right" style="color:var(--neon-tri); text-align:center;"></i>
+                    <select id="cv-to" class="sys-input" style="margin:0; text-align:center; padding:10px; font-size:0.8rem;"></select>
+                </div>
+
+                <button class="btn eq" style="width:100%;" onclick="convert()">TRANSLATE UNIT</button>
+                
+                <div class="result-display">
+                    <div class="res-val" id="cv-res">0</div>
+                    <div id="cv-label" style="font-size:0.7rem; color:#888;">RESULT</div>
+                </div>
             </div>
         </div>
 
+                <div id="mod-geo" class="module">
+            <div class="mod-header">ARCHITECT ENGINE <i class="fas fa-ruler-combined"></i></div>
+            <div class="mod-content">
+                <select id="geo-type" class="sys-input" style="text-align:left;" onchange="uiGeo()">
+                    <option value="tri">Triangle (Right Angle)</option>
+                    <option value="cyl">Cylinder (Tank)</option>
+                    <option value="cone">Cone (Volume)</option>
+                    <option value="sphere">Sphere (Ball)</option>
+                    <option value="cube">Cube (Box)</option>
+                </select>
+                
+                <div id="geo-inp">
+                    <input type="number" id="g1" class="sys-input" placeholder="Base (Alas)">
+                    <input type="number" id="g2" class="sys-input" placeholder="Height (Tinggi)">
+                </div>
+                
+                <button class="btn eq" style="width:100%; margin-top:10px;" onclick="calcGeo()">CALCULATE STRUCTURE</button>
+                
+                <div class="result-display">
+                    <div class="res-val" id="geo-res">0</div>
+                    <div id="geo-label" style="font-size:0.7rem; color:#888;">RESULT INFO</div>
+                </div>
+            </div>
+        </div>
+
+                <div id="mod-chem" class="module">
+             <div class="mod-header">MOLECULAR ENGINE <i class="fas fa-flask"></i></div>
+             <div class="mod-content">
+                 <select id="chem-mode" class="sys-input" onchange="uiChem()" style="text-align:left;">
+                    <option value="mass">Molar Mass Calc (e.g. H2O)</option>
+                    <option value="search">Element Lookup (Symbol)</option>
+                 </select>
+
+                 <div id="chem-inputs">
+                     <input type="text" id="chem-in" class="sys-input" placeholder="Type Formula (e.g. H2SO4)...">
+                 </div>
+                 
+                 <button class="btn eq" style="width:100%; margin-top:10px;" onclick="calcChem()">ANALYZE SUBSTANCE</button>
+                 
+                 <div class="result-display">
+                     <div class="res-val" id="chem-res">0</div>
+                     <div id="chem-label" style="font-size:0.7rem; color:#888;">MOLAR MASS (g/mol)</div>
+                 </div>
+             </div>
+        </div>
+
+                  <div id="mod-log" class="module">
+            <div class="mod-header">SYSTEM TERMINAL <i class="fas fa-terminal"></i></div>
+            <div class="mod-content" style="display:flex; flex-direction:column; height:100%; padding:0;">
+                
+                <div id="term-output" style="flex:1; background:#000; padding:15px; font-family:'JetBrains Mono'; font-size:0.75rem; color:#0f0; overflow-y:auto; border-bottom:1px solid #333;">
+                    <span style="color:#aaa;">IEA</span><br>
+                    <span style="color:#aaa;">(c) 2026 IEA Corp. All rights reserved.</span><br><br>
+                    > System Initialized...<br>
+                    > Waiting for input...
+                </div>
+
+                <div style="display:flex; background:#111; padding:10px;">
+                    <span style="color:#0f0; margin-right:10px; font-family:'Orbitron';">></span>
+                    <input type="text" id="term-input" style="flex:1; background:transparent; border:none; color:#fff; font-family:'JetBrains Mono';" placeholder="Type 'help' for commands..." onkeydown="checkCmd(event)">
+                </div>
+           </div>
+       </div>
+
+
+    <div class="mega-menu" id="mainMenu">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h2 style="font-family:'Orbitron'; color:#fff;">SELECT MODULE</h2>
+            <i class="fas fa-times" style="font-size:1.5rem; color:var(--neon-sec); cursor:pointer;" onclick="toggleMenu()"></i>
+        </div>
+        
+        <div class="menu-grid">
+            <div class="nav-card" onclick="nav('mod-calc')">
+                <i class="fas fa-calculator"></i><span>CALCULATOR</span>
+            </div>
+            <div class="nav-card" onclick="nav('mod-conv')">
+                <i class="fas fa-exchange-alt"></i><span>CONVERTER</span>
+            </div>
+            <div class="nav-card" onclick="nav('mod-astro')">
+                <i class="fas fa-meteor"></i><span>ASTRO PHYSICS</span>
+            </div>
+            <div class="nav-card" onclick="nav('mod-geo')">
+                <i class="fas fa-shapes"></i><span>GEOMETRY</span>
+            </div>
+            <div class="nav-card" onclick="nav('mod-chem')">
+                <i class="fas fa-flask"></i><span>CHEMISTRY</span>
+            </div>
+            <div class="nav-card" onclick="nav('mod-log')">
+                <i class="fas fa-file-code"></i><span>LOGS</span>
+            </div>
+        </div>
     </div>
-
-    <nav class="nav-dock">
-        <button class="nav-item active" onclick="titan.ui.go('calc', this)"><i class="fas fa-calculator"></i><span>CALC</span></button>
-        <button class="nav-item" onclick="titan.ui.go('codex', this)"><i class="fas fa-book"></i><span>CODEX</span></button>
-        <button class="nav-item" onclick="titan.ui.go('astro', this)"><i class="fas fa-meteor"></i><span>ASTRO</span></button>
-        <button class="nav-item" onclick="titan.ui.go('intel', this)"><i class="fas fa-user-secret"></i><span>INTEL</span></button>
-        <button class="nav-item" onclick="titan.ui.go('graph', this)"><i class="fas fa-wave-square"></i><span>GRAPH</span></button>
-        <button class="nav-item" onclick="titan.ui.go('unit', this)"><i class="fas fa-exchange-alt"></i><span>UNIT</span></button>
-    </nav>
 
     <script>
-        /* ================= TITAN SYSTEM CORE V2 ================= */
-        const titan = {
-            
-            // --- UI CONTROLLER ---
-            ui: {
-                go: (id, el) => {
-                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    document.getElementById('page-' + id).classList.add('active');
-                    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                    el.classList.add('active');
-                    
-                    if(id === 'graph') titan.graph.init();
-                    if(id === 'unit') titan.unit.render();
-                    
-                    // Sound Effect Simulation
-                    titan.sfx.play();
-                }
-            },
-
-            // --- SFX ---
-            sfx: {
-                ctx: null,
-                play: () => {
-                    if(!titan.sfx.ctx) titan.sfx.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = titan.sfx.ctx.createOscillator();
-                    const g = titan.sfx.ctx.createGain();
-                    osc.connect(g); g.connect(titan.sfx.ctx.destination);
-                    osc.frequency.value = 800; osc.frequency.exponentialRampToValueAtTime(300, titan.sfx.ctx.currentTime + 0.05);
-                    g.gain.value = 0.05; g.gain.exponentialRampToValueAtTime(0.01, titan.sfx.ctx.currentTime + 0.05);
-                    osc.start(); osc.stop(titan.sfx.ctx.currentTime + 0.05);
-                }
-            },
-
-            // --- CALCULATOR ---
-            calc: {
-                exp: '',
-                ins: (v) => { titan.calc.exp += v; titan.calc.upd(); },
-                del: () => { titan.calc.exp = titan.calc.exp.slice(0, -1); titan.calc.upd(); },
-                clr: () => { titan.calc.exp = ''; titan.calc.upd(); document.getElementById('calc-preview').innerText='= 0'; },
-                upd: () => { document.getElementById('calc-disp').innerText = titan.calc.exp || '0'; },
-                solve: () => {
-                    try {
-                        const safe = titan.calc.exp
-                            .replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan')
-                            .replace(/log/g, 'Math.log10').replace(/\^/g, '**').replace(/sqrt/g, 'Math.sqrt');
-                        const res = eval(safe);
-                        document.getElementById('calc-preview').innerText = '= ' + parseFloat(res.toFixed(8));
-                        document.getElementById('calc-hist').innerText = titan.calc.exp + ' =';
-                        titan.calc.exp = res.toString();
-                    } catch { document.getElementById('calc-preview').innerText = 'ERROR'; }
-                }
-            },
-
-            // --- CODEX ---
-            codex: {
-                data: [
-                    {s:"c", n:"Speed of Light", v:"299,792,458 m/s"},
-                    {s:"G", n:"Gravitational Constant", v:"6.674×10⁻¹¹"},
-                    {s:"h", n:"Planck Constant", v:"6.626×10⁻³⁴ J⋅s"},
-                    {s:"π", n:"Pi", v:"3.1415926535"},
-                    {s:"e", n:"Euler's Number", v:"2.71828"},
-                    {s:"φ", n:"Golden Ratio", v:"1.61803"},
-                    {s:"NA", n:"Avogadro No.", v:"6.022×10²³"},
-                    {s:"Me", n:"Earth Mass", v:"5.97×10²⁴ kg"},
-                    {s:"M☉", n:"Solar Mass", v:"1.989×10³⁰ kg"},
-                    {s:"Ly", n:"Light Year", v:"9.46 Trillion km"},
-                    {s:"α", n:"Fine Structure", v:"1/137.035"}
-                ],
-                init: () => {
-                    const el = document.getElementById('codexList');
-                    el.innerHTML = "";
-                    titan.codex.data.forEach(d => {
-                        el.innerHTML += `<div class="codex-item" onclick="titan.calc.ins('${d.v.split(' ')[0].replace(/×10/g,'e').replace(/⁻/g,'-').replace(/²/g,'2').replace(/³/g,'3')}'); titan.ui.go('calc', document.querySelectorAll('.nav-item')[0])">
-                            <div class="codex-sym">${d.s}</div><div class="codex-name">${d.n}</div>
-                            <div style="font-size:0.8rem; color:var(--neon-gold); margin-top:5px;">${d.v}</div>
-                        </div>`;
-                    });
-                },
-                filter: () => {
-                    const q = document.getElementById('codexSearch').value.toLowerCase();
-                    document.querySelectorAll('.codex-item').forEach(i => {
-                        i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none';
-                    });
-                }
-            },
-
-            // --- ASTROPHYSICS ---
-            astro: {
-                calcTime: () => {
-                    const v = parseFloat(document.getElementById('astroV').value);
-                    const t = parseFloat(document.getElementById('astroT').value);
-                    if(v >= 1) { document.getElementById('resTime').innerText = "Impossible (v < c)"; return; }
-                    const factor = Math.sqrt(1 - (v*v));
-                    const res = t * factor;
-                    document.getElementById('resTime').innerText = `Ship Time: ${res.toFixed(4)} Yrs`;
-                },
-                calcBH: () => {
-                    const m = parseFloat(document.getElementById('astroM').value);
-                    // Rs = 2GM/c^2. G=6.67e-11, c=3e8, M_sun=1.989e30
-                    // Simplified: Rs (km) approx 3 * M (solar masses)
-                    const res = 2.95 * m; 
-                    document.getElementById('resBH').innerText = `Schwarzschild R: ${res.toFixed(2)} km`;
-                }
-            },
-
-            // --- INTEL (ENCRYPTION) ---
-            intel: {
-                process: (mode) => {
-                    const txt = document.getElementById('cryptIn').value;
-                    let out = "";
-                    if(mode === 'enc') {
-                        out = btoa(txt).split('').reverse().join(''); // Base64 + Reverse (Simple Obfuscation)
-                    } else {
-                        try { out = atob(txt.split('').reverse().join('')); } catch { out = "DECRYPTION FAILED"; }
-                    }
-                    document.getElementById('cryptOut').value = out;
-                }
-            },
-
-            // --- GRAPHING ---
-            graph: {
-                init: () => {
-                    const c = document.getElementById('graphCanvas');
-                    const p = c.parentElement;
-                    c.width = p.clientWidth; c.height = p.clientHeight;
-                    titan.graph.draw();
-                },
-                draw: () => {
-                    const c = document.getElementById('graphCanvas');
-                    const ctx = c.getContext('2d');
-                    const w = c.width, h = c.height;
-                    const fn = document.getElementById('fnGraph').value;
-                    
-                    ctx.fillStyle = "#000"; ctx.fillRect(0,0,w,h);
-                    ctx.strokeStyle = "rgba(0,242,255,0.2)"; ctx.beginPath();
-                    ctx.moveTo(0, h/2); ctx.lineTo(w, h/2);
-                    ctx.moveTo(w/2, 0); ctx.lineTo(w/2, h);
-                    ctx.stroke();
-
-                    ctx.strokeStyle = "#bc13fe"; ctx.lineWidth = 2; ctx.beginPath();
-                    const scale = 20; const cx=w/2, cy=h/2;
-                    for(let i=0; i<w; i+=2) {
-                        const x = (i-cx)/scale;
-                        try {
-                            const y = eval(fn.replace(/sin/g,'Math.sin').replace(/cos/g,'Math.cos').replace(/x/g, `(${x})`));
-                            const py = cy - (y*scale);
-                            if(i===0) ctx.moveTo(i,py); else ctx.lineTo(i,py);
-                        } catch {}
-                    }
-                    ctx.stroke();
-                }
-            },
-
-            // --- UNIT CONVERTER ---
-            unit: {
-                data: {
-                    len: {m:1, km:1000, mi:1609, ly:9.46e15, au:1.49e11},
-                    mass: {kg:1, g:0.001, lb:0.453, ton:1000, solar:1.98e30},
-                    data: {byte:1, kb:1024, mb:1.04e6, gb:1.07e9, tb:1.09e12}
-                },
-                render: () => {
-                    const t = document.getElementById('uType').value;
-                    const opts = Object.keys(titan.unit.data[t]).map(k => `<option value="${k}">${k.toUpperCase()}</option>`).join('');
-                    document.getElementById('uFrom').innerHTML = opts;
-                    document.getElementById('uTo').innerHTML = opts;
-                    titan.unit.calc();
-                },
-                calc: () => {
-                    const t = document.getElementById('uType').value;
-                    const val = parseFloat(document.getElementById('uVal').value);
-                    const f = titan.unit.data[t][document.getElementById('uFrom').value];
-                    const to = titan.unit.data[t][document.getElementById('uTo').value];
-                    const base = val * f;
-                    document.getElementById('uRes').value = (base / to).toExponential(4);
-                }
-            }
-        };
-
-        // BOOT
-        window.onload = () => {
-            titan.codex.init();
-            titan.unit.render();
-            
-            // Star Animation
-            const cvs = document.getElementById('star-canvas'), ctx = cvs.getContext('2d');
-            let w, h, stars=[];
-            const rs = () => { w=cvs.width=window.innerWidth; h=cvs.height=window.innerHeight; stars=Array(100).fill().map(()=>({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.5})); };
-            window.onresize=rs; rs();
-            const tick = () => {
-                ctx.clearRect(0,0,w,h); ctx.fillStyle="#fff";
-                stars.forEach(s=>{ s.y-=0.2; if(s.y<0)s.y=h; ctx.beginPath(); ctx.arc(s.x,s.y,s.s,0,Math.PI*2); ctx.fill(); });
-                requestAnimationFrame(tick);
-            };
-            tick();
-
-            setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+        // --- LOADER SYSTEM ---
+        function showLoader(cb) {
+            const l = document.getElementById('loader-overlay');
+            l.style.display = 'flex';
+            // Force reflow
+            void l.offsetWidth; 
+            l.style.opacity = '1';
             
             setTimeout(() => {
-                document.getElementById('boot-layer').style.opacity = 0;
-                setTimeout(() => document.getElementById('boot-layer').remove(), 800);
-            }, 1500);
+                if(cb) cb();
+                setTimeout(() => {
+                    l.style.opacity = '0';
+                    setTimeout(() => l.style.display = 'none', 500);
+                }, 500);
+            }, 1500); // 1.5 detik loading
+        }
+
+        // --- NAVIGATION ---
+        function toggleMenu() {
+            document.getElementById('mainMenu').classList.toggle('open');
+        }
+
+        function nav(id) {
+            toggleMenu(); // Tutup menu dulu
+            showLoader(() => {
+                document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            });
+        }
+
+        // --- CALC LOGIC ---
+        let expr = "";
+        function ins(v) { expr += v; document.getElementById('calc-disp').value = expr; }
+        function cls() { expr = ""; document.getElementById('calc-disp').value = "0"; }
+        function solve() {
+            try {
+                let res = eval(expr);
+                if(!Number.isInteger(res)) res = res.toFixed(6);
+                document.getElementById('calc-disp').value = res;
+                expr = res.toString();
+                log(`Calc: ${res}`);
+            } catch { document.getElementById('calc-disp').value = "ERR"; expr=""; }
+        }
+
+                // --- ASTRO / COSMOLOGY LOGIC (UPGRADED) ---
+        
+        // 1. Fungsi Mengatur Tampilan Input (UI)
+        function uiAstro() {
+            const mode = document.getElementById('astro-mode').value;
+            const div = document.getElementById('astro-inputs');
+            const lbl = document.getElementById('at-label');
+
+            if(mode === 'time') {
+                div.innerHTML = `
+                    <input type="number" id="at-v" class="sys-input" placeholder="Velocity (0.0 - 0.99c)">
+                    <input type="number" id="at-t" class="sys-input" placeholder="Time on Earth (Years)">
+                `;
+                lbl.innerText = "SHIP TIME (YEARS)";
+            } 
+            else if(mode === 'bh') {
+                div.innerHTML = `
+                    <input type="number" id="at-m" class="sys-input" placeholder="Mass (kg) or Solar Mass">
+                    <select id="at-unit" class="sys-input" style="font-size:0.8rem; padding:8px;">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="solar">Solar Mass (M☉)</option>
+                    </select>
+                `;
+                lbl.innerText = "EVENT HORIZON RADIUS (METERS)";
+            }
+            else if(mode === 'energy') {
+                div.innerHTML = `<input type="number" id="at-m" class="sys-input" placeholder="Mass (kg)">`;
+                lbl.innerText = "ENERGY OUTPUT (JOULES)";
+            }
+        }
+
+        // 2. Fungsi Menghitung Rumus Fisika
+        function calcAstro() {
+            const mode = document.getElementById('astro-mode').value;
+            const resEl = document.getElementById('at-res');
+            
+            try {
+                if(mode === 'time') {
+                    // Rumus Dilatasi Waktu
+                    const v = parseFloat(document.getElementById('at-v').value);
+                    const t = parseFloat(document.getElementById('at-t').value);
+                    if(v >= 1 || v < 0) { resEl.innerText = "IMPOSSIBLE (v < c)"; return; }
+                    
+                    const res = t * Math.sqrt(1 - (v*v));
+                    resEl.innerText = res.toFixed(5) + " Yrs";
+                    log(`Cosmo: Time Dilation calculated`);
+                }
+                else if(mode === 'bh') {
+                    // Rumus Schwarzschild Radius: R = 2GM / c^2
+                    let m = parseFloat(document.getElementById('at-m').value);
+                    const unit = document.getElementById('at-unit').value;
+                    
+                    // Konstanta
+                    const G = 6.67430e-11; 
+                    const c = 299792458;
+                    const solarM = 1.989e30;
+
+                    if(unit === 'solar') m = m * solarM; // Convert Solar Mass ke Kg
+
+                    const R = (2 * G * m) / (c * c);
+                    
+                    // Format hasil (Jika sangat besar gunakan notasi ilmiah)
+                    if(R > 10000) resEl.innerText = R.toExponential(4) + " m";
+                    else resEl.innerText = R.toFixed(2) + " m";
+                    
+                    log(`Cosmo: Blackhole Radius for ${m}kg`);
+                }
+                else if(mode === 'energy') {
+                    // Rumus E = mc^2
+                    const m = parseFloat(document.getElementById('at-m').value);
+                    const c = 299792458;
+                    const E = m * c * c;
+                    
+                    resEl.innerText = E.toExponential(4) + " J";
+                    log(`Cosmo: Energy calculated`);
+                }
+            } catch (e) {
+                resEl.innerText = "INPUT ERROR";
+            }
+        }
+
+        // --- UNIVERSAL TRANSLATOR LOGIC (UPGRADED) ---
+
+        // 1. Database Unit Lengkap
+        const unitDB = {
+            len:  { m:1, km:1000, cm:0.01, mm:0.001, mi:1609.34, yd:0.9144, ft:0.3048, in:0.0254, ly:9.461e15, au:1.496e11 },
+            mass: { kg:1, g:0.001, mg:0.000001, ton:1000, lb:0.453592, oz:0.0283495 },
+            data: { b:1, kb:1024, mb:1.049e6, gb:1.074e9, tb:1.1e12, pb:1.126e15 },
+            spd:  { mps:1, kmh:0.277778, mph:0.44704, knot:0.514444, mach:343, c:299792458 },
+            temp: { c:'Celsius', f:'Fahrenheit', k:'Kelvin' } // Logic khusus untuk suhu
         };
+
+        // 2. Update Dropdown Unit
+        function updUnits() {
+            const t = document.getElementById('cv-type').value;
+            const fromSel = document.getElementById('cv-from');
+            const toSel = document.getElementById('cv-to');
+            
+            // Hapus opsi lama
+            fromSel.innerHTML = "";
+            toSel.innerHTML = "";
+
+            // Isi opsi baru
+            const keys = Object.keys(unitDB[t]);
+            
+            keys.forEach(k => {
+                // Buat label yang cantik (Huruf besar)
+                let label = k.toUpperCase();
+                if(k === 'c') label = '°C (Celsius)';
+                if(k === 'f') label = '°F (Fahrenheit)';
+                if(k === 'k') label = 'K (Kelvin)';
+                if(k === 'mach') label = 'Mach (Sound)';
+                if(k === 'c' && t === 'spd') label = 'c (Light Speed)';
+
+                fromSel.innerHTML += `<option value="${k}">${label}</option>`;
+                toSel.innerHTML += `<option value="${k}">${label}</option>`;
+            });
+        }
+
+        // 3. Logic Konversi Utama
+        function convert() {
+            const type = document.getElementById('cv-type').value;
+            const val = parseFloat(document.getElementById('cv-in').value);
+            const from = document.getElementById('cv-from').value;
+            const to = document.getElementById('cv-to').value;
+            const resEl = document.getElementById('cv-res');
+            const lblEl = document.getElementById('cv-label');
+
+            if(isNaN(val)) { resEl.innerText = "0"; return; }
+
+            let result = 0;
+
+            // A. Logika Khusus Suhu (Karena ada +/- 32 dsb)
+            if(type === 'temp') {
+                let celsius = 0;
+                // Step 1: Convert semuaya ke Celsius dulu
+                if(from === 'c') celsius = val;
+                if(from === 'f') celsius = (val - 32) * 5/9;
+                if(from === 'k') celsius = val - 273.15;
+
+                // Step 2: Convert Celsius ke Target
+                if(to === 'c') result = celsius;
+                if(to === 'f') result = (celsius * 9/5) + 32;
+                if(to === 'k') result = celsius + 273.15;
+            } 
+            // B. Logika Unit Biasa (Perkalian Faktor)
+            else {
+                const f_val = unitDB[type][from]; // Nilai dasar 'Dari'
+                const t_val = unitDB[type][to];   // Nilai dasar 'Ke'
+                
+                // Rumus: (Input * FaktorAwal) / FaktorTujuan
+                result = (val * f_val) / t_val;
+            }
+
+            // Formatting Hasil
+            // Jika hasilnya sangat besar atau sangat kecil, pakai notasi ilmiah (e)
+            if(result > 1000000 || (result > 0 && result < 0.001)) {
+                resEl.innerText = result.toExponential(4);
+            } else {
+                resEl.innerText = result.toLocaleString(undefined, {maximumFractionDigits: 5});
+            }
+            
+            lblEl.innerText = `${to.toUpperCase()} VALUE`;
+            log(`Conv: ${val} ${from} > ${result.toFixed(2)} ${to}`);
+        }
+
+
+                // --- ARCHITECT ENGINE LOGIC (UPGRADED) ---
+
+        // 1. UI Controller (Mengatur Input Form)
+        function uiGeo() {
+            const t = document.getElementById('geo-type').value;
+            const div = document.getElementById('geo-inp');
+            const lbl = document.getElementById('geo-label');
+            
+            // Reset Label
+            lbl.innerText = "RESULT";
+
+            if(t === 'tri') {
+                div.innerHTML = `
+                    <input type="number" id="g1" class="sys-input" placeholder="Base (Alas)">
+                    <input type="number" id="g2" class="sys-input" placeholder="Height (Tinggi)">
+                `;
+            } 
+            else if(t === 'cyl') {
+                div.innerHTML = `
+                    <input type="number" id="g1" class="sys-input" placeholder="Radius (r)">
+                    <input type="number" id="g2" class="sys-input" placeholder="Height (h)">
+                `;
+            }
+            else if(t === 'cone') {
+                div.innerHTML = `
+                    <input type="number" id="g1" class="sys-input" placeholder="Radius (r)">
+                    <input type="number" id="g2" class="sys-input" placeholder="Height (h)">
+                `;
+            }
+            else if(t === 'sphere') {
+                div.innerHTML = `<input type="number" id="g1" class="sys-input" placeholder="Radius (r)">`;
+            }
+            else if(t === 'cube') {
+                div.innerHTML = `<input type="number" id="g1" class="sys-input" placeholder="Side (s)">`;
+            }
+        }
+
+        // 2. Calculator Logic
+        function calcGeo() {
+            const t = document.getElementById('geo-type').value;
+            const v1 = parseFloat(document.getElementById('g1').value); // Input 1
+            // Cek apakah ada input 2, kalau tidak ada anggap 0
+            const v2_el = document.getElementById('g2');
+            const v2 = v2_el ? parseFloat(v2_el.value) : 0; 
+            
+            const resEl = document.getElementById('geo-res');
+            const lblEl = document.getElementById('geo-label');
+            
+            let result = 0;
+
+            if(t === 'tri') {
+                // Segitiga: Hitung Sisi Miring (Pythagoras) & Luas
+                const hyp = Math.sqrt((v1*v1) + (v2*v2));
+                const area = 0.5 * v1 * v2;
+                resEl.innerHTML = `<span style="font-size:1rem;">Hyp: ${hyp.toFixed(2)} <br> Area: ${area.toFixed(2)}</span>`;
+                lblEl.innerText = "HYPOTENUSE & AREA";
+                log(`Geo: Triangle calculated`);
+                return; // Return khusus karena outputnya 2 baris
+            }
+            else if(t === 'cyl') {
+                // Volume Silinder: π r² t
+                result = Math.PI * (v1*v1) * v2;
+                lblEl.innerText = "VOLUME (Cubic Units)";
+            }
+            else if(t === 'cone') {
+                // Volume Kerucut: 1/3 π r² t
+                result = (1/3) * Math.PI * (v1*v1) * v2;
+                lblEl.innerText = "VOLUME (Cubic Units)";
+            }
+            else if(t === 'sphere') {
+                // Volume Bola: 4/3 π r³
+                result = (4/3) * Math.PI * Math.pow(v1, 3);
+                lblEl.innerText = "VOLUME (Sphere)";
+            }
+            else if(t === 'cube') {
+                // Volume Kubus: s³
+                result = Math.pow(v1, 3);
+                lblEl.innerText = "VOLUME (Cube)";
+            }
+
+            resEl.innerText = result.toFixed(2);
+            log(`Geo: ${t.toUpperCase()} calculated`);
+        }
+
+
+                // --- MOLECULAR ENGINE LOGIC (UPGRADED) ---
+
+        // 1. Database Atom Lengkap (Simbol: Massa)
+        const atomDB = {
+            H: 1.008, He: 4.003, Li: 6.94, Be: 9.01, B: 10.81, C: 12.01, N: 14.01, O: 16.00, F: 19.00, Ne: 20.18,
+            Na: 22.99, Mg: 24.31, Al: 26.98, Si: 28.09, P: 30.97, S: 32.06, Cl: 35.45, K: 39.10, Ar: 39.95,
+            Ca: 40.08, Sc: 44.96, Ti: 47.87, V: 50.94, Cr: 52.00, Mn: 54.94, Fe: 55.85, Co: 58.93, Ni: 58.69,
+            Cu: 63.55, Zn: 65.38, Ga: 69.72, Ge: 72.63, As: 74.92, Se: 78.97, Br: 79.90, Kr: 83.80,
+            Rb: 85.47, Sr: 87.62, Y: 88.91, Zr: 91.22, Nb: 92.91, Mo: 95.95, Tc: 98.00, Ru: 101.07, Rh: 102.91,
+            Pd: 106.42, Ag: 107.87, Cd: 112.41, In: 114.82, Sn: 118.71, Sb: 121.76, Te: 127.60, I: 126.90, Xe: 131.29,
+            Cs: 132.91, Ba: 137.33, La: 138.91, W: 183.84, Pt: 195.08, Au: 196.97, Hg: 200.59, Pb: 207.20, Bi: 208.98, U: 238.03
+        };
+
+        // 2. UI Controller
+        function uiChem() {
+            const mode = document.getElementById('chem-mode').value;
+            const inp = document.getElementById('chem-in');
+            const lbl = document.getElementById('chem-label');
+            
+            if(mode === 'mass') {
+                inp.placeholder = "Type Formula (e.g. C6H12O6)...";
+                lbl.innerText = "MOLAR MASS (g/mol)";
+            } else {
+                inp.placeholder = "Type Symbol (e.g. Fe, Au)...";
+                lbl.innerText = "ATOMIC MASS (u)";
+            }
+        }
+
+        // 3. Logic Utama
+        function calcChem() {
+            const mode = document.getElementById('chem-mode').value;
+            const raw = document.getElementById('chem-in').value.trim();
+            const resEl = document.getElementById('chem-res');
+
+            if(!raw) return;
+
+            if(mode === 'search') {
+                // Pencarian Simbol Biasa
+                // Ubah huruf pertama jadi Besar, sisanya kecil (contoh: fe -> Fe)
+                const sym = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+                if(atomDB[sym]) {
+                    resEl.innerHTML = atomDB[sym];
+                    log(`Chem: Found ${sym} (${atomDB[sym]} u)`);
+                } else {
+                    resEl.innerText = "UNKNOWN";
+                }
+            } 
+            else if(mode === 'mass') {
+                // Kalkulator Rumus Molekul (e.g. H2O)
+                try {
+                    let totalMass = 0;
+                    // Regex canggih untuk memisahkan Elemen dan Angka (Contoh: H2 -> H, 2)
+                    const regex = /([A-Z][a-z]*)(\d*)/g;
+                    let match;
+                    let foundAny = false;
+
+                    while ((match = regex.exec(raw)) !== null) {
+                        foundAny = true;
+                        const element = match[1];
+                        const count = match[2] === "" ? 1 : parseInt(match[2]); // Kalau kosong berarti 1
+
+                        if(atomDB[element]) {
+                            totalMass += atomDB[element] * count;
+                        } else {
+                            resEl.innerText = `ERR: ${element}?`;
+                            return;
+                        }
+                    }
+
+                    if(!foundAny) { resEl.innerText = "INVALID"; return; }
+
+                    resEl.innerText = totalMass.toFixed(3);
+                    log(`Chem: Mass of ${raw} = ${totalMass}`);
+
+                } catch (e) {
+                    resEl.innerText = "ERROR";
+                }
+            }
+        }
+
+
+                // --- COMMAND TERMINAL LOGIC (UPGRADED) ---
+
+        // 1. Fungsi Logging Canggih (Dipanggil dari modul lain)
+        function log(msg) {
+            const term = document.getElementById('term-output');
+            const time = new Date().toLocaleTimeString('id-ID', {hour12:false});
+            
+            // Tambahkan pesan baru
+            term.innerHTML += `<br><span style="color:#555;">[${time}]</span> ${msg}`;
+            
+            // Auto Scroll ke bawah
+            term.scrollTop = term.scrollHeight;
+        }
+
+        // 2. Cek Tombol Enter
+        function checkCmd(e) {
+            if(e.key === 'Enter') {
+                const input = document.getElementById('term-input');
+                const cmd = input.value.trim().toLowerCase();
+                
+                // Tampilkan command user di layar
+                const term = document.getElementById('term-output');
+                term.innerHTML += `<br><span style="color:#fff;">$ ${input.value}</span>`;
+                
+                processCmd(cmd); // Jalankan perintah
+                input.value = ""; // Kosongkan input
+                term.scrollTop = term.scrollHeight;
+            }
+        }
+
+        // 3. Proses Perintah (Brain of Terminal)
+        function processCmd(cmd) {
+            if(cmd === 'help') {
+                log(`<span style="color:cyan;">AVAILABLE COMMANDS:</span><br>
+                     - help : Show this list<br>
+                     - clear : Wipe terminal<br>
+                     - status : Check system health<br>
+                     - date : Show current date<br>
+                     - reboot : Restart system`);
+            }
+            else if(cmd === 'clear') {
+                document.getElementById('term-output').innerHTML = "> Terminal Cleared...";
+            }
+            else if(cmd === 'status') {
+                log(`SYSTEM INTEGRITY: <span style="color:#0f0;">100%</span>`);
+                log(`MODULES ACTIVE: 6`);
+                log(`USER: ADMIN_IEA`);
+            }
+            else if(cmd === 'date') {
+                log(new Date().toString());
+            }
+            else if(cmd === 'reboot') {
+                log("REBOOTING SYSTEM...");
+                setTimeout(() => location.reload(), 1000);
+            }
+            else if(cmd === 'matrix') {
+                // Easter Egg
+                log("WAKE UP, NEO...");
+            }
+            else {
+                log(`<span style="color:red;">ERR: Command '${cmd}' not found.</span>`);
+            }
+        }
+
+        
+
+                        // Init
+        window.onload = () => {
+            showLoader();
+            nav('mod-calc'); 
+            uiAstro(); 
+            // Tambahkan ini:
+            updUnits();
+        }
+
     </script>
 </body>
 </html>
