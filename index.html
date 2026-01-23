@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <meta name="theme-color" content="#0a0a0f"> <title>IEA PORTAL</title>
+    <meta name="theme-color" content="#0a0a0f"> 
+    <title>IEA PORTAL</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
       :root{
         /* --- WARNA LEBIH NYAMAN DI MATA --- */
-        --bg: #0a0a0f; /* Bukan hitam pekat, tapi biru gelap sekali */
-        --accent: #a855f7; /* Ungu pastel */      
-        --accent-sec: #f97316; /* Oranye lembut */  
-        --accent-glow: rgba(168, 85, 247, 0.4); /* Cahaya dikurangi biar gak silau */
+        --bg: #0a0a0f; 
+        --accent: #a855f7;       
+        --accent-sec: #f97316;   
+        --accent-glow: rgba(168, 85, 247, 0.4); 
         --glass: rgba(20, 20, 30, 0.6); 
         --glass-border: rgba(255, 255, 255, 0.05);
         --dock-bg: rgba(15, 15, 20, 0.85);
-        --text-pri: #e0e0e0; /* Putih tulang, bukan putih terang */
-        --text-sec: #a0a0a0; /* Abu-abu lembut */
+        --text-pri: #e0e0e0; 
+        --text-sec: #a0a0a0; 
       }
 
       /* --- DASAR --- */
@@ -31,7 +32,6 @@
         overflow-x: hidden;
         min-height: 100vh;
         position: relative;
-        /* Background pattern lebih halus */
         background-image: 
             radial-gradient(var(--accent-glow), transparent 2px), 
             radial-gradient(rgba(249, 115, 22, 0.3), transparent 2px); 
@@ -43,26 +43,25 @@
       /* --- EFEK TEKSTUR HALUS --- */
       .texture-layer {
           position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          z-index: -10; opacity: 0.15; /* Dikurangi biar lebih bersih/HD */
+          z-index: -10; opacity: 0.15; 
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
           mix-blend-mode: overlay; pointer-events: none;
       }
 
-      /* --- CAHAYA LATAR (SLOW MOTION) --- */
+      /* --- CAHAYA LATAR --- */
       body::before, body::after {
         content: ''; position: fixed; width: 70vw; height: 70vw; border-radius: 50%;
         filter: blur(100px); opacity: 0.15; z-index: -2; 
-        animation: orbit 40s infinite alternate ease-in-out; /* Diperlambat jadi 40 detik */
+        animation: orbit 40s infinite alternate ease-in-out; 
       }
       body::before { background: radial-gradient(circle, var(--accent), transparent 70%); top: -10%; left: -10%; }
       body::after { background: radial-gradient(circle, var(--accent-sec), transparent 70%); bottom: -10%; right: -10%; animation-delay: -10s; }
       
       @keyframes orbit { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(20px, 30px) scale(1.05); } }
 
-      /* --- ANIMASI LOGO (SLOW MOTION) --- */
+      /* --- ANIMASI LOGO --- */
       .logo-svg { overflow: visible; filter: drop-shadow(0 0 10px var(--accent)); }
       .ring { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
-      /* Putaran diperlambat (10s dan 8s) biar elegan */
       .ring-1 { stroke: var(--accent); transform-origin: center; animation: ringSpin 15s linear infinite; opacity: 0.8; }
       .ring-2 { stroke: var(--accent-sec); transform-origin: center; animation: ringSpinRev 12s linear infinite; opacity: 0.8; }
       
@@ -124,7 +123,7 @@
         position: relative; overflow: hidden;
         backdrop-filter: blur(15px); 
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        transition: all 0.5s ease; /* Transisi diperlambat biar smooth */
+        transition: all 0.5s ease; 
         cursor: pointer;
       }
       .card:hover{
@@ -256,7 +255,7 @@
       }
       .loader-text { 
         font-family: 'Orbitron'; color: var(--accent-sec); margin-top: 25px; letter-spacing: 3px; font-weight: bold; font-size: 0.8rem;
-        animation: textPulse 1.5s infinite alternate; /* Diperlambat */
+        animation: textPulse 1.5s infinite alternate; 
       }
       .loader-logo-wrap { width: 120px; height: 120px; opacity: 0; animation: fadeLogoIn 1.5s forwards; }
       @keyframes fadeLogoIn { to {opacity: 1;} }
@@ -298,7 +297,7 @@
           display: inline-block; white-space: nowrap;
           font-family: 'Inter', sans-serif; font-size: 0.8rem;
           color: #ddd; letter-spacing: 1px;
-          animation: marquee 35s linear infinite; /* Diperlambat */
+          animation: marquee 35s linear infinite;
       }
       @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
@@ -306,7 +305,8 @@
           display: flex; justify-content: center; gap: 15px; margin-bottom: 25px;
           font-size: 0.7rem; font-family: 'Inter', sans-serif; color: var(--text-sec);
       }
-          /* --- NAVIGASI MELAYANG (FAB) --- */
+
+      /* --- NAVIGASI MELAYANG (FAB) --- */
       .fab-container {
         position: fixed;
         bottom: 100px; /* Di atas dock sedikit */
@@ -408,20 +408,21 @@
       .fab-item:hover::after {
         opacity: 1;
       }
-          /* --- PROGRESS BAR DI ATAS --- */
+
+      /* --- PROGRESS BAR DI ATAS --- */
       .progress-container {
         position: fixed;
         top: 0;
-        z-index: 35000; /* Paling atas sendiri */
+        z-index: 35000; 
         width: 100%;
-        height: 3px; /* Tipis banget biar HD */
+        height: 3px; 
         background: transparent;
       }
 
       .progress-bar {
         height: 3px;
         background: linear-gradient(to right, var(--accent), var(--accent-sec));
-        width: 0%; /* Mulai dari nol */
+        width: 0%; 
         box-shadow: 0 0 10px var(--accent);
       }
 
@@ -440,7 +441,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        opacity: 0; /* Tersembunyi di awal */
+        opacity: 0; 
         transform: translateY(20px);
         transition: 0.5s ease;
         z-index: 9998;
@@ -456,47 +457,12 @@
         height: 24px;
         fill: var(--accent);
       }
-          /* --- NOTIFIKASI KECIL (TOAST) --- */
-      .toast-msg {
-        position: fixed;
-        top: 20px;
-        right: -300px; /* Sembunyi di kanan */
-        background: var(--glass);
-        border-left: 4px solid var(--accent);
-        border-top: 1px solid var(--glass-border);
-        border-bottom: 1px solid var(--glass-border);
-        padding: 12px 20px;
-        border-radius: 8px;
-        backdrop-filter: blur(15px);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 40000;
-        transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); /* Slow motion */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      }
-
-      .toast-msg.show {
-        right: 20px; /* Masuk ke layar */
-      }
-
-      .toast-icon {
-        width: 20px;
-        height: 20px;
-        fill: var(--accent);
-      }
-
-      .toast-text {
-        font-size: 0.8rem;
-        font-family: 'Inter', sans-serif;
-        color: #fff;
-      }
-
+          
     </style>
 </head>
 <body oncontextmenu="return false;">
     
-      <div class="progress-container">
+  <div class="progress-container">
     <div class="progress-bar" id="myBar"></div>
   </div>
 
@@ -703,11 +669,7 @@
       <div class="btn-close" onclick="closeModal('rulesModal')">BATAL</div>
     </div>
   </div>
-      <div id="welcomeToast" class="toast-msg">
-    <svg class="toast-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-    <div class="toast-text">Selamat datang di IEA Portal! Selamat menjelajah.</div>
-  </div>
-
+      
   <script>
     // --- LOGIKA HALAMAN SAMBUTAN ---
     let isChecked = false;
@@ -746,15 +708,7 @@
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; }, 1000);
             
-                // Pemicu notifikasi setelah portal terbuka
-    const toast = document.getElementById('welcomeToast');
-    setTimeout(() => {
-        toast.classList.add('show');
-        // Hilang otomatis setelah 4 detik
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 4000);
-    }, 1500);
+            // --- FITUR TOAST SUDAH DIHAPUS DARI SINI ---
           
             // Munculkan Isi Website
             document.getElementById('brand-corner').style.opacity = '1';
