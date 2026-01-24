@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -10,16 +10,39 @@
     
     <style>
       :root{
-        /* --- WARNA LEBIH NYAMAN DI MATA --- */
+        /* --- TEMA GELAP (DEFAULT) --- */
         --bg: #0a0a0f; 
         --accent: #a855f7;       
         --accent-sec: #f97316;   
         --accent-glow: rgba(168, 85, 247, 0.4); 
+        
         --glass: rgba(20, 20, 30, 0.6); 
         --glass-border: rgba(255, 255, 255, 0.05);
         --dock-bg: rgba(15, 15, 20, 0.85);
+        
         --text-pri: #e0e0e0; 
-        --text-sec: #a0a0a0; 
+        --text-sec: #a0a0a0;
+        
+        --bg-img-1: radial-gradient(var(--accent-glow), transparent 2px);
+        --bg-img-2: radial-gradient(rgba(249, 115, 22, 0.3), transparent 2px);
+      }
+
+      /* --- TEMA TERANG (LIGHT MODE) --- */
+      [data-theme="light"] {
+        --bg: #f0f2f5;
+        --accent: #7c3aed;       /* Ungu yang lebih enak di mata pas terang */
+        --accent-sec: #ea580c;
+        --accent-glow: rgba(124, 58, 237, 0.2);
+
+        --glass: rgba(255, 255, 255, 0.8);
+        --glass-border: rgba(0, 0, 0, 0.1);
+        --dock-bg: rgba(255, 255, 255, 0.9);
+
+        --text-pri: #1a1a1a;
+        --text-sec: #555555;
+        
+        --bg-img-1: radial-gradient(rgba(124, 58, 237, 0.1), transparent 2px);
+        --bg-img-2: radial-gradient(rgba(234, 88, 12, 0.1), transparent 2px);
       }
 
       /* --- DASAR --- */
@@ -32,12 +55,10 @@
         overflow-x: hidden;
         min-height: 100vh;
         position: relative;
-        background-image: 
-            radial-gradient(var(--accent-glow), transparent 2px), 
-            radial-gradient(rgba(249, 115, 22, 0.3), transparent 2px); 
+        background-image: var(--bg-img-1), var(--bg-img-2);
         background-size: 400px 400px, 250px 250px;
         background-position: 0 0, 40px 60px;
-        transition: background 0.5s ease;
+        transition: background 0.5s ease, color 0.5s ease;
       }
 
       /* --- EFEK TEKSTUR HALUS --- */
@@ -77,9 +98,20 @@
       .corner-logo { width: 35px; height: 35px; }
       .corner-text { 
         font-family: 'Orbitron'; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
-        color: #fff; display: none; 
+        color: var(--text-pri); display: none; 
       }
       @media(min-width: 768px){ .corner-text { display: block; } }
+
+      /* --- TOMBOL PENGATURAN (KANAN ATAS) --- */
+      .settings-btn {
+          position: fixed; top: 20px; right: 20px; z-index: 8000;
+          width: 45px; height: 45px; border-radius: 12px;
+          background: var(--glass); border: 1px solid var(--glass-border);
+          color: var(--text-pri); display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      .settings-btn:hover { border-color: var(--accent); color: var(--accent); transform: rotate(90deg); }
 
       /* --- TATA LETAK --- */
       .wrap{
@@ -91,10 +123,10 @@
       }
 
       /* --- HEADER --- */
-      header{ text-align: center; margin-bottom: 40px; }
+      header{ text-align: center; margin-bottom: 40px; margin-top: 20px; }
       .status-pill {
         display: inline-flex; align-items: center; gap: 8px;
-        padding: 5px 15px; border: 1px solid rgba(255,255,255,0.05);
+        padding: 5px 15px; border: 1px solid var(--glass-border);
         color: var(--text-sec); font-family: 'Inter', sans-serif; font-size: 0.75rem;
         border-radius: 50px; background: rgba(255,255,255,0.03);
         backdrop-filter: blur(5px);
@@ -104,11 +136,11 @@
       header h1{
         font-family: 'Orbitron'; 
         font-size: clamp(2rem, 6vw, 3.5rem);
-        color: #fff;
+        color: var(--text-pri);
         letter-spacing: 2px; 
         margin-top: 15px;
         line-height: 1.2; font-weight: 800;
-        text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        text-shadow: 0 0 20px var(--accent-glow);
       }
       header p { color: var(--text-sec); margin-top: 8px; font-size: 0.9rem; }
 
@@ -128,8 +160,8 @@
       }
       .card:hover{
         transform: translateY(-3px);
-        border-color: rgba(168, 85, 247, 0.3);
-        background: rgba(30, 30, 40, 0.7);
+        border-color: var(--accent-glow);
+        background: var(--dock-bg);
       }
       .card:active { transform: scale(0.98); }
       
@@ -139,36 +171,15 @@
         padding: 3px 8px; border-radius: 4px; background: rgba(249, 115, 22, 0.1);
       }
       .card h2{
-        font-family: 'Orbitron'; font-size: 1.1rem; margin-bottom: 6px; color: #fff;
+        font-family: 'Orbitron'; font-size: 1.1rem; margin-bottom: 6px; color: var(--text-pri);
         display: flex; align-items: center; justify-content: space-between;
       }
       .card p{ font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; font-weight: 300; }
       
-      .card-icon { width: 22px; height: 22px; fill: rgba(255,255,255,0.2); transition: 0.6s ease; position: absolute; top: 22px; right: 22px; }
+      .card-icon { width: 22px; height: 22px; fill: var(--text-sec); transition: 0.6s ease; position: absolute; top: 22px; right: 22px; }
       .card:hover .card-icon { fill: var(--accent); transform: rotate(10deg); }
 
-      /* --- NAVIGASI BAWAH (DOCK) --- */
-      .dock-wrap{
-        position: fixed; bottom: 25px; left: 0; width: 100%;
-        display: flex; justify-content: center; z-index: 9000; 
-        pointer-events: none; opacity: 0; transition: opacity 2s;
-      }
-      .dock{
-        background: var(--dock-bg); 
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(20px); 
-        padding: 10px 25px; border-radius: 20px;
-        display: flex; gap: 30px; pointer-events: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      }
-      .dock-btn{ background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.4s; padding: 0; }
-      .dock-btn svg{ width: 20px; height: 20px; fill: currentColor; transition: 0.4s; }
-      .dock-btn span{ font-size: 0.6rem; font-family: 'Orbitron'; font-weight: 600; opacity: 0; transform: translateY(5px); transition: 0.4s; }
-      .dock-btn:hover { color: #fff; }
-      .dock-btn:hover svg { transform: translateY(-3px); fill: var(--accent); }
-      .dock-btn:hover span { opacity: 1; transform: translateY(0); color: var(--accent); }
-
-      .sys-footer { text-align: center; margin-top: 30px; font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.2); }
+      .sys-footer { text-align: center; margin-top: 30px; font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-sec); opacity: 0.5; }
 
       /* --- POPUP / MODAL --- */
       .modal {
@@ -179,11 +190,12 @@
       }
       .modal-box {
         width: 100%; max-width: 450px; 
-        background: #0f0f15;
-        border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+        background: var(--bg);
+        border: 1px solid var(--glass-border); border-radius: 16px;
         padding: 30px; text-align: center; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         animation: modalIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        color: var(--text-pri);
       }
       @keyframes modalIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
       
@@ -194,8 +206,8 @@
         box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
       }
       .btn-action:hover { transform: scale(1.01); background: #fff; color: var(--accent); }
-      .btn-close { margin-top: 15px; color: #777; font-size: 0.8rem; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
-      .btn-close:hover { color: #fff; }
+      .btn-close { margin-top: 15px; color: var(--text-sec); font-size: 0.8rem; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
+      .btn-close:hover { color: var(--text-pri); }
 
       /* --- LAYAR 1: PENJELASAN (DULU PROTOCOL) --- */
       #protocol-screen {
@@ -248,7 +260,7 @@
 
       /* --- LAYAR 2: LOADING --- */
       #loader-overlay {
-        position: fixed; inset: 0; background: #0a0a0f;
+        position: fixed; inset: 0; background: var(--bg);
         z-index: 20000; display: none;
         flex-direction: column; align-items: center; justify-content: center;
         transition: opacity 1s ease; pointer-events: none;
@@ -274,11 +286,11 @@
           width: 100%; padding: 12px 20px 12px 45px;
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid var(--glass-border);
-          border-radius: 12px; color: #fff;
+          border-radius: 12px; color: var(--text-pri);
           font-family: 'Inter', sans-serif; font-size: 0.9rem;
           outline: none; transition: 0.3s;
       }
-      #portalSearch::placeholder { color: rgba(255,255,255,0.3); }
+      #portalSearch::placeholder { color: var(--text-sec); opacity: 0.7; }
       #portalSearch:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
 
       .search-icon {
@@ -296,7 +308,7 @@
       .marquee-text {
           display: inline-block; white-space: nowrap;
           font-family: 'Inter', sans-serif; font-size: 0.8rem;
-          color: #ddd; letter-spacing: 1px;
+          color: var(--text-sec); letter-spacing: 1px;
           animation: marquee 35s linear infinite;
       }
       @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -309,8 +321,8 @@
       /* --- NAVIGASI MELAYANG (FAB) --- */
       .fab-container {
         position: fixed;
-        bottom: 100px; /* Di atas dock sedikit */
-        right: 20px;
+        bottom: 40px; 
+        right: 25px;
         z-index: 9999;
         display: flex;
         flex-direction: column-reverse;
@@ -363,7 +375,7 @@
       .fab-item {
         width: 45px;
         height: 45px;
-        background: var(--glass);
+        background: var(--dock-bg);
         border: 1px solid var(--glass-border);
         backdrop-filter: blur(10px);
         border-radius: 50%;
@@ -373,14 +385,16 @@
         cursor: pointer;
         transition: 0.3s;
         position: relative;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       }
 
       .fab-item:hover {
-        background: white;
+        background: var(--accent);
+        border-color: var(--accent);
       }
 
       .fab-item:hover svg {
-        fill: var(--bg);
+        fill: #fff;
       }
 
       .fab-item svg {
@@ -429,7 +443,7 @@
       /* --- TOMBOL BALIK KE ATAS (BACK TO TOP) --- */
       #backToTop {
         position: fixed;
-        bottom: 100px;
+        bottom: 40px;
         left: 20px;
         width: 45px;
         height: 45px;
@@ -457,10 +471,22 @@
         height: 24px;
         fill: var(--accent);
       }
+
+      /* --- SETTINGS MODAL --- */
+      .setting-row {
+          display: flex; justify-content: space-between; align-items: center;
+          margin-bottom: 15px; color: var(--text-pri);
+      }
+      .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+      .switch input { opacity: 0; width: 0; height: 0; }
+      .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+      .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+      input:checked + .slider { background-color: var(--accent); }
+      input:checked + .slider:before { transform: translateX(26px); }
           
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
     
   <div class="progress-container">
     <div class="progress-bar" id="myBar"></div>
@@ -540,6 +566,10 @@
     </svg>
     <span class="corner-text">SYSTEM IEA</span>
   </div>
+
+  <button class="settings-btn" onclick="openSettings()">
+      <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:currentColor;"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84a.484.484 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.488.488 0 0 0-.59.22L2.09 8.83a.488.488 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.488.488 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.27.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+  </button>
 
   <div class="wrap" id="main-wrap">
     <header>
@@ -638,29 +668,10 @@
     </div>
   </div>
 
-  <div class="dock-wrap" id="dock-nav">
-    <div class="dock">
-      <button class="dock-btn" onclick="reloadPage()">
-        <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        <span>ULANGI</span>
-      </button>
-
-      <button class="dock-btn" onclick="goto('https://xzam730.github.io/PORTAL-IEA/admin.html')">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span>ADMIN</span>
-      </button>
-
-      <button class="dock-btn" onclick="openModal('rulesModal')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-        <span>ATURAN</span>
-      </button>
-    </div>
-  </div>
-
   <div id="rulesModal" class="modal">
     <div class="modal-box">
-      <h3 style="color:#fff; font-family:'Orbitron'; font-size:1.2rem; letter-spacing:1px; margin-bottom:10px;">ATURAN DASAR</h3>
-      <div style="text-align:left; font-size:0.9rem; line-height:1.6; color:#ccc;">
+      <h3 style="color:var(--text-pri); font-family:'Orbitron'; font-size:1.2rem; letter-spacing:1px; margin-bottom:10px;">ATURAN DASAR</h3>
+      <div style="text-align:left; font-size:0.9rem; line-height:1.6; color:var(--text-sec);">
         <p><b style="color:var(--accent)">1. SOPAN SANTUN</b><br>Jaga sikap dan omongan ya. Kita di sini teman semua.</p>
         <p style="margin-top:10px;"><b style="color:var(--accent)">2. BAHAS SAINS</b><br>Usahakan obrolan tetap nyambung sama sains dan data yang jelas.</p>
         <p style="margin-top:10px;"><b style="color:var(--accent)">3. BEBAS HOAX</b><br>Dilarang sebar berita bohong, politik, atau spam yang ganggu.</p>
@@ -668,6 +679,23 @@
       <button class="btn-action" onclick="joinDiscord()">PAHAM & GABUNG DISCORD</button>
       <div class="btn-close" onclick="closeModal('rulesModal')">BATAL</div>
     </div>
+  </div>
+
+  <div id="settingsModal" class="modal">
+      <div class="modal-box">
+          <h3 style="color:var(--text-pri); font-family:'Orbitron'; margin-bottom:20px;">PENGATURAN</h3>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; color:var(--text-pri);">
+              <span>Mode Terang</span>
+              <label class="switch" style="position:relative; display:inline-block; width:50px; height:24px;">
+                  <input type="checkbox" onchange="toggleTheme()" style="opacity:0; width:0; height:0;">
+                  <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#333; transition:.4s; border-radius:34px;"></span>
+                  <span style="position:absolute; content:''; height:16px; width:16px; left:4px; bottom:4px; background-color:white; transition:.4s; border-radius:50%;" id="slider-dot"></span>
+              </label>
+          </div>
+          
+          <div class="btn-close" onclick="closeModal('settingsModal')">TUTUP</div>
+      </div>
   </div>
       
   <script>
@@ -694,28 +722,21 @@
     function initializeSystem() {
         if(!isChecked) return;
         
-        // 1. Sembunyikan Sambutan
         document.getElementById('protocol-screen').style.opacity = '0';
         setTimeout(() => { document.getElementById('protocol-screen').style.display = 'none'; }, 1000);
         
-        // 2. Munculkan Loading
         const loader = document.getElementById('loader-overlay');
         loader.style.display = 'flex';
         vibrate();
         
-        // 3. Tunggu 2.5 detik, lalu buka portal utama
         setTimeout(() => {
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; }, 1000);
             
-            // --- FITUR TOAST SUDAH DIHAPUS DARI SINI ---
-          
-            // Munculkan Isi Website
             document.getElementById('brand-corner').style.opacity = '1';
             const wrap = document.getElementById('main-wrap');
             wrap.style.opacity = '1';
             wrap.style.transform = 'scale(1)';
-            document.getElementById('dock-nav').style.opacity = '1';
         }, 2500);
     }
 
@@ -723,6 +744,7 @@
     function joinDiscord(){ closeModal('rulesModal'); goto("https://discord.gg/6FMjCyPg"); }
     function openModal(id){ document.getElementById(id).style.display = 'flex'; setTimeout(()=> {document.getElementById(id).style.opacity='1'}, 10); }
     function closeModal(id){ document.getElementById(id).style.opacity='0'; setTimeout(()=> {document.getElementById(id).style.display = 'none'}, 500); }
+    function openSettings() { openModal('settingsModal'); }
     function vibrate() { if(navigator.vibrate) navigator.vibrate([20]); }
 
     // --- RELOAD / REFRESH ---
@@ -732,6 +754,19 @@
         setTimeout(() => loader.style.opacity = '1', 10);
         document.getElementById('loaderMsg').innerText = "MEMUAT ULANG...";
         setTimeout(() => location.reload(), 1500);
+    }
+
+    // --- TEMA GELAP/TERANG ---
+    function toggleTheme() {
+        const html = document.documentElement;
+        const slider = document.getElementById('slider-dot');
+        if (html.getAttribute('data-theme') === 'dark') {
+            html.setAttribute('data-theme', 'light');
+            slider.style.transform = "translateX(26px)";
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            slider.style.transform = "translateX(0px)";
+        }
     }
 
     // --- INISIALISASI ---
@@ -817,11 +852,17 @@
     </button>
     
     <div class="fab-menu">
+      <div class="fab-item" data-label="Reload Halaman" onclick="reloadPage()">
+        <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+      </div>
+      <div class="fab-item" data-label="Panel Admin" onclick="goto('https://xzam730.github.io/PORTAL-IEA/admin.html')">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      </div>
+      <div class="fab-item" data-label="Baca Aturan" onclick="openModal('rulesModal')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      </div>
       <div class="fab-item" data-label="Hubungi Admin" onclick="goto('https://wa.me/yournumber')">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-      </div>
-      <div class="fab-item" data-label="Mode Gelap/Terang" onclick="alert('Fitur segera hadir!')">
-        <svg viewBox="0 0 24 24"><path d="M12 3V4.5M12 19.5V21M21 12H19.5M4.5 12H3M18.36 5.64L17.3 6.7M6.7 17.3L5.64 18.36M18.36 18.36L17.3 17.3M6.7 6.7L5.64 5.64M12 8C9.79 8 8 9.79 8 12C8 14.21 9.79 16 12 16C14.21 16 16 14.21 16 12C16 9.79 14.21 8 12 8Z"/></svg>
       </div>
       <div class="fab-item" data-label="Cari Cepat" onclick="document.getElementById('portalSearch').focus()">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
