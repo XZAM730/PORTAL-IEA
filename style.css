@@ -1,0 +1,492 @@
+/* =========================================
+   1. VARIABLES & THEMES
+   ========================================= */
+:root {
+  /* --- TEMA GELAP (DEFAULT) --- */
+  --bg: #0a0a0f; 
+  --accent: #a855f7;       
+  --accent-sec: #f97316;   
+  --accent-glow: rgba(168, 85, 247, 0.4); 
+  
+  --glass: rgba(20, 20, 30, 0.65); 
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --dock-bg: rgba(15, 15, 20, 0.9);
+  
+  --text-pri: #e0e0e0; 
+  --text-sec: #a0a0a0;
+  
+  --bg-img-1: radial-gradient(var(--accent-glow), transparent 2px);
+  --bg-img-2: radial-gradient(rgba(249, 115, 22, 0.3), transparent 2px);
+}
+
+/* --- TEMA TERANG (LIGHT MODE) --- */
+[data-theme="light"] {
+  --bg: #f0f2f5;
+  --accent: #7c3aed;
+  --accent-sec: #ea580c;
+  --accent-glow: rgba(124, 58, 237, 0.2);
+
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --dock-bg: rgba(255, 255, 255, 0.95);
+
+  --text-pri: #1a1a1a;
+  --text-sec: #555555;
+  
+  --bg-img-1: radial-gradient(rgba(124, 58, 237, 0.1), transparent 2px);
+  --bg-img-2: radial-gradient(rgba(234, 88, 12, 0.1), transparent 2px);
+}
+
+/* =========================================
+   2. RESET & BASE STYLES
+   ========================================= */
+* {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent; 
+  user-select: none; outline: none;
+}
+
+body {
+  background-color: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-pri); 
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  background-image: var(--bg-img-1), var(--bg-img-2);
+  background-size: 400px 400px, 250px 250px;
+  background-position: 0 0, 40px 60px;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Custom Scrollbar (HD Look) */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Seleksi Teks */
+::selection { background: var(--accent); color: #fff; }
+
+/* =========================================
+   3. BACKGROUND EFFECTS
+   ========================================= */
+/* Tekstur Noise Halus */
+.texture-layer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -10; opacity: 0.15; 
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay; pointer-events: none;
+}
+
+/* Cahaya Latar (Orbiting Blobs) */
+body::before, body::after {
+  content: ''; position: fixed; width: 70vw; height: 70vw; border-radius: 50%;
+  filter: blur(100px); opacity: 0.15; z-index: -2; 
+  animation: orbit 40s infinite alternate ease-in-out; 
+}
+body::before { background: radial-gradient(circle, var(--accent), transparent 70%); top: -10%; left: -10%; }
+body::after { background: radial-gradient(circle, var(--accent-sec), transparent 70%); bottom: -10%; right: -10%; animation-delay: -10s; }
+
+@keyframes orbit { 
+    0% { transform: translate(0, 0) scale(1); } 
+    100% { transform: translate(20px, 30px) scale(1.05); } 
+}
+
+/* =========================================
+   4. LAYOUT COMPONENTS
+   ========================================= */
+/* Container Utama */
+.wrap {
+  max-width: 900px; margin: 0 auto; 
+  padding: 50px 20px 140px 20px; 
+  position: relative; z-index: 2;
+  opacity: 0; transform: scale(0.98); 
+  transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+/* Progress Bar Atas */
+.progress-container {
+  position: fixed; top: 0; z-index: 35000; 
+  width: 100%; height: 3px; background: transparent;
+}
+.progress-bar {
+  height: 3px; width: 0%; 
+  background: linear-gradient(to right, var(--accent), var(--accent-sec));
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* Header */
+header { text-align: center; margin-bottom: 40px; margin-top: 20px; }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 15px; border: 1px solid var(--glass-border);
+  color: var(--text-sec); font-family: 'Inter', sans-serif; font-size: 0.75rem;
+  border-radius: 50px; background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(5px);
+}
+.status-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 5px #4ade80; }
+
+header h1 {
+  font-family: 'Orbitron'; font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--text-pri); letter-spacing: 2px; margin-top: 15px;
+  line-height: 1.2; font-weight: 800;
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+header p { color: var(--text-sec); margin-top: 8px; font-size: 0.9rem; }
+
+/* Nama User Interaktif */
+#user-display-name:hover {
+    text-shadow: 0 0 10px var(--accent);
+    transition: 0.3s;
+}
+
+.iea-glow { color: var(--accent); font-weight: bold; font-family: 'Orbitron'; }
+
+/* =========================================
+   5. SEARCH BAR & MARQUEE
+   ========================================= */
+.search-container {
+    position: relative; max-width: 400px; margin: 25px auto 0;
+    opacity: 0.9; transition: 0.4s;
+}
+.search-container:focus-within { transform: scale(1.01); }
+
+#portalSearch {
+    width: 100%; padding: 12px 20px 12px 45px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px; color: var(--text-pri);
+    font-family: 'Inter', sans-serif; font-size: 0.9rem;
+    outline: none; transition: 0.3s;
+}
+#portalSearch::placeholder { color: var(--text-sec); opacity: 0.7; }
+#portalSearch:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+
+.search-icon {
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; fill: var(--text-sec);
+}
+
+/* Marquee (Teks Jalan) */
+.announcement-bar {
+    width: 100%; background: rgba(168, 85, 247, 0.05);
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    padding: 8px 0; overflow: hidden; position: relative; z-index: 100;
+}
+.marquee-text {
+    display: inline-block; white-space: nowrap;
+    font-family: 'Inter', sans-serif; font-size: 0.8rem;
+    color: var(--text-sec); letter-spacing: 1px;
+    animation: marquee 35s linear infinite;
+}
+@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+.status-indicator {
+    display: flex; justify-content: center; gap: 15px; margin-bottom: 25px;
+    font-size: 0.7rem; font-family: 'Inter', sans-serif; color: var(--text-sec);
+}
+
+/* =========================================
+   6. GRID SYSTEM & CARDS (HD & SMOOTH)
+   ========================================= */
+.grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+@media(min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 22px;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(15px); 
+  /* Ultra Smooth Transition */
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  cursor: pointer;
+  /* Animasi Masuk */
+  animation: smoothFade 0.8s ease backwards;
+}
+
+/* Animasi Masuk Card */
+@keyframes smoothFade {
+    from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 20px 40px -15px var(--accent-glow) !important;
+  background: linear-gradient(135deg, var(--glass), rgba(168, 85, 247, 0.05));
+}
+.card:active { transform: scale(0.98) !important; }
+
+.card-tag {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; color: var(--accent-sec);
+  display: inline-block; margin-bottom: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; background: rgba(249, 115, 22, 0.1);
+}
+.card h2 {
+  font-family: 'Orbitron'; font-size: 1.1rem; margin-bottom: 6px; color: var(--text-pri);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card p { font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; font-weight: 300; }
+
+.card-icon { width: 22px; height: 22px; fill: var(--text-sec); transition: 0.6s ease; position: absolute; top: 22px; right: 22px; }
+.card:hover .card-icon { fill: var(--accent); transform: rotate(10deg); }
+
+.sys-footer { text-align: center; margin-top: 30px; font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-sec); opacity: 0.5; }
+
+/* =========================================
+   7. MODALS & POPUPS
+   ========================================= */
+.modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+  z-index: 10000; display: none; justify-content: center; align-items: center; 
+  padding: 20px; backdrop-filter: blur(10px);
+  transition: opacity 0.5s;
+}
+.modal-box {
+  width: 100%; max-width: 450px; 
+  background: var(--bg);
+  border: 1px solid var(--glass-border); border-radius: 16px;
+  padding: 30px; text-align: center; 
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  animation: modalIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  color: var(--text-pri);
+  max-height: 85vh; overflow-y: auto;
+}
+@keyframes modalIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+
+.btn-action {
+  width: 100%; padding: 12px; background: var(--accent); color: #fff;
+  font-weight: 600; border: none; border-radius: 8px; margin-top: 20px;
+  cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.4s;
+  box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+}
+.btn-action:hover { transform: scale(1.01); background: #fff; color: var(--accent); }
+
+.btn-close { margin-top: 15px; color: var(--text-sec); font-size: 0.8rem; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
+.btn-close:hover { color: var(--text-pri); }
+
+/* Tombol Bahaya (Reset) */
+.btn-danger {
+  width: 100%; padding: 10px; background: rgba(220, 38, 38, 0.2); 
+  color: #fca5a5; font-weight: 600; border: 1px solid rgba(220, 38, 38, 0.5);
+  border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.3s;
+}
+.btn-danger:hover { background: rgba(220, 38, 38, 1); color: #fff; }
+
+/* =========================================
+   8. SPECIFIC SCREENS (Protocol & Loader)
+   ========================================= */
+/* Protocol Screen */
+#protocol-screen {
+    position: fixed; inset: 0; background: #08080c; z-index: 30000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px; transition: opacity 1s ease;
+}
+.protocol-box {
+    width: 100%; max-width: 550px;
+    border: 1px solid var(--glass-border);
+    background: rgba(15, 15, 20, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 25px; border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    border-left: 3px solid var(--accent);
+}
+.protocol-header {
+    font-family: 'Orbitron'; font-size: 1.1rem; color: #fff;
+    margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.protocol-content {
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #ccc; line-height: 1.6;
+    max-height: 350px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;
+}
+.protocol-content h4 { color: #fff; margin-top: 15px; margin-bottom: 5px; font-family: 'Orbitron'; font-size: 0.95rem; }
+.protocol-content ul { padding-left: 20px; margin-bottom: 10px; }
+.protocol-content li { margin-bottom: 5px; color: var(--text-sec); }
+
+/* Tombol Setuju Protocol */
+.protocol-confirm { display: flex; align-items: center; gap: 15px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+.custom-checkbox {
+    width: 20px; height: 20px; border: 2px solid var(--accent-sec);
+    display: flex; justify-content: center; align-items: center; cursor: pointer;
+    transition: 0.3s; border-radius: 4px;
+}
+.custom-checkbox.checked { background: var(--accent-sec); }
+.custom-checkbox i { color: #fff; font-size: 12px; display: none; }
+.custom-checkbox.checked i { display: block; }
+
+#btn-init {
+    flex: 1; padding: 12px; background: #222; color: #666;
+    border: none; border-radius: 8px; font-family: 'Orbitron'; letter-spacing: 1px;
+    cursor: not-allowed; transition: 0.5s; font-weight: bold;
+}
+#btn-init.active {
+    background: var(--accent); color: #fff; 
+    cursor: pointer; box-shadow: 0 5px 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Loader Screen */
+#loader-overlay {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 20000; display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 1s ease; pointer-events: none;
+}
+.loader-text { 
+  font-family: 'Orbitron'; color: var(--accent-sec); margin-top: 25px; letter-spacing: 3px; font-weight: bold; font-size: 0.8rem;
+  animation: textPulse 1.5s infinite alternate; 
+}
+.loader-logo-wrap { width: 120px; height: 120px; opacity: 0; animation: fadeLogoIn 1.5s forwards; }
+@keyframes fadeLogoIn { to {opacity: 1;} }
+@keyframes textPulse { from{opacity:0.4} to{opacity:1} }
+
+/* =========================================
+   9. BRANDING & NAVIGATION
+   ========================================= */
+/* Logo SVG Animations */
+.logo-svg { overflow: visible; filter: drop-shadow(0 0 10px var(--accent)); }
+.ring { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.ring-1 { stroke: var(--accent); transform-origin: center; animation: ringSpin 15s linear infinite; opacity: 0.8; }
+.ring-2 { stroke: var(--accent-sec); transform-origin: center; animation: ringSpinRev 12s linear infinite; opacity: 0.8; }
+@keyframes ringSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes ringSpinRev { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+
+/* Logo Pojok Kiri */
+.corner-brand {
+  position: fixed; top: 20px; left: 20px; z-index: 8000;
+  display: flex; align-items: center; gap: 12px; opacity: 0;
+  transition: opacity 2s;
+}
+.corner-logo { width: 35px; height: 35px; }
+.corner-text { 
+  font-family: 'Orbitron'; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
+  color: var(--text-pri); display: none; 
+}
+@media(min-width: 768px){ .corner-text { display: block; } }
+
+/* Tombol Pengaturan (Kanan Atas) */
+.settings-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 8000;
+    width: 45px; height: 45px; border-radius: 12px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    color: var(--text-pri); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.settings-btn:hover { border-color: var(--accent); color: var(--accent); transform: rotate(90deg); }
+
+/* FAB (Floating Action Button) */
+.fab-container {
+  position: fixed; bottom: 40px; right: 25px; z-index: 9999;
+  display: flex; flex-direction: column-reverse; align-items: center; gap: 15px;
+}
+.fab-main {
+  width: 60px; height: 60px; background: var(--accent); border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 5px 20px var(--accent-glow);
+  cursor: pointer; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); border: none;
+}
+.fab-main svg { width: 30px; height: 30px; fill: white; transition: 0.5s; }
+.fab-menu {
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transform: translateY(20px); pointer-events: none;
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fab-container.active .fab-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.fab-container.active .fab-main { transform: rotate(45deg); background: var(--accent-sec); }
+.fab-item {
+  width: 45px; height: 45px; background: var(--dock-bg);
+  border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  border-radius: 50%; display: flex; justify-content: center; align-items: center;
+  cursor: pointer; transition: 0.3s; position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.fab-item:hover { background: var(--accent); border-color: var(--accent); }
+.fab-item:hover svg { fill: #fff; }
+.fab-item svg { width: 20px; height: 20px; fill: var(--text-pri); }
+.fab-item::after {
+  content: attr(data-label); position: absolute; right: 60px;
+  background: rgba(0,0,0,0.8); color: white; padding: 5px 10px;
+  border-radius: 5px; font-size: 0.7rem; white-space: nowrap;
+  opacity: 0; transition: 0.3s; pointer-events: none;
+}
+.fab-item:hover::after { opacity: 1; }
+
+/* Back To Top Button */
+#backToTop {
+  position: fixed; bottom: 40px; left: 20px;
+  width: 45px; height: 45px; background: var(--glass);
+  border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  border-radius: 12px; display: flex; justify-content: center; align-items: center;
+  cursor: pointer; opacity: 0; transform: translateY(20px);
+  transition: 0.5s ease; z-index: 9998;
+}
+#backToTop.show { opacity: 1; transform: translateY(0); }
+#backToTop svg { width: 24px; height: 24px; fill: var(--accent); }
+
+/* =========================================
+   10. SETTINGS & SYSTEM WIDGETS
+   ========================================= */
+/* Toggle Switch */
+.setting-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; color: var(--text-pri);
+}
+.switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(26px); }
+
+/* Range Slider */
+input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; margin-top: -6px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%; height: 4px; cursor: pointer; background: var(--glass-border); border-radius: 2px;
+}
+
+/* Toast Notifications (Pojok Kiri Bawah) */
+.toast {
+    background: rgba(15, 15, 20, 0.9);
+    border-left: 4px solid var(--accent);
+    color: white; padding: 12px 20px; border-radius: 4px;
+    margin-bottom: 10px; font-family: 'Inter', sans-serif; font-size: 0.8rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: toastIn 0.5s forwards, toastOut 0.5s 3.5s forwards;
+    backdrop-filter: blur(10px);
+}
+@keyframes toastIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { to { transform: translateX(-100%); opacity: 0; } }
+
+/* =========================================
+   11. SYSTEM MODES (Low Spec & No Motion)
+   ========================================= */
+/* Mode Hemat Daya (Hapus Blur) */
+body.low-graphics .card, 
+body.low-graphics .settings-btn, 
+body.low-graphics .modal-box, 
+body.low-graphics .protocol-box,
+body.low-graphics .fab-item,
+body.low-graphics #backToTop,
+body.low-graphics #nasa-widget,
+body.low-graphics .status-pill {
+    backdrop-filter: none !important;
+    background: var(--bg);
+    border: 1px solid #333;
+}
+
+/* Mode Tanpa Animasi */
+body.no-motion *, body.no-motion *::before, body.no-motion *::after {
+    animation: none !important;
+    transition: none !important;
+}
