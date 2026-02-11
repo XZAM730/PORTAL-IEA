@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Menunjuk ke lokasi sitemap kamu
+Sitemap: https://xzam730.github.io/PORTAL-IEA/sitemap.xml
