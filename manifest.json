@@ -1,0 +1,21 @@
+{
+  "name": "IEA PORTAL // SYSTEM",
+  "short_name": "IEA Portal",
+  "description": "Pusat informasi resmi Xzam dan IEA.",
+  "start_url": "/PORTAL-IEA/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ff41",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
