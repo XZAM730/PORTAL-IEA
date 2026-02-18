@@ -1,0 +1,22 @@
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Node modules (kalau nanti lo pake JS framework)
+node_modules/
+package-lock.json
+
+# Text Editor settings
+.vscode/
+.idea/
+*.swp
