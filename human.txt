@@ -1,0 +1,11 @@
+/* TEAM */
+  System Architect: Xzam
+  Role: Creator & Maintainer
+  Organization: IEA (International Education Astronomy)
+  Location: Indonesia
+
+/* SITE */
+  Last update: 2026/02/18
+  Standards: HTML5, CSS3, PWA
+  Components: manifest.json, robots.txt, sitemap.xml
+  Software: GitHub Pages
