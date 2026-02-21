@@ -1,0 +1,111 @@
+/* =========================================
+   CSS COMPATIBILITY BRIDGE
+   Ensures theme.css works with existing styles
+   ========================================= */
+
+/* Map obsolete variables to theme variables */
+:root {
+  /* From calculate.css */
+  --primary-color: var(--primary);
+  --secondary-color: var(--secondary);
+  --danger: var(--accent-red);
+  --success: var(--accent-green);
+  --warning: var(--accent-gold);
+  
+  /* From mind.html */
+  --bg-deep: var(--bg-darkest);
+  --bg-surface: var(--bg-dark);
+  --text-main: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  
+  /* From library.html */
+  --bg-void: var(--bg-darkest);
+  --cyan: var(--accent-cyan);
+  --red: var(--accent-red);
+  
+  /* From live.html (already defined in live.html) */
+  /* These are handled in each page's style tag */
+}
+
+/* Ensure glass effect consistency */
+.glass,
+.glass-card,
+.glass-nav,
+[class*="glass"] {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Light mode overrides */
+[data-theme="light"] .glass,
+[data-theme="light"] .glass-card,
+[data-theme="light"] .glass-nav,
+[data-theme="light"] [class*="glass"] {
+  background: var(--glass-light);
+  border-color: var(--glass-border-light);
+}
+
+/* Ensure text colors work across all pages */
+body,
+body * {
+  color-scheme: dark light;
+}
+
+[data-theme="light"] body,
+[data-theme="light"] body * {
+  color-scheme: light dark;
+}
+
+/* Button consistency */
+button:not([class*="btn"]),
+input[type="button"],
+input[type="submit"] {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+button:not([class*="btn"]):hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Input consistency */
+input:not([type="button"]):not([type="submit"]),
+textarea,
+select {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+}
+
+input:not([type="button"]):not([type="submit"]):focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--glow-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    font-size: 14px;
+  }
+}

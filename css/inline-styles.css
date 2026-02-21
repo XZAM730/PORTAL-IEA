@@ -1,0 +1,222 @@
+/* =========================================
+   EXTRACTED INLINE STYLES
+   ========================================= */
+
+/* SVG Full Screen */
+.svg-fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 99999;
+}
+
+/* System Log */
+.system-log {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 400px;
+  background: #000;
+  border: 1px solid var(--accent);
+  z-index: 40000;
+  padding: 15px;
+  font-family: 'JetBrains Mono';
+  font-size: 0.7rem;
+  overflow-y: auto;
+  color: #4ade80;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.system-log-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.system-log-header .close-btn {
+  cursor: pointer;
+  color: red;
+}
+
+/* Protocol Screen Styles */
+.protocol-version {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.protocol-greeting {
+  color: var(--accent);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.protocol-confirm .accent-sec {
+  color: var(--accent-sec);
+}
+
+.confirm-text {
+  font-size: 0.8rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+/* User Display Name */
+.user-name {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: bold;
+  border-bottom: 1px dashed var(--accent);
+}
+
+/* Digital Clock */
+.digital-clock {
+  font-family: 'JetBrains Mono';
+  font-size: 0.8rem;
+  margin-top: 5px;
+  color: var(--accent-sec);
+}
+
+/* NASA Widget */
+.nasa-widget {
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  display: none;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nasa-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+
+.nasa-info {
+  padding: 10px;
+  font-size: 0.7rem;
+  color: var(--text-sec);
+  text-align: left;
+  border-top: 1px solid var(--glass-border);
+}
+
+.nasa-label {
+  color: var(--accent-sec);
+  font-weight: bold;
+}
+
+/* Ping Status */
+.ping-status {
+  color: #4ade80;
+}
+
+/* Modal Styles */
+.modal-title {
+  color: var(--text-pri);
+  font-family: 'Orbitron';
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.modal-content {
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-sec);
+}
+
+.rule-item {
+  margin-top: 10px;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.accent-sec {
+  color: var(--accent-sec);
+}
+
+/* Settings Modal */
+.settings-modal {
+  text-align: left;
+}
+
+.settings-title {
+  color: var(--text-pri);
+  font-family: 'Orbitron';
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.setting-btn {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  background: var(--glass);
+  color: var(--text-pri);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.battery-row {
+  margin-bottom: 20px;
+}
+
+.battery-status {
+  color: var(--accent);
+  font-family: 'JetBrains Mono';
+}
+
+.settings-hr {
+  border: 0;
+  border-top: 1px solid var(--glass-border);
+  margin: 15px 0;
+}
+
+.font-size-row {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.font-size-row span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.font-size-row input[type="range"] {
+  width: 100%;
+}
+
+.accent-sec-btn {
+  background: var(--accent-sec);
+  margin-bottom: 10px;
+}
+
+.modal-close {
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Settings Icon */
+.settings-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}

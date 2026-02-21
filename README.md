@@ -66,20 +66,50 @@ Portal ini dikembangkan sebagai **Progressive Web App (PWA)** yang memiliki kema
 
 # 📂 Struktur File & Arsitektur Sistem
 
-| Nama File | Fungsi Strategis |
-|------------|----------------|
-| `index.html` | Core system interface & main rendering engine |
-| `manifest.json` | Identity layer untuk PWA behavior |
+## Struktur Folder (Terorganisir)
+
+```
+PORTAL-IEA/
+├── index.html                 # Homepage & main system interface
+├── 404.html                   # Error page handling
+│
+├── pages/                     # Sub-halaman aplikasi
+│   ├── information.html       # Dokumentasi info portal
+│   ├── calculate.html         # Kalkulator sains
+│   ├── live.html              # Live data & tracking satelit
+│   ├── mind.html              # Jurnal & artikel ilmiah
+│   ├── library.html           # Perpustakaan digital
+│   └── admin.html             # Panel administrasi
+│
+├── css/                       # Stylesheet terorganisir
+│   ├── style.css              # Styling utama
+│   ├── calculate.css          # Styling kalkulator
+│   └── inline-styles.css      # Extracted inline styles
+│
+├── js/                        # JavaScript modular
+│   ├── script.js              # Core system logic
+│   └── calculate.js           # Calculator module
+│
+├── assets/                    # Static resources
+│   └── favicon-iea.png        # Brand icon
+│
+├── manifest.json              # PWA manifest configuration
+├── sitemap.xml                # SEO sitemap
+├── robots.txt                 # Search engine rules
+└── README.md                  # Dokumentasi
+```
+
+## Legacy File References
+
+| File | Fungsi |
+|------|--------|
+| `index.html` | Core system & main rendering |
+| `manifest.json` | PWA identity & behavior |
 | `sitemap.xml` | Search engine mapping |
 | `robots.txt` | Bot permission control |
-| `favicon-iea.png` | Brand visual identity |
-| `.nojekyll` | Disable GitHub Jekyll processing |
-| `humans.txt` | Developer signature |
-
-Struktur ini sengaja dibuat minimalis untuk menjaga:
-- Kecepatan loading
-- Kemudahan maintenance
-- Skalabilitas jangka panjang
+| `CODE_OF_CONDUCT.md` | Community guidelines |
+| `SECURITY.md` | Security policy |
+| `LICENSE` | Open source license |
 
 ---
 
@@ -102,6 +132,36 @@ Tidak ada framework seperti React/Vue untuk menjaga:
 - Zero bloat
 - Zero runtime overhead
 - Maximum performance
+
+---
+
+# 🧹 Code Organization & Cleanup
+
+## Inisiatif Reorganisasi (v1.0.1)
+
+Repository telah melalui reorganisasi untuk meningkatkan maintainability dan code quality:
+
+### ✅ Improvements Completed
+- **Duplikat Meta Tags**: Dihapus duplikat tags di `index.html` (pengurangan 4 tags)
+- **Inline Styles**: Dipindahkan 30+ inline styles ke `css/inline-styles.css`
+- **File Organization**: Struktur folder baru (css/, js/, pages/, assets/)
+- **Path References**: Semua CSS, JS, dan asset links sudah diupdate
+- **Clean Markup**: Removed unnecessary attributes dan formatting improvements
+- **Naming Consistency**: File dan class naming standardized
+
+### 📁 Struktur Folder Baru
+```
+css/              → All stylesheets
+js/               → All JavaScript
+pages/            → Sub-pages (information, calculate, live, etc)
+assets/           → Images & static resources
+```
+
+### 📊 Code Quality Metrics
+- **Meta Tags**: 24 tags (cleaned from 28)
+- **Inline Styles**: Reduced from 40+ to 0 in HTML
+- **CSS Files**: 3 organized files (style, calculate, inline)
+- **JS Files**: 2 organized files (script, calculate)
 
 ---
 

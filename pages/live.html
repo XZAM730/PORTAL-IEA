@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="IEA Advanced Telemetry System">
-    <meta name="theme-color" content="#000000">
-    <title>IEA | MONOLITH LIVE</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <title>IEA | Pusat Data Live</title>
+    
+    <!-- Unified Theme CSS -->
+    <link rel="stylesheet" href="../css/theme.css">
+    <link rel="stylesheet" href="../css/compatibility.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,33 +19,35 @@
     
     <style>
         /* ==========================================================================
-           SECTION 1: CORE VARIABLES & PALETTE
+           LIVE PAGE - EXTEND THEME WITH LOCAL VARIABLES
            ==========================================================================
         */
+        
+        /* Use theme variables as fallback, local variables for page-specific styling */
         :root {
-            /* Backgrounds */
-            --bg-void: #020205;
-            --bg-deep: #05050a;
+            /* Backgrounds - Override to use theme */
+            --bg-void: var(--bg-darkest);
+            --bg-deep: var(--bg-dark);
             --bg-panel: rgba(10, 15, 25, 0.95);
-            --bg-dock: #000000;
+            --bg-dock: var(--bg-darkest);
             
-            /* Accents */
-            --hex-purple: #bc13fe;
-            --hex-cyan: #00f2ff;
-            --hex-red: #ff0055;
-            --hex-green: #00ff88;
-            --hex-gold: #ffd700;
+            /* Accents - Use theme brand colors */
+            --hex-purple: var(--primary);
+            --hex-cyan: var(--accent-cyan);
+            --hex-red: var(--accent-red);
+            --hex-green: var(--accent-green);
+            --hex-gold: var(--accent-gold);
             
-            /* Typography */
-            --font-display: 'Orbitron', sans-serif;
-            --font-ui: 'Rajdhani', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            /* Typography - Use theme fonts */
+            --font-display: var(--font-display);
+            --font-ui: var(--font-sans);
+            --font-mono: var(--font-mono);
             
             /* Borders & Effects */
-            --border-std: 1px solid rgba(188, 19, 254, 0.3);
-            --border-active: 1px solid var(--hex-cyan);
-            --glow-purple: 0 0 15px rgba(188, 19, 254, 0.4);
-            --glow-cyan: 0 0 15px rgba(0, 242, 255, 0.4);
+            --border-std: 1px solid rgba(168, 85, 247, 0.3);
+            --border-active: 1px solid var(--accent-cyan);
+            --glow-purple: var(--glow-primary);
+            --glow-cyan: var(--glow-cyan);
             
             /* Spacing */
             --header-h: 70px;
