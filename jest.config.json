@@ -1,0 +1,21 @@
+{
+  "testEnvironment": "jsdom",
+  "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"],
+  "collectCoverageFrom": [
+    "js/**/*.js",
+    "!js/config.js",
+    "!js/error-handler.js"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "branches": 70,
+      "functions": 70,
+      "lines": 70,
+      "statements": 70
+    }
+  },
+  "collectCoverage": true,
+  "coverageDirectory": "coverage/",
+  "coverageReporters": ["text", "lcov", "html"],
+  "verbose": true
+}

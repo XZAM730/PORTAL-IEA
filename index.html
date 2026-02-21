@@ -339,7 +339,40 @@
     </div>
   </div>
 
+  <!-- Error Handler for graceful error handling -->
+  <script src="js/error-handler.js"></script>
+  
+  <!-- Analytics tracking -->
+  <script src="js/analytics.js"></script>
+  
+  <!-- Search utility -->
+  <script src="js/search-utils.js"></script>
+  
+  <!-- Core application -->
   <script src="js/script.js"></script>
+  
+  <!-- Service Worker registration -->
+  <script>
+    // Register Service Worker for offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then((registration) => {
+            console.log('[SW] Registered successfully:', registration);
+            
+            // Check for updates periodically
+            setInterval(() => {
+              registration.update();
+            }, 60000); // Every minute
+          })
+          .catch((err) => {
+            console.warn('[SW] Registration failed:', err);
+          });
+      });
+    } else {
+      console.warn('[SW] Service Workers not supported in this browser');
+    }
+  </script>
 
 </body>
 </html>

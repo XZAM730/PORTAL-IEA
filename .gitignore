@@ -11,12 +11,42 @@ desktop.ini
 # Logs and databases
 *.log
 *.sqlite
+*.db
 
-# Node modules (kalau nanti lo pake JS framework)
+# Node modules
 node_modules/
 package-lock.json
+yarn.lock
 
-# Text Editor settings
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE & Editor settings
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Build artifacts
+dist/
+build/
+*.tmp
+
+# OS cache
+.cache/
+
+# Testing
+coverage/
+jest-results.json
+
+# Dependencies
+pnpm-lock.yaml
+Bun.lockb
+
+# API keys and secrets
+config.local.js

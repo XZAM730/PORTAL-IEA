@@ -193,6 +193,42 @@ http://localhost:3000
 
 ---
 
+# 🔑 API Configuration
+
+Sistem IEA Portal mengintegrasikan beberapa API eksternal untuk fitur real-time:
+
+### NASA API (Astronomy of the Day)
+- **File**: `js/script.js` (line 345) & `pages/live.html` (line 599)
+- **Current Status**: Menggunakan `DEMO_KEY` (free tier terbatas)
+- **Limitation**: Rate limit 50 request/hari, data mungkin cached
+
+**Untuk production (hosted sendiri):**
+
+1. Dapatkan API key gratis di: https://api.nasa.gov/
+2. Update `DEMO_KEY` dengan API key Anda di:
+   - `js/script.js`: Baris 345
+   - `pages/live.html`: Baris 599
+
+```javascript
+// Sebelum:
+const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
+
+// Sesudah:
+const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=YOUR_API_KEY_HERE');
+```
+
+### ISS Tracking API
+- **Provider**: wheretheiss.at
+- **Status**: ✅ Gratis dan unlimited
+- **No configuration needed**
+
+### Firebase (Library Module)
+- **File**: `pages/library.html` (line 650)
+- **Status**: Configured untuk project IEA
+- **Database**: Asia Southeast region
+
+---
+
 # 🌐 Akses Live System
 
 🔗 https://xzam730.github.io/PORTAL-IEA/

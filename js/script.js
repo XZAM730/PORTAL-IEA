@@ -5,6 +5,13 @@
    dan fitur canggih lainnya.
 */
 
+// --- KONFIGURASI & ERROR HANDLING ---
+// Gunakan config.js untuk API configuration
+const SYSTEM_CONFIG = {
+    nasa_api: 'https://api.nasa.gov/planetary/apod',
+    nasa_key: 'DEMO_KEY'
+};
+
 // --- BAGIAN 1: VARIABEL PENTING ---
 let isChecked = false;      // Status checkbox persetujuan
 let soundEnabled = true;    // Status suara (Boleh bunyi atau nggak)
@@ -13,6 +20,11 @@ let audioCtx, oscillator, gainNode; // Alat musik digital (Synthesizer)
 
 // --- BAGIAN 2: SAAT WEBSITE PERTAMA DIBUKA ---
 window.addEventListener('DOMContentLoaded', () => {
+    // Track page view
+    if (window.Analytics) {
+        window.Analytics.trackPageView();
+    }
+    
     // 1. Cek Tema (Gelap/Terang) yang tersimpan
     const savedTheme = localStorage.getItem('iea_theme');
     if(savedTheme) {
@@ -341,9 +353,30 @@ function toggleLog() {
 // 1. Widget NASA (Ambil Gambar Asli)
 async function fetchNASAData() {
     try {
-        // Pakai API Key Demo (Gratis)
-        const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
+        // NOTE: Menggunakan DEMO_KEY (terbatas 50 request/hari)
+        // Untuk production, ganti dengan API key pribadi dari https://api.nasa.gov/
+        // Lihat README.md di section "API Configuration" untuk instruksi lengkap
+        
+        // Track API call start time
+        const startTime = performance.now();
+        
+        // Use error handler's safe fetch method with retry logic
+        const response = await (window.ErrorHandler?.safeFetch || fetch)(
+            'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY'
+        );
+        
+        if (!response) {
+            throw new Error('Failed to fetch NASA data after retries');
+        }
+        
         const data = await response.json();
+        const duration = performance.now() - startTime;
+        
+        // Track successful API call
+        if (window.Analytics) {
+            window.Analytics.trackApiCall('nasa/apod', duration, true);
+            window.Analytics.trackFeature('nasa_widget');
+        }
         
         const widget = document.getElementById('nasa-widget');
         const img = document.getElementById('nasa-img');
@@ -357,6 +390,18 @@ async function fetchNASAData() {
         }
     } catch (err) {
         console.log("Gagal ambil data NASA (Mungkin limit habis): ", err);
+        
+        // Track error
+        if (window.Analytics) {
+            window.Analytics.trackError('api_error', 'NASA APOD fetch failed');
+        }
+        
+        // Show fallback image
+        const widget = document.getElementById('nasa-widget');
+        if (widget) {
+            widget.innerHTML = '<p class="error-fallback">Data NASA tidak tersedia untuk saat ini. Silakan coba lagi nanti.</p>';
+            widget.style.display = 'block';
+        }
     }
 }
 

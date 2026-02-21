@@ -563,7 +563,7 @@
                 <button class="dock-btn" onclick="toggleConfig()">
                     <i class="fas fa-sliders-h"></i> CONFIG
                 </button>
-                <button class="dock-btn exit" onclick="window.location.href='index.html'">
+                <button class="dock-btn exit" onclick="window.location.href='../index.html'">
                     <i class="fas fa-power-off"></i> EXIT
                 </button>
             </div>
@@ -596,6 +596,9 @@
             iss: 'https://api.wheretheiss.at/v1/satellites/25544',
             nasa_neo: 'https://api.nasa.gov/neo/rest/v1/feed',
             nasa_apod: 'https://api.nasa.gov/planetary/apod',
+            // NOTE: DEMO_KEY terbatas 50 request/hari
+            // Untuk production, ganti dengan API key pribadi dari https://api.nasa.gov/
+            // Lihat README.md section "API Configuration" untuk instruksi
             key: 'DEMO_KEY'
         };
         const STATE = { audio: false, perf: false, uptime: 0 };
