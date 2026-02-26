@@ -1,492 +1,719 @@
 /* =========================================
-   1. VARIABLES & THEMES
+   IEA PORTAL - MAIN STYLESHEET v3
+   "Neon Cosmos" Premium Design
+   Depends on: theme.css
    ========================================= */
+
+/* ─── LEGACY VARIABLE BRIDGE ─── */
 :root {
-  /* --- TEMA GELAP (DEFAULT) --- */
-  --bg: #0a0a0f; 
-  --accent: #a855f7;       
-  --accent-sec: #f97316;   
-  --accent-glow: rgba(168, 85, 247, 0.4); 
-  
-  --glass: rgba(20, 20, 30, 0.65); 
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --dock-bg: rgba(15, 15, 20, 0.9);
-  
-  --text-pri: #e0e0e0; 
-  --text-sec: #a0a0a0;
-  
-  --bg-img-1: radial-gradient(var(--accent-glow), transparent 2px);
-  --bg-img-2: radial-gradient(rgba(249, 115, 22, 0.3), transparent 2px);
+  --bg:          var(--bg-darkest);
+  --accent:      var(--primary);
+  --accent-sec:  var(--secondary);
+  --accent-glow: var(--glow-primary);
+  --text-pri:    var(--text-primary);
+  --text-sec:    var(--text-secondary);
+  --dock-bg:     var(--glass-heavy);
+
+  --bg-img-1: radial-gradient(var(--glow-primary-sm), transparent 2px);
+  --bg-img-2: radial-gradient(rgba(6, 214, 255, 0.12), transparent 2px);
+  --bg-img-3: radial-gradient(rgba(249, 115, 22, 0.08), transparent 2px);
 }
 
-/* --- TEMA TERANG (LIGHT MODE) --- */
 [data-theme="light"] {
-  --bg: #f0f2f5;
-  --accent: #7c3aed;
-  --accent-sec: #ea580c;
-  --accent-glow: rgba(124, 58, 237, 0.2);
-
-  --glass: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --dock-bg: rgba(255, 255, 255, 0.95);
-
-  --text-pri: #1a1a1a;
-  --text-sec: #555555;
-  
-  --bg-img-1: radial-gradient(rgba(124, 58, 237, 0.1), transparent 2px);
-  --bg-img-2: radial-gradient(rgba(234, 88, 12, 0.1), transparent 2px);
+  --bg:          var(--bg-light);
+  --accent:      var(--primary);
+  --accent-sec:  var(--secondary-dark);
+  --accent-glow: var(--glow-primary);
+  --text-pri:    var(--text-primary-light);
+  --text-sec:    var(--text-secondary-light);
 }
 
 /* =========================================
-   2. RESET & BASE STYLES
+   1. BODY & BACKGROUND
    ========================================= */
-* {
-  box-sizing: border-box; margin: 0; padding: 0;
-  -webkit-tap-highlight-color: transparent; 
-  user-select: none; outline: none;
-}
-
 body {
-  background-color: var(--bg);
-  font-family: 'Inter', sans-serif;
-  color: var(--text-pri); 
-  overflow-x: hidden;
-  min-height: 100vh;
-  position: relative;
-  background-image: var(--bg-img-1), var(--bg-img-2);
-  background-size: 400px 400px, 250px 250px;
-  background-position: 0 0, 40px 60px;
-  transition: background 0.5s ease, color 0.5s ease;
+  background-color: var(--bg-darkest);
+  background-image: var(--bg-img-1), var(--bg-img-2), var(--bg-img-3);
+  background-size: 500px 500px, 280px 280px, 350px 350px;
+  background-position: 0 0, 80px 120px, 160px 40px;
+  transition: background var(--trans-slow), color var(--trans-slow);
 }
 
-/* Custom Scrollbar (HD Look) */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+/* Light mode bg */
+[data-theme="light"] body {
+  --bg-img-1: radial-gradient(rgba(124, 58, 237, 0.07), transparent 2px);
+  --bg-img-2: radial-gradient(rgba(6, 214, 255, 0.05), transparent 2px);
+  --bg-img-3: radial-gradient(rgba(249, 115, 22, 0.05), transparent 2px);
+}
 
-/* Seleksi Teks */
-::selection { background: var(--accent); color: #fff; }
-
-/* =========================================
-   3. BACKGROUND EFFECTS
-   ========================================= */
-/* Tekstur Noise Halus */
+/* ── Noise Texture ── */
 .texture-layer {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -10; opacity: 0.15; 
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay; pointer-events: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -10; opacity: 0.08; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
 }
 
-/* Cahaya Latar (Orbiting Blobs) */
+/* ── Ambient Orbs (Orbiting Blobs) ── */
 body::before, body::after {
-  content: ''; position: fixed; width: 70vw; height: 70vw; border-radius: 50%;
-  filter: blur(100px); opacity: 0.15; z-index: -2; 
-  animation: orbit 40s infinite alternate ease-in-out; 
+  content: ''; position: fixed; border-radius: 50%;
+  filter: blur(120px); z-index: -2; pointer-events: none;
 }
-body::before { background: radial-gradient(circle, var(--accent), transparent 70%); top: -10%; left: -10%; }
-body::after { background: radial-gradient(circle, var(--accent-sec), transparent 70%); bottom: -10%; right: -10%; animation-delay: -10s; }
+body::before {
+  width: 80vw; height: 80vw; top: -20%; left: -20%;
+  background: radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.18), rgba(124, 58, 237, 0.06) 50%, transparent 70%);
+  animation: orbit 50s infinite alternate var(--ease-in-out);
+}
+body::after {
+  width: 60vw; height: 60vw; bottom: -15%; right: -15%;
+  background: radial-gradient(circle at 60% 60%, rgba(6, 214, 255, 0.12), rgba(249, 115, 22, 0.08) 50%, transparent 70%);
+  animation: orbit 35s infinite alternate-reverse var(--ease-in-out);
+  animation-delay: -15s;
+}
 
-@keyframes orbit { 
-    0% { transform: translate(0, 0) scale(1); } 
-    100% { transform: translate(20px, 30px) scale(1.05); } 
+/* ── Third ambient blob ── */
+.bg-blob-mid {
+  position: fixed; width: 40vw; height: 40vw;
+  top: 40%; left: 40%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.06), transparent 70%);
+  border-radius: 50%; filter: blur(80px);
+  z-index: -2; pointer-events: none;
+  animation: orbit 60s infinite alternate var(--ease-in-out);
+  animation-delay: -25s;
 }
 
 /* =========================================
-   4. LAYOUT COMPONENTS
+   2. PROGRESS BAR
    ========================================= */
-/* Container Utama */
-.wrap {
-  max-width: 900px; margin: 0 auto; 
-  padding: 50px 20px 140px 20px; 
-  position: relative; z-index: 2;
-  opacity: 0; transform: scale(0.98); 
-  transition: opacity 1.5s ease, transform 1.5s ease;
-}
-
-/* Progress Bar Atas */
 .progress-container {
-  position: fixed; top: 0; z-index: 35000; 
-  width: 100%; height: 3px; background: transparent;
+  position: fixed; top: 0; z-index: var(--z-toast);
+  width: 100%; height: 2px; background: transparent;
 }
 .progress-bar {
-  height: 3px; width: 0%; 
-  background: linear-gradient(to right, var(--accent), var(--accent-sec));
-  box-shadow: 0 0 10px var(--accent);
+  height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--tertiary));
+  background-size: 200% auto;
+  box-shadow: 0 0 12px var(--glow-primary), 0 0 4px var(--glow-cyan);
+  transition: width 0.3s ease;
+  animation: gradientShift 3s linear infinite;
+  position: relative; overflow: hidden;
 }
-
-/* Header */
-header { text-align: center; margin-bottom: 40px; margin-top: 20px; }
-
-.status-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 5px 15px; border: 1px solid var(--glass-border);
-  color: var(--text-sec); font-family: 'Inter', sans-serif; font-size: 0.75rem;
-  border-radius: 50px; background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(5px);
+.progress-bar::after {
+  content: '';
+  position: absolute; top: 0; right: 0; width: 60px; height: 100%;
+  background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+  animation: shimmer 1.5s infinite;
 }
-.status-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 5px #4ade80; }
-
-header h1 {
-  font-family: 'Orbitron'; font-size: clamp(2rem, 6vw, 3.5rem);
-  color: var(--text-pri); letter-spacing: 2px; margin-top: 15px;
-  line-height: 1.2; font-weight: 800;
-  text-shadow: 0 0 20px var(--accent-glow);
-}
-header p { color: var(--text-sec); margin-top: 8px; font-size: 0.9rem; }
-
-/* Nama User Interaktif */
-#user-display-name:hover {
-    text-shadow: 0 0 10px var(--accent);
-    transition: 0.3s;
-}
-
-.iea-glow { color: var(--accent); font-weight: bold; font-family: 'Orbitron'; }
 
 /* =========================================
-   5. SEARCH BAR & MARQUEE
+   3. LAYOUT
+   ========================================= */
+.wrap {
+  max-width: 940px; margin: 0 auto;
+  padding: 55px 20px 150px 20px;
+  position: relative; z-index: var(--z-card);
+  opacity: 0; transform: scale(0.98) translateY(8px);
+  transition: opacity 1.2s var(--ease-smooth), transform 1.2s var(--ease-smooth);
+}
+.wrap.loaded { opacity: 1; transform: scale(1) translateY(0); }
+
+/* =========================================
+   4. HEADER
+   ========================================= */
+header {
+  text-align: center;
+  margin-bottom: 45px; margin-top: 25px;
+}
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 5px 16px;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-family: var(--font-sans); font-size: 0.72rem; letter-spacing: 0.8px;
+  border-radius: var(--radius-full);
+  background: rgba(168, 85, 247, 0.06);
+  backdrop-filter: var(--blur-sm);
+  text-transform: uppercase;
+}
+
+header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.75rem);
+  font-weight: 900; letter-spacing: 3px; margin-top: 16px;
+  line-height: 1.15;
+  background: linear-gradient(135deg, #fff 0%, var(--primary-light) 40%, var(--tertiary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 30px var(--glow-primary));
+}
+
+header p {
+  color: var(--text-secondary); margin-top: 10px;
+  font-size: 0.88rem; letter-spacing: 0.3px;
+}
+
+#user-display-name {
+  cursor: pointer; transition: var(--trans-fast);
+  color: var(--primary-light);
+  border-bottom: 1px dashed rgba(168, 85, 247, 0.4);
+  padding-bottom: 1px;
+}
+#user-display-name:hover {
+  color: var(--tertiary);
+  border-bottom-color: var(--tertiary);
+  filter: drop-shadow(0 0 8px var(--glow-cyan));
+}
+
+.iea-glow {
+  color: var(--primary);
+  font-weight: 800; font-family: var(--font-display);
+  filter: drop-shadow(0 0 8px var(--glow-primary));
+}
+
+/* =========================================
+   5. SEARCH BAR
    ========================================= */
 .search-container {
-    position: relative; max-width: 400px; margin: 25px auto 0;
-    opacity: 0.9; transition: 0.4s;
+  position: relative; max-width: 420px; margin: 28px auto 0;
+  transition: var(--trans-normal);
 }
-.search-container:focus-within { transform: scale(1.01); }
+.search-container:focus-within {
+  transform: scale(1.015);
+  filter: drop-shadow(0 8px 20px var(--glow-primary-sm));
+}
 
 #portalSearch {
-    width: 100%; padding: 12px 20px 12px 45px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px; color: var(--text-pri);
-    font-family: 'Inter', sans-serif; font-size: 0.9rem;
-    outline: none; transition: 0.3s;
+  width: 100%;
+  padding: 13px 20px 13px 48px;
+  background: rgba(168, 85, 247, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-family: var(--font-sans); font-size: 0.9rem;
+  transition: var(--trans-normal); outline: none;
 }
-#portalSearch::placeholder { color: var(--text-sec); opacity: 0.7; }
-#portalSearch:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+#portalSearch::placeholder { color: var(--text-muted); }
+#portalSearch:focus {
+  border-color: var(--primary);
+  background: rgba(168, 85, 247, 0.08);
+  box-shadow: 0 0 0 3px var(--glow-primary-sm), 0 8px 20px rgba(0,0,0,0.2);
+}
 
 .search-icon {
-    position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
-    width: 18px; height: 18px; fill: var(--text-sec);
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; fill: var(--text-muted);
+  transition: fill var(--trans-fast);
 }
+.search-container:focus-within .search-icon { fill: var(--primary); }
 
-/* Marquee (Teks Jalan) */
+/* =========================================
+   6. MARQUEE (ANNOUNCEMENT BAR)
+   ========================================= */
 .announcement-bar {
-    width: 100%; background: rgba(168, 85, 247, 0.05);
-    border-top: 1px solid rgba(168, 85, 247, 0.2);
-    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-    padding: 8px 0; overflow: hidden; position: relative; z-index: 100;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.06), rgba(6, 214, 255, 0.04), transparent);
+  border-top: 1px solid rgba(168, 85, 247, 0.15);
+  border-bottom: 1px solid rgba(6, 214, 255, 0.10);
+  padding: 9px 0; overflow: hidden;
+  position: relative; z-index: var(--z-sticky);
 }
+.announcement-bar::before, .announcement-bar::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none;
+}
+.announcement-bar::before { left: 0; background: linear-gradient(to right, var(--bg-darkest), transparent); }
+.announcement-bar::after  { right: 0; background: linear-gradient(to left, var(--bg-darkest), transparent); }
+
 .marquee-text {
-    display: inline-block; white-space: nowrap;
-    font-family: 'Inter', sans-serif; font-size: 0.8rem;
-    color: var(--text-sec); letter-spacing: 1px;
-    animation: marquee 35s linear infinite;
+  display: inline-block; white-space: nowrap;
+  font-family: var(--font-sans); font-size: 0.75rem;
+  color: var(--text-secondary); letter-spacing: 1.2px;
+  animation: marquee 40s linear infinite;
 }
 @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
 .status-indicator {
-    display: flex; justify-content: center; gap: 15px; margin-bottom: 25px;
-    font-size: 0.7rem; font-family: 'Inter', sans-serif; color: var(--text-sec);
+  display: flex; justify-content: center; gap: 18px; margin-bottom: 28px;
+  font-size: 0.68rem; font-family: var(--font-sans);
+  color: var(--text-muted); letter-spacing: 0.5px;
 }
 
 /* =========================================
-   6. GRID SYSTEM & CARDS (HD & SMOOTH)
+   7. GRID & CARDS
    ========================================= */
-.grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-@media(min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+.grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media(min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); gap: 18px; } }
+@media(min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
 
 .card {
   background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px; padding: 22px;
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-lg); padding: 22px;
   position: relative; overflow: hidden;
-  backdrop-filter: blur(15px); 
-  /* Ultra Smooth Transition */
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  backdrop-filter: var(--blur-md); -webkit-backdrop-filter: var(--blur-md);
   cursor: pointer;
-  /* Animasi Masuk */
-  animation: smoothFade 0.8s ease backwards;
+  transition: all 0.5s var(--ease-smooth);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-highlight);
+  animation: fadeInUp 0.6s var(--ease-smooth) both;
 }
 
-/* Animasi Masuk Card */
-@keyframes smoothFade {
-    from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+/* Gradient inner shine */
+.card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  pointer-events: none;
+}
+
+/* Subtle category stripe */
+.card::after {
+  content: ''; position: absolute;
+  top: 0; left: 0; bottom: 0; width: 2px;
+  background: transparent;
+  transition: background var(--trans-normal);
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.02) !important;
-  border-color: var(--accent) !important;
-  box-shadow: 0 20px 40px -15px var(--accent-glow) !important;
-  background: linear-gradient(135deg, var(--glass), rgba(168, 85, 247, 0.05));
+  transform: translateY(-9px) scale(1.015);
+  border-color: rgba(168, 85, 247, 0.35);
+  box-shadow: 0 24px 50px -12px var(--glow-primary),
+              0 8px 16px rgba(0,0,0,0.4),
+              inset 0 1px 0 var(--glass-highlight);
+  background: linear-gradient(135deg, var(--glass), rgba(168, 85, 247, 0.07));
 }
-.card:active { transform: scale(0.98) !important; }
+.card:hover::after { background: linear-gradient(180deg, var(--primary), var(--tertiary)); }
+.card:active { transform: scale(0.975); transition-duration: 0.1s; }
+
+/* Card stagger delays */
+.card:nth-child(1) { animation-delay: 0ms; }
+.card:nth-child(2) { animation-delay: 60ms; }
+.card:nth-child(3) { animation-delay: 120ms; }
+.card:nth-child(4) { animation-delay: 180ms; }
+.card:nth-child(5) { animation-delay: 240ms; }
+.card:nth-child(6) { animation-delay: 300ms; }
+.card:nth-child(n+7) { animation-delay: 360ms; }
 
 .card-tag {
-  font-family: 'Inter', sans-serif; font-size: 0.65rem; color: var(--accent-sec);
-  display: inline-block; margin-bottom: 10px; font-weight: 600;
-  padding: 3px 8px; border-radius: 4px; background: rgba(249, 115, 22, 0.1);
+  font-family: var(--font-sans); font-size: 0.62rem; font-weight: 700;
+  color: var(--secondary-light);
+  display: inline-block; margin-bottom: 10px;
+  padding: 3px 9px; border-radius: var(--radius-sm);
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.20);
+  letter-spacing: 0.8px; text-transform: uppercase;
 }
+
 .card h2 {
-  font-family: 'Orbitron'; font-size: 1.1rem; margin-bottom: 6px; color: var(--text-pri);
+  font-family: var(--font-display); font-size: 1.0rem; font-weight: 700;
+  margin-bottom: 6px; color: var(--text-primary);
   display: flex; align-items: center; justify-content: space-between;
 }
-.card p { font-size: 0.85rem; color: var(--text-sec); line-height: 1.5; font-weight: 300; }
+.card p { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; font-weight: 400; }
 
-.card-icon { width: 22px; height: 22px; fill: var(--text-sec); transition: 0.6s ease; position: absolute; top: 22px; right: 22px; }
-.card:hover .card-icon { fill: var(--accent); transform: rotate(10deg); }
+.card-icon {
+  width: 20px; height: 20px; fill: var(--text-muted);
+  transition: fill 0.4s, transform 0.4s var(--ease-spring);
+  position: absolute; top: 22px; right: 22px;
+}
+.card:hover .card-icon { fill: var(--primary); transform: rotate(12deg) scale(1.2); }
 
-.sys-footer { text-align: center; margin-top: 30px; font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-sec); opacity: 0.5; }
+.sys-footer {
+  text-align: center; margin-top: 35px;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-muted); opacity: 0.5;
+  letter-spacing: 1px;
+}
 
 /* =========================================
-   7. MODALS & POPUPS
+   8. MODALS
    ========================================= */
 .modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-  z-index: 10000; display: none; justify-content: center; align-items: center; 
-  padding: 20px; backdrop-filter: blur(10px);
-  transition: opacity 0.5s;
+  position: fixed; inset: 0;
+  background: rgba(4, 4, 10, 0.85);
+  z-index: var(--z-modal);
+  display: none; justify-content: center; align-items: center;
+  padding: 20px;
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  transition: opacity var(--trans-slow);
 }
+.modal.active { display: flex; }
+
 .modal-box {
-  width: 100%; max-width: 450px; 
-  background: var(--bg);
-  border: 1px solid var(--glass-border); border-radius: 16px;
-  padding: 30px; text-align: center; 
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: modalIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-  color: var(--text-pri);
-  max-height: 85vh; overflow-y: auto;
+  width: 100%; max-width: 460px;
+  background: linear-gradient(145deg, var(--bg-surface), var(--bg-medium));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--glass-highlight),
+              inset 0 1px 0 var(--glass-highlight);
+  animation: scaleIn 0.4s var(--ease-spring);
+  color: var(--text-primary);
+  max-height: 88vh; overflow-y: auto;
+  position: relative;
 }
-@keyframes modalIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+/* Top accent line */
+.modal-box::before {
+  content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--tertiary), transparent);
+  border-radius: var(--radius-full);
+}
 
 .btn-action {
-  width: 100%; padding: 12px; background: var(--accent); color: #fff;
-  font-weight: 600; border: none; border-radius: 8px; margin-top: 20px;
-  cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.4s;
-  box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+  width: 100%; padding: 13px;
+  background: var(--grad-primary);
+  color: #fff; font-weight: 700;
+  border: none; border-radius: var(--radius-md);
+  margin-top: 22px; cursor: pointer;
+  font-family: var(--font-sans); font-size: 0.95rem;
+  transition: all var(--trans-normal);
+  box-shadow: 0 6px 20px var(--glow-primary-sm);
+  letter-spacing: 0.3px;
 }
-.btn-action:hover { transform: scale(1.01); background: #fff; color: var(--accent); }
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px var(--glow-primary);
+  filter: brightness(1.1);
+}
+.btn-action:active { transform: translateY(0) scale(0.98); }
 
-.btn-close { margin-top: 15px; color: var(--text-sec); font-size: 0.8rem; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif; }
-.btn-close:hover { color: var(--text-pri); }
+.btn-close {
+  margin-top: 14px; color: var(--text-muted);
+  font-size: 0.78rem; cursor: pointer;
+  transition: color var(--trans-fast); font-family: var(--font-sans);
+  display: inline-block; padding: 4px var(--sp-3); border-radius: var(--radius-sm);
+}
+.btn-close:hover { color: var(--text-primary); background: var(--glass); }
 
-/* Tombol Bahaya (Reset) */
 .btn-danger {
-  width: 100%; padding: 10px; background: rgba(220, 38, 38, 0.2); 
-  color: #fca5a5; font-weight: 600; border: 1px solid rgba(220, 38, 38, 0.5);
-  border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.3s;
+  width: 100%; padding: 11px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5; font-weight: 600;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-md); cursor: pointer;
+  font-family: var(--font-sans); transition: all var(--trans-normal);
 }
-.btn-danger:hover { background: rgba(220, 38, 38, 1); color: #fff; }
+.btn-danger:hover {
+  background: var(--accent-red); color: #fff;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  border-color: var(--accent-red);
+}
 
 /* =========================================
-   8. SPECIFIC SCREENS (Protocol & Loader)
+   9. PROTOCOL SCREEN
    ========================================= */
-/* Protocol Screen */
 #protocol-screen {
-    position: fixed; inset: 0; background: #08080c; z-index: 30000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 20px; transition: opacity 1s ease;
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% -20%, rgba(168, 85, 247, 0.08), transparent 60%), var(--bg-void);
+  z-index: 30000;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 20px;
+  transition: opacity 1s var(--ease-smooth);
 }
+
 .protocol-box {
-    width: 100%; max-width: 550px;
-    border: 1px solid var(--glass-border);
-    background: rgba(15, 15, 20, 0.95);
-    backdrop-filter: blur(15px);
-    padding: 25px; border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    border-left: 3px solid var(--accent);
+  width: 100%; max-width: 560px;
+  background: linear-gradient(145deg, var(--bg-surface), var(--bg-medium));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 30px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(168, 85, 247, 0.06);
+  position: relative; overflow: hidden;
 }
+.protocol-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--tertiary));
+}
+
 .protocol-header {
-    font-family: 'Orbitron'; font-size: 1.1rem; color: #fff;
-    margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;
-    display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-display); font-size: 1.0rem; color: var(--text-primary);
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--glass-border-subtle);
+  padding-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 700; letter-spacing: 0.5px;
 }
 .protocol-content {
-    font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #ccc; line-height: 1.6;
-    max-height: 350px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;
+  font-family: var(--font-sans); font-size: 0.88rem;
+  color: var(--text-secondary); line-height: 1.7;
+  max-height: 320px; overflow-y: auto; margin-bottom: 22px;
+  padding-right: 8px;
 }
-.protocol-content h4 { color: #fff; margin-top: 15px; margin-bottom: 5px; font-family: 'Orbitron'; font-size: 0.95rem; }
-.protocol-content ul { padding-left: 20px; margin-bottom: 10px; }
-.protocol-content li { margin-bottom: 5px; color: var(--text-sec); }
+.protocol-content h4 {
+  color: var(--text-primary); margin-top: 16px; margin-bottom: 6px;
+  font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.5px;
+}
+.protocol-content ul { padding-left: 18px; margin-bottom: 10px; }
+.protocol-content li { margin-bottom: 5px; color: var(--text-secondary); }
 
-/* Tombol Setuju Protocol */
-.protocol-confirm { display: flex; align-items: center; gap: 15px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
-.custom-checkbox {
-    width: 20px; height: 20px; border: 2px solid var(--accent-sec);
-    display: flex; justify-content: center; align-items: center; cursor: pointer;
-    transition: 0.3s; border-radius: 4px;
+.protocol-confirm {
+  display: flex; align-items: center; gap: 14px; margin-top: 20px;
+  border-top: 1px solid var(--glass-border-subtle); padding-top: 20px;
 }
-.custom-checkbox.checked { background: var(--accent-sec); }
+.custom-checkbox {
+  width: 22px; height: 22px; border: 2px solid var(--secondary);
+  display: flex; justify-content: center; align-items: center;
+  cursor: pointer; transition: all var(--trans-normal); border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.custom-checkbox:hover { border-color: var(--secondary-light); box-shadow: 0 0 10px var(--glow-secondary); }
+.custom-checkbox.checked { background: var(--grad-secondary); border-color: transparent; }
 .custom-checkbox i { color: #fff; font-size: 12px; display: none; }
 .custom-checkbox.checked i { display: block; }
 
 #btn-init {
-    flex: 1; padding: 12px; background: #222; color: #666;
-    border: none; border-radius: 8px; font-family: 'Orbitron'; letter-spacing: 1px;
-    cursor: not-allowed; transition: 0.5s; font-weight: bold;
+  flex: 1; padding: 13px;
+  background: var(--glass); color: var(--text-muted);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+  font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 1.5px;
+  cursor: not-allowed; transition: all var(--trans-slow); font-weight: 700;
 }
 #btn-init.active {
-    background: var(--accent); color: #fff; 
-    cursor: pointer; box-shadow: 0 5px 20px rgba(168, 85, 247, 0.2);
+  background: var(--grad-primary); color: #fff;
+  border-color: transparent; cursor: pointer;
+  box-shadow: 0 6px 25px var(--glow-primary);
 }
-
-/* Loader Screen */
-#loader-overlay {
-  position: fixed; inset: 0; background: var(--bg);
-  z-index: 20000; display: none;
-  flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 1s ease; pointer-events: none;
-}
-.loader-text { 
-  font-family: 'Orbitron'; color: var(--accent-sec); margin-top: 25px; letter-spacing: 3px; font-weight: bold; font-size: 0.8rem;
-  animation: textPulse 1.5s infinite alternate; 
-}
-.loader-logo-wrap { width: 120px; height: 120px; opacity: 0; animation: fadeLogoIn 1.5s forwards; }
-@keyframes fadeLogoIn { to {opacity: 1;} }
-@keyframes textPulse { from{opacity:0.4} to{opacity:1} }
+#btn-init.active:hover { transform: translateY(-2px); box-shadow: 0 10px 35px var(--glow-primary); }
 
 /* =========================================
-   9. BRANDING & NAVIGATION
+   10. LOADER SCREEN
    ========================================= */
-/* Logo SVG Animations */
-.logo-svg { overflow: visible; filter: drop-shadow(0 0 10px var(--accent)); }
-.ring { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
-.ring-1 { stroke: var(--accent); transform-origin: center; animation: ringSpin 15s linear infinite; opacity: 0.8; }
-.ring-2 { stroke: var(--accent-sec); transform-origin: center; animation: ringSpinRev 12s linear infinite; opacity: 0.8; }
-@keyframes ringSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes ringSpinRev { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+#loader-overlay {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(168, 85, 247, 0.05), transparent 60%), var(--bg-void);
+  z-index: 20000; display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.8s var(--ease-smooth); pointer-events: none;
+}
+.loader-text {
+  font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase; margin-top: 28px;
+  background: var(--grad-neon);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.loader-logo-wrap {
+  width: 110px; height: 110px;
+  opacity: 0; animation: fadeIn 1.2s var(--ease-smooth) forwards;
+}
 
-/* Logo Pojok Kiri */
+/* =========================================
+   11. BRANDING & NAVIGATION
+   ========================================= */
+
+/* Logo SVG */
+.logo-svg { overflow: visible; filter: drop-shadow(0 0 14px var(--glow-primary)); }
+.ring { fill: none; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.ring-1 {
+  stroke: var(--primary); transform-origin: center;
+  animation: spin 18s linear infinite; opacity: 0.9;
+}
+.ring-2 {
+  stroke: var(--tertiary); transform-origin: center;
+  animation: spinRev 12s linear infinite; opacity: 0.7;
+}
+.ring-3 {
+  stroke: var(--secondary); transform-origin: center;
+  animation: spin 25s linear infinite; opacity: 0.5;
+}
+
+/* Corner Brand */
 .corner-brand {
-  position: fixed; top: 20px; left: 20px; z-index: 8000;
-  display: flex; align-items: center; gap: 12px; opacity: 0;
+  position: fixed; top: 20px; left: 22px; z-index: 8000;
+  display: flex; align-items: center; gap: 10px; opacity: 0;
   transition: opacity 2s;
 }
-.corner-logo { width: 35px; height: 35px; }
-.corner-text { 
-  font-family: 'Orbitron'; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
-  color: var(--text-pri); display: none; 
+.corner-logo { width: 32px; height: 32px; }
+.corner-text {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-primary); display: none;
 }
-@media(min-width: 768px){ .corner-text { display: block; } }
+@media(min-width: 768px) { .corner-text { display: block; } }
 
-/* Tombol Pengaturan (Kanan Atas) */
+/* Settings Button */
 .settings-btn {
-    position: fixed; top: 20px; right: 20px; z-index: 8000;
-    width: 45px; height: 45px; border-radius: 12px;
-    background: var(--glass); border: 1px solid var(--glass-border);
-    color: var(--text-pri); display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  position: fixed; top: 20px; right: 20px; z-index: 8000;
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: var(--glass); border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all var(--trans-normal);
+  backdrop-filter: var(--blur-sm);
+  box-shadow: var(--shadow-sm);
 }
-.settings-btn:hover { border-color: var(--accent); color: var(--accent); transform: rotate(90deg); }
+.settings-btn:hover {
+  border-color: var(--primary); color: var(--primary);
+  transform: rotate(90deg);
+  box-shadow: 0 0 20px var(--glow-primary-sm);
+}
 
-/* FAB (Floating Action Button) */
+/* FAB */
 .fab-container {
-  position: fixed; bottom: 40px; right: 25px; z-index: 9999;
-  display: flex; flex-direction: column-reverse; align-items: center; gap: 15px;
+  position: fixed; bottom: 40px; right: 24px; z-index: 9999;
+  display: flex; flex-direction: column-reverse; align-items: center; gap: 12px;
 }
 .fab-main {
-  width: 60px; height: 60px; background: var(--accent); border-radius: 50%;
+  width: 56px; height: 56px;
+  background: var(--grad-primary);
+  border-radius: 50%; border: none;
   display: flex; justify-content: center; align-items: center;
-  box-shadow: 0 5px 20px var(--accent-glow);
-  cursor: pointer; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); border: none;
+  box-shadow: 0 8px 24px var(--glow-primary), 0 0 0 0 var(--glow-primary);
+  cursor: pointer; transition: all 0.5s var(--ease-spring);
+  animation: glow 4s ease-in-out infinite;
 }
-.fab-main svg { width: 30px; height: 30px; fill: white; transition: 0.5s; }
+.fab-main svg { width: 26px; height: 26px; fill: white; transition: transform 0.5s var(--ease-spring); }
 .fab-menu {
   display: flex; flex-direction: column; gap: 10px;
-  opacity: 0; transform: translateY(20px); pointer-events: none;
-  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0; transform: translateY(15px) scale(0.95);
+  pointer-events: none;
+  transition: all 0.35s var(--ease-spring);
 }
-.fab-container.active .fab-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.fab-container.active .fab-main { transform: rotate(45deg); background: var(--accent-sec); }
+.fab-container.active .fab-menu {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+}
+.fab-container.active .fab-main {
+  transform: rotate(45deg);
+  background: var(--grad-secondary);
+  animation: none;
+}
 .fab-item {
-  width: 45px; height: 45px; background: var(--dock-bg);
-  border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  width: 44px; height: 44px; background: var(--glass-heavy);
+  border: 1px solid var(--glass-border); backdrop-filter: var(--blur-sm);
   border-radius: 50%; display: flex; justify-content: center; align-items: center;
-  cursor: pointer; transition: 0.3s; position: relative;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  cursor: pointer; transition: all var(--trans-normal);
+  position: relative; box-shadow: var(--shadow-md);
 }
-.fab-item:hover { background: var(--accent); border-color: var(--accent); }
+.fab-item:hover {
+  background: var(--primary); border-color: var(--primary);
+  box-shadow: 0 0 20px var(--glow-primary);
+  transform: scale(1.1);
+}
 .fab-item:hover svg { fill: #fff; }
-.fab-item svg { width: 20px; height: 20px; fill: var(--text-pri); }
+.fab-item svg { width: 18px; height: 18px; fill: var(--text-secondary); transition: fill var(--trans-fast); }
 .fab-item::after {
-  content: attr(data-label); position: absolute; right: 60px;
-  background: rgba(0,0,0,0.8); color: white; padding: 5px 10px;
-  border-radius: 5px; font-size: 0.7rem; white-space: nowrap;
-  opacity: 0; transition: 0.3s; pointer-events: none;
+  content: attr(data-label); position: absolute; right: 56px;
+  background: var(--glass-heavy); color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  padding: 4px 10px; border-radius: var(--radius-sm);
+  font-size: 0.68rem; white-space: nowrap; backdrop-filter: var(--blur-sm);
+  opacity: 0; transition: opacity var(--trans-fast); pointer-events: none;
 }
 .fab-item:hover::after { opacity: 1; }
 
-/* Back To Top Button */
+/* Back To Top */
 #backToTop {
   position: fixed; bottom: 40px; left: 20px;
-  width: 45px; height: 45px; background: var(--glass);
-  border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
-  border-radius: 12px; display: flex; justify-content: center; align-items: center;
+  width: 44px; height: 44px; background: var(--glass);
+  border: 1px solid var(--glass-border); backdrop-filter: var(--blur-sm);
+  border-radius: var(--radius-md);
+  display: flex; justify-content: center; align-items: center;
   cursor: pointer; opacity: 0; transform: translateY(20px);
-  transition: 0.5s ease; z-index: 9998;
+  transition: all var(--trans-slow); z-index: 9998;
 }
 #backToTop.show { opacity: 1; transform: translateY(0); }
-#backToTop svg { width: 24px; height: 24px; fill: var(--accent); }
+#backToTop:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--glow-primary-sm);
+}
+#backToTop svg { width: 22px; height: 22px; fill: var(--primary); }
 
 /* =========================================
-   10. SETTINGS & SYSTEM WIDGETS
+   12. SETTINGS & TOGGLES
    ========================================= */
-/* Toggle Switch */
 .setting-row {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 15px; color: var(--text-pri);
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; color: var(--text-primary); font-size: 0.88rem;
 }
-.switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+.setting-row span { display: flex; align-items: center; gap: var(--sp-2); }
+
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 46px; height: 22px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--accent); }
-input:checked + .slider:before { transform: translateX(26px); }
+.slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--glass-border);
+  transition: var(--trans-normal); border-radius: var(--radius-full);
+}
+.slider:before {
+  position: absolute; content: "";
+  height: 14px; width: 14px; left: 3px; bottom: 3px;
+  background: var(--text-muted); transition: var(--trans-normal); border-radius: 50%;
+}
+input:checked + .slider {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--glow-primary-sm);
+}
+input:checked + .slider:before {
+  transform: translateX(24px);
+  background: white;
+}
 
 /* Range Slider */
 input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-  background: var(--accent); cursor: pointer; margin-top: -6px;
+  background: var(--primary); cursor: pointer; margin-top: -6px;
+  box-shadow: 0 0 8px var(--glow-primary-sm);
+  transition: box-shadow var(--trans-fast);
 }
+input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 15px var(--glow-primary); }
 input[type=range]::-webkit-slider-runnable-track {
-  width: 100%; height: 4px; cursor: pointer; background: var(--glass-border); border-radius: 2px;
+  width: 100%; height: 4px; cursor: pointer;
+  background: linear-gradient(90deg, var(--primary) var(--range-fill, 50%), var(--glass-border) 0%);
+  border-radius: var(--radius-full);
 }
-
-/* Toast Notifications (Pojok Kiri Bawah) */
-.toast {
-    background: rgba(15, 15, 20, 0.9);
-    border-left: 4px solid var(--accent);
-    color: white; padding: 12px 20px; border-radius: 4px;
-    margin-bottom: 10px; font-family: 'Inter', sans-serif; font-size: 0.8rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    animation: toastIn 0.5s forwards, toastOut 0.5s 3.5s forwards;
-    backdrop-filter: blur(10px);
-}
-@keyframes toastIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes toastOut { to { transform: translateX(-100%); opacity: 0; } }
 
 /* =========================================
-   11. SYSTEM MODES (Low Spec & No Motion)
+   13. TOAST NOTIFICATIONS
    ========================================= */
-/* Mode Hemat Daya (Hapus Blur) */
-body.low-graphics .card, 
-body.low-graphics .settings-btn, 
-body.low-graphics .modal-box, 
+.toast {
+  background: var(--glass-heavy);
+  border: 1px solid var(--glass-border);
+  border-left: 3px solid var(--primary);
+  color: var(--text-primary); padding: 12px 18px;
+  border-radius: var(--radius-md);
+  margin-bottom: 10px; font-family: var(--font-sans); font-size: 0.8rem;
+  box-shadow: var(--shadow-md), 0 0 20px rgba(0,0,0,0.3);
+  animation: toastIn 0.4s var(--ease-spring) forwards,
+             toastOut 0.4s var(--ease-smooth) 3.6s forwards;
+  backdrop-filter: var(--blur-md); max-width: 300px;
+  display: flex; align-items: center; gap: var(--sp-3);
+}
+.toast.success { border-left-color: var(--accent-green); }
+.toast.error   { border-left-color: var(--accent-red); }
+.toast.warning { border-left-color: var(--accent-gold); }
+.toast.info    { border-left-color: var(--tertiary); }
+
+@keyframes toastIn  { from { transform: translateX(-110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { to   { transform: translateX(-110%); opacity: 0; } }
+
+/* =========================================
+   14. SYSTEM MODES
+   ========================================= */
+
+/* Low Graphics Mode */
+body.low-graphics .card,
+body.low-graphics .settings-btn,
+body.low-graphics .modal-box,
 body.low-graphics .protocol-box,
 body.low-graphics .fab-item,
 body.low-graphics #backToTop,
-body.low-graphics #nasa-widget,
-body.low-graphics .status-pill {
-    backdrop-filter: none !important;
-    background: var(--bg);
-    border: 1px solid #333;
+body.low-graphics .status-pill,
+body.low-graphics .toast {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--bg-dark) !important;
+  border-color: var(--glass-border) !important;
 }
 
-/* Mode Tanpa Animasi */
-body.no-motion *, body.no-motion *::before, body.no-motion *::after {
-    animation: none !important;
-    transition: none !important;
+/* No Motion Mode */
+body.no-motion *,
+body.no-motion *::before,
+body.no-motion *::after {
+  animation: none !important;
+  transition: none !important;
 }
