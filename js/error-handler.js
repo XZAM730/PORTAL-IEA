@@ -53,8 +53,8 @@ class ErrorHandler {
             this.errors.shift();
         }
 
-        // Log to console in development
-        if (process.env.NODE_ENV !== 'production') {
+        // Log to console in development (browser-safe check)
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.error('[ERROR]', errorWithTimestamp);
         }
 

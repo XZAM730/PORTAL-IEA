@@ -2,6 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0f">
     <title>IEA - Jurnal Konstelasi</title>
@@ -459,7 +460,7 @@
                 </div>
                 ${p.reason ? `<div class="ctx-reason">"${p.reason}"</div>` : ''}
                 <div class="ctx-body ${p.format==='latex'?'latex-block':''}">${html}</div>
-                ${p.img ? `<img src="${p.img}" class="media-img" loading="lazy">` : ''}
+                ${p.img ? `<img src="${p.img}" class="media-img" loading="lazy" alt="Post image">` : ''}
                 
                 <div class="card-stat">
                     <span>${likes} Apresiasi</span>

@@ -2,6 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0a0f">
     <meta name="description" content="IEA Perpustakaan Digital - Repository Pengetahuan">
@@ -620,7 +621,7 @@
 
     <div id="music-deck">
         <div class="deck-art" id="deck-art">
-            <img src="https://via.placeholder.com/50" id="player-img">
+            <img src="https://via.placeholder.com/50" id="player-img" alt="Player image">
         </div>
         
         <div class="deck-info">
@@ -774,7 +775,7 @@
                 card.innerHTML = `
                     <div class="art-visual">
                         <div class="art-badge"><i class="fas ${icon}"></i> ${type}</div>
-                        <img src="${cover}" class="art-img" onerror="this.src='${DEFAULT_COVER}'">
+                        <img src="${cover}" class="art-img" onerror="this.src='${DEFAULT_COVER}'" alt="${item.title}">
                     </div>
                     <div class="art-body">
                         <div class="art-title">${item.title}</div>
