@@ -26,6 +26,7 @@
     <title>IEA Portal - International Education Astronomy</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="144x144" href="assets/favicon-iea.png">
     <link rel="apple-touch-icon" href="assets/favicon-iea.png">
     <link rel="manifest" href="manifest.json">
@@ -136,7 +137,12 @@
       <h1>PORTAL <span class="iea-glow">IEA</span></h1>
       
       <p>Selamat Datang, <span id="user-display-name" class="user-name" onclick="changeName()">Peneliti</span></p>
-      <div id="digital-clock" class="digital-clock">00:00:00</div>
+      <div class="top-controls">
+        <div id="digital-clock" class="digital-clock">00:00:00</div>
+        <button class="theme-action-btn" id="themeActionBtn" aria-label="Ganti mode gelap / terang" onclick="toggleTheme()">
+          <span class="material-icons" id="themeActionIcon">dark_mode</span>
+        </button>
+      </div>
 
       <div id="nasa-widget" class="nasa-widget">
           <img id="nasa-img" src="" class="nasa-img" alt="NASA Daily Image">

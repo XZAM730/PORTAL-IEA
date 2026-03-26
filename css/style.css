@@ -117,6 +117,15 @@ body::after {
 }
 .wrap.loaded { opacity: 1; transform: scale(1) translateY(0); }
 
+@media (max-width: 640px) {
+  .wrap { padding: 40px 12px 130px 12px; }
+  .card { padding: 16px; }
+  .card h2 { font-size: 0.95rem; }
+  .card p { font-size: 0.78rem; }
+  .status-indicator { font-size: 0.62rem; gap: 10px; }
+  .announcement-bar { padding: 8px 0; }
+}
+
 /* =========================================
    4. HEADER
    ========================================= */
@@ -151,6 +160,28 @@ header p {
   color: var(--text-secondary); margin-top: 10px;
   font-size: 0.88rem; letter-spacing: 0.3px;
 }
+
+.top-controls {
+  display: flex; justify-content: center; align-items: center; gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.digital-clock {
+  font-family: var(--font-mono); color: var(--text-primary); font-size: 0.95rem;
+  border: 1px solid var(--glass-border); padding: 6px 10px; border-radius: var(--radius-sm);
+  background: var(--bg-surface); backdrop-filter: var(--blur-sm);
+}
+
+.theme-action-btn {
+  width: 42px; height: 42px; border: 1px solid var(--glass-border); border-radius: 50%;
+  background: var(--glass); color: var(--text-primary); display: flex; justify-content: center; align-items: center;
+  cursor: pointer; box-shadow: 0 5px 18px rgba(0,0,0,0.18); transition: transform var(--trans-normal), background var(--trans-normal);
+}
+
+.theme-action-btn:hover { transform: translateY(-1px); background: rgba(168, 85, 247, 0.16); }
+
+.theme-action-btn .material-icons { font-size: 20px; }
 
 #user-display-name {
   cursor: pointer; transition: var(--trans-fast);
@@ -310,11 +341,13 @@ header p {
 .card p { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; font-weight: 400; }
 
 .card-icon {
-  width: 20px; height: 20px; fill: var(--text-muted);
-  transition: fill 0.4s, transform 0.4s var(--ease-spring);
-  position: absolute; top: 22px; right: 22px;
+  width: 24px; height: 24px; fill: var(--text-muted);
+  transition: all 0.4s var(--ease-spring);
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255, 255, 255, 0.08); border-radius: 50%; padding: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
 }
-.card:hover .card-icon { fill: var(--primary); transform: rotate(12deg) scale(1.2); }
+.card:hover .card-icon { fill: var(--primary); transform: rotate(16deg) scale(1.2); background: rgba(168, 85, 247, 0.12); }
 
 .sys-footer {
   text-align: center; margin-top: 35px;
@@ -618,6 +651,27 @@ header p {
   box-shadow: 0 0 20px var(--glow-primary-sm);
 }
 #backToTop svg { width: 22px; height: 22px; fill: var(--primary); }
+
+.page-back-btn {
+  position: fixed; top: 18px; left: 18px;
+  width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--glass-border);
+  background: var(--glass); color: var(--text-primary); font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transition: transform var(--trans-fast), background var(--trans-fast), box-shadow var(--trans-fast);
+}
+.page-back-btn:hover { transform: translateY(-2px); background: rgba(168, 85, 247, 0.14); box-shadow: 0 8px 24px rgba(24, 57, 126, 0.35); }
+
+.page-loader-overlay {
+  position: fixed; inset: 0; background: radial-gradient(ellipse at 50% 30%, rgba(168, 85, 247, 0.05), transparent 60%), var(--bg-void);
+  z-index: 20000; display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  opacity: 1; visibility: visible; pointer-events: all;
+}
+.page-loader-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.page-loader-logo-wrap { width: 100px; height: 100px;}
+.page-loader-text { color: #fff; font-family: var(--font-display); font-size: 0.72rem; margin-top: 20px; letter-spacing: 4px; text-transform: uppercase; }
+
 
 /* =========================================
    12. SETTINGS & TOGGLES

@@ -33,6 +33,32 @@ window.addEventListener('DOMContentLoaded', () => {
         const themeToggle = document.getElementById('toggle-theme');
         if(themeToggle) themeToggle.checked = (savedTheme === 'light');
     }
+    updateThemeIcon();
+
+    // 1a. Cek status protocol (jika sudah disetujui sebelumnya)
+    const protocolAccepted = localStorage.getItem('iea_protocol_accepted') === 'true';
+    if (protocolAccepted) {
+        const protocolScreen = document.getElementById('protocol-screen');
+        if (protocolScreen) {
+            protocolScreen.style.display = 'none';
+            protocolScreen.style.opacity = '0';
+        }
+        isChecked = true;
+        const check = document.getElementById('proto-check');
+        const btn = document.getElementById('btn-init');
+        if (check) check.classList.add('checked');
+        if (btn) { btn.classList.add('active'); btn.innerText = 'LANJUT MASUK'; }
+        initializeSystem(true);
+    } else {
+        const savedCheck = localStorage.getItem('iea_protocol_checked') === 'true';
+        if (savedCheck) {
+            isChecked = true;
+            const check = document.getElementById('proto-check');
+            const btn = document.getElementById('btn-init');
+            if (check) check.classList.add('checked');
+            if (btn) { btn.classList.add('active'); btn.innerText = 'LANJUT MASUK'; }
+        }
+    }
 
     // 2. Cek Nama Peneliti
     const savedName = localStorage.getItem('iea_user_name');
@@ -53,13 +79,34 @@ window.addEventListener('DOMContentLoaded', () => {
         showToast("Sistem IEA Berhasil Dimuat");
         showToast("Enkripsi Data: AKTIF");
     }, 3000);
+
+    // Atur loader halaman umum (untuk pages/*)
+    initPageLoader();
 });
+
+function initPageLoader() {
+    const pageLoader = document.getElementById('loader-overlay');
+    if (!pageLoader) return;
+
+    // tutup loader pada muat selesai
+    setTimeout(() => {
+        pageLoader.classList.add('hidden');
+    }, 600);
+
+    document.querySelectorAll('a[href]:not([href^="#"])').forEach(link => {
+        link.addEventListener('click', () => {
+            pageLoader.classList.remove('hidden');
+            pageLoader.style.opacity = '1';
+        });
+    });
+}
 
 // --- BAGIAN 3: LAYAR SAMBUTAN (PROTOCOL) ---
 function toggleCheck() {
     const check = document.getElementById('proto-check');
     const btn = document.getElementById('btn-init');
     isChecked = !isChecked;
+    localStorage.setItem('iea_protocol_checked', isChecked ? 'true' : 'false');
     
     // Kalau dicentang, tombol jadi aktif
     if(isChecked) {
@@ -74,27 +121,43 @@ function toggleCheck() {
     }
 }
 
-function initializeSystem() {
-    if(!isChecked) return; // Kalau belum centang, gak bisa masuk
-    
+function initializeSystem(force = false) {
+    if(!isChecked && !force) return; // Kalau belum centang, gak bisa masuk
+
+    // Set persetujuan permanen
+    localStorage.setItem('iea_protocol_accepted', 'true');
+
     // Hilangkan layar protocol
-    document.getElementById('protocol-screen').style.opacity = '0';
-    setTimeout(() => { document.getElementById('protocol-screen').style.display = 'none'; }, 1000);
-    
+    const protocolScreen = document.getElementById('protocol-screen');
+    if (protocolScreen) {
+        protocolScreen.style.opacity = '0';
+        setTimeout(() => { protocolScreen.style.display = 'none'; }, 1000);
+    }
+
     // Munculkan Loading
     const loader = document.getElementById('loader-overlay');
-    loader.style.display = 'flex';
+    if (loader) {
+      loader.style.display = 'flex';
+      loader.style.opacity = '1';
+    }
+
     vibrate();
-    
+
     // Sembunyikan Loading & Munculkan Portal Utama
     setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 1000);
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => { loader.style.display = 'none'; }, 1000);
+        }
         
-        document.getElementById('brand-corner').style.opacity = '1';
+        const brand = document.getElementById('brand-corner');
+        if (brand) brand.style.opacity = '1';
+
         const wrap = document.getElementById('main-wrap');
-        wrap.style.opacity = '1';
-        wrap.style.transform = 'scale(1)';
+        if (wrap) {
+            wrap.style.opacity = '1';
+            wrap.style.transform = 'scale(1)';
+        }
         
         addLog("User berhasil masuk ke Mainframe.");
     }, 2500);
@@ -147,11 +210,23 @@ window.addEventListener('click', function(e) {
 });
 
 // --- BAGIAN 5: PENGATURAN (SETTINGS) ---
+function updateThemeIcon() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') !== 'light';
+    const icon = document.getElementById('themeActionIcon');
+    const themeToggle = document.getElementById('toggle-theme');
+
+    if(icon) icon.innerText = isDark ? 'dark_mode' : 'light_mode';
+    if(themeToggle) themeToggle.checked = !isDark;
+}
+
 function toggleTheme() {
     const html = document.documentElement;
     const isDark = html.getAttribute('data-theme') === 'dark';
-    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-    localStorage.setItem('iea_theme', isDark ? 'light' : 'dark');
+    const nextTheme = isDark ? 'light' : 'dark';
+    html.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('iea_theme', nextTheme);
+    updateThemeIcon();
     vibrate();
 }
 

@@ -416,6 +416,18 @@
     </style>
 </head>
 <body>
+    <div id="loader-overlay" class="page-loader-overlay">
+        <div class="loader-logo-wrap">
+            <svg class="logo-svg svg-fullscreen" viewBox="0 0 200 200">
+                <ellipse class="ring ring-1" cx="100" cy="100" rx="90" ry="30" />
+                <ellipse class="ring ring-2" cx="100" cy="100" rx="90" ry="30" />
+                <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Orbitron" font-weight="900" font-size="50">IEA</text>
+            </svg>
+        </div>
+        <div class="loader-text page-loader-text" id="loaderMsg">MENGHUBUNGKAN...</div>
+    </div>
+    <button class="page-back-btn" onclick="window.history.back(); return false;" title="Kembali">←</button>
+
 
     <div id="crt-overlay"></div>
     <canvas id="starfield"></canvas>
@@ -810,5 +822,6 @@
             }, 1000);
         };
     </script>
+    <script src="../js/script.js"></script>
 </body>
 </html>
